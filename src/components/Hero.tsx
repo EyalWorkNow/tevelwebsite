@@ -1,33 +1,35 @@
+import Link from "next/link";
 import AsciiField from "./AsciiField";
+import { Button } from "./ui";
 import { Arrow } from "./icons";
+import { words } from "@/lib/lorem";
 
+// Measured: content padding 80/40/40, 2×660 grid, h1 72/72 -0.02em, lede 20/28, band 252px w/ top rule.
 export default function Hero() {
   return (
-    <section className="wrap relative -mt-16">
-      <div className="flex min-h-[700px] flex-col justify-end md:min-h-[950px]">
-        <div className="inner grid gap-6 pb-10 pt-32 md:grid-cols-2 md:items-end">
-          <div>
-            <h1 className="display">
-              <span className="block">Freight that</span>
-              <span className="block">runs on code</span>
-            </h1>
-            <p className="mt-6 max-w-[616px] text-lg font-light leading-7 md:text-xl">
-              Quote, book and track shipments across every carrier from a single API.{" "}
-              <span className="text-muted">Spend your sprints on product, not on carrier integrations and paperwork.</span>
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#" className="btn-light">Start building <Arrow /></a>
-              <a href="#" className="btn-dark">Talk to us</a>
-            </div>
+    <section className="wrap">
+      <div className="inner grid gap-6 pb-10 pt-12 md:grid-cols-2 md:items-end md:pt-20">
+        <div>
+          <h1 className="display">
+            <span className="block animate-[slide-up-and-fade_.7s_cubic-bezier(.16,1,.3,1)_both]">Lorem ipsum</span>
+            <span className="block animate-[slide-up-and-fade_.7s_.08s_cubic-bezier(.16,1,.3,1)_both]">dolor sit amet</span>
+          </h1>
+          <p className="mt-6 max-w-[616px] text-lg font-light leading-7 animate-[slide-up-and-fade_.7s_.16s_cubic-bezier(.16,1,.3,1)_both] md:text-xl">
+            Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.{" "}
+            <span className="text-muted">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</span>
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4 animate-[slide-up-and-fade_.7s_.24s_cubic-bezier(.16,1,.3,1)_both]">
+            <Button arrow>Lorem ipsum</Button>
+            <Button variant="default" href="/contact/sales">Contact sales</Button>
           </div>
-          <a href="#" className="group label hidden items-center gap-3 justify-self-end text-sm tracking-[0.06em] transition-colors duration-300 hover:text-muted md:flex">
-            <span className="grid size-4 place-items-center rounded-full bg-line-2"><span className="size-1.5 rounded-full bg-paper" /></span>
-            Read our 2026 network report
-            <Arrow className="transition-transform duration-300 group-hover:translate-x-0.5" />
-          </a>
         </div>
-        <div className="h-[180px] md:h-[252px]"><AsciiField /></div>
+        <Link href="/blog/commodo" className="group hidden items-center gap-3 justify-self-end font-mono text-sm uppercase leading-[14px] tracking-[0.06em] transition-colors duration-300 hover:text-muted md:flex">
+          <span className="size-[7px] rounded-full bg-paper animate-[pulse-ring_3s_ease_infinite]" />
+          {words(5, 11)}
+          <Arrow className="text-muted transition-transform duration-300 group-hover:translate-x-0.5" />
+        </Link>
       </div>
+      <div className="-mx-4 h-[180px] border-t border-line md:h-[252px]"><AsciiField /></div>
     </section>
   );
 }

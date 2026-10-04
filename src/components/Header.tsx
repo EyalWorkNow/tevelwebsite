@@ -1,56 +1,123 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Logo, Arrow } from "./icons";
-
-const links = ["Platform", "Use cases", "Pricing", "Developers", "Company", "Resources"];
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { nav } from "@/lib/site";
+import { Logo, Glyph } from "./icons";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState<string | null>(null);
+  const [mobile, setMobile] = useState(false);
+  const [acc, setAcc] = useState<string | null>(null);
+  const close = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 64);
     on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    addEventListener("scroll", on, { passive: true });
+    return () => removeEventListener("scroll", on);
   }, []);
+
+  const open = (l: string | null) => { clearTimeout(close.current); setMenu(l); };
+  const leave = () => { close.current = setTimeout(() => setMenu(null), 150); };
 
   return (
     <header className="wrap relative z-50">
       <div className="inner flex h-16 items-center justify-between">
-        <a href="#" className="flex items-center gap-2 text-paper" aria-label="Meridian home">
+        <Link href="/" className="flex items-center gap-2 text-paper" aria-label="Home">
           <Logo />
-          <span className="font-serif text-[22px] tracking-[-0.03em]">Meridian</span>
-        </a>
+          <span className="font-serif text-[24px] tracking-[-0.03em]">Lorem</span>
+        </Link>
         <div className="hidden items-center gap-2 md:flex">
-          <a href="#" className="label rounded-full px-3.5 py-2 hover:text-stone">Log in</a>
-          <a href="#" className="label rounded-full bg-paper-2 px-3.5 py-2 text-ink hover:bg-paper">Contact sales</a>
+          <Link href="#" className="label rounded-full px-3.5 py-2 transition-colors hover:text-stone">Log in</Link>
+          <Link href="/contact/sales" className="label rounded-full bg-paper-2 px-3.5 py-2 text-ink transition-colors hover:bg-paper">Contact sales</Link>
         </div>
-        <button className="label rounded-full border border-line-2 px-3.5 py-2 md:hidden" onClick={() => setOpen(!open)} aria-expanded={open}>
-          {open ? "Close" : "Menu"}
+        <button className="label rounded-full border border-line-2 px-3.5 py-2 md:hidden" onClick={() => setMobile(!mobile)} aria-expanded={mobile}>
+          {mobile ? "Close" : "Menu"}
         </button>
       </div>
 
-      {/* Fixed centred pill — logo scrolls away, nav stays */}
-      <nav className="fixed left-1/2 top-3 hidden -translate-x-1/2 md:block" aria-label="Main">
-        <ul className="flex h-10 items-center rounded-full bg-ink/40 px-1 backdrop-blur-[12px]">
-          {links.map((l) => (
-            <li key={l}>
-              <a href="#" className="label inline-flex h-8 items-center whitespace-nowrap rounded-full px-4 leading-3 transition-colors duration-300 hover:bg-ink-2">{l}</a>
+      {/* Fixed centred pill: logo scrolls away, nav stays */}
+      <nav className="fixed left-1/2 top-3 hidden -translate-x-1/2 md:block" aria-label="Main" onMouseLeave={leave}>
+        <ul className="relative flex h-10 items-center rounded-full bg-ink/40 px-1 backdrop-blur-[12px]">
+          {nav.map((item) => (
+            <li key={item.label} className="relative" onMouseEnter={() => open(item.groups ? item.label : null)}>
+              {item.href ? (
+                <Link href={item.href} className="label inline-flex h-8 items-center whitespace-nowrap rounded-full px-4 leading-3 transition-colors duration-300 hover:bg-line">{item.label}</Link>
+              ) : (
+                <button
+                  onClick={() => open(menu === item.label ? null : item.label)}
+                  onFocus={() => open(item.label)}
+                  aria-expanded={menu === item.label}
+                  className={`label inline-flex h-8 items-center whitespace-nowrap rounded-full px-4 leading-3 transition-colors duration-300 ${menu === item.label ? "bg-line-2/80" : "hover:bg-line"}`}
+                >
+                  {item.label}
+                </button>
+              )}
+              {menu === item.label && item.groups && (
+                <div
+                  onMouseEnter={() => open(item.label)}
+                  className="absolute left-0 top-[calc(100%+10px)] min-w-[190px] origin-top animate-[menu-in_.2s_ease_both] rounded-lg bg-ink-2/60 p-4 shadow-[inset_0_0_0_1px_#625d58,0_6px_18px_rgba(0,0,0,.024),0_3px_9px_rgba(0,0,0,.043)] backdrop-blur-[48px] [perspective:2000px]"
+                >
+                  {item.groups.map((grp) => (
+                    <div key={grp.label || "g"}>
+                      {grp.label && (
+                        <div className="label mb-2 mt-1 flex items-center gap-2 text-[10px] text-stone-2 first:mt-0">
+                          <span className="whitespace-nowrap">{grp.label}</span><span className="h-px flex-1 bg-line-2" />
+                        </div>
+                      )}
+                      <ul className="mb-2">
+                        {grp.links.map((l) => (
+                          <li key={l.href + l.label}>
+                            <Link href={l.href} onClick={() => setMenu(null)} className="group flex items-center gap-3 rounded-md py-2 pr-2 transition-colors">
+                              {l.icon && <span className="grid size-9 shrink-0 place-items-center rounded border border-line-2 text-stone transition-colors group-hover:border-stone group-hover:text-paper"><Glyph name={l.icon} width={18} height={18} /></span>}
+                              <span>
+                                <span className="block whitespace-nowrap leading-5 transition-colors group-hover:text-stone">{l.label}</span>
+                                {l.desc && <span className="block whitespace-nowrap text-xs text-stone-2">{l.desc}</span>}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
           <li className={`overflow-hidden transition-all duration-300 ${scrolled ? "ml-1 max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
-            <a href="#" tabIndex={scrolled ? 0 : -1} className="label inline-flex h-8 items-center whitespace-nowrap rounded-full bg-paper-2 px-3.5 text-ink">Contact sales</a>
+            <Link href="/contact/sales" tabIndex={scrolled ? 0 : -1} className="label inline-flex h-8 items-center whitespace-nowrap rounded-full bg-paper-2 px-3.5 text-ink">Contact sales</Link>
           </li>
         </ul>
       </nav>
 
-      {open && (
-        <div className="fixed inset-x-4 top-16 rounded-2xl border border-line bg-ink-2 p-4 md:hidden">
-          {links.map((l) => (
-            <a key={l} href="#" className="label flex items-center justify-between border-b border-line py-4 last:border-0">{l}<Arrow /></a>
+      {/* Mobile: full-width sheet with accordion groups */}
+      {mobile && (
+        <div className="fixed inset-x-0 bottom-0 top-16 overflow-y-auto bg-ink px-6 pb-10 md:hidden animate-[slide-down-and-fade_.2s_ease_both]">
+          {nav.map((item) => (
+            <div key={item.label} className="border-b border-line">
+              {item.href ? (
+                <Link href={item.href} onClick={() => setMobile(false)} className="label flex py-5">{item.label}</Link>
+              ) : (
+                <>
+                  <button className="label flex w-full items-center justify-between py-5" onClick={() => setAcc(acc === item.label ? null : item.label)} aria-expanded={acc === item.label}>
+                    {item.label}<span className={`transition-transform duration-300 ${acc === item.label ? "rotate-45" : ""}`}>+</span>
+                  </button>
+                  <div className={`grid transition-all duration-300 ${acc === item.label ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                    <div className="overflow-hidden">
+                      {item.groups!.flatMap((g) => g.links).map((l) => (
+                        <Link key={l.href + l.label} href={l.href} onClick={() => setMobile(false)} className="block pb-4 text-stone">{l.label}</Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           ))}
-          <a href="#" className="btn-light mt-4 w-full justify-center">Contact sales</a>
+          <div className="mt-6 grid gap-3">
+            <Link href="/contact/sales" className="btn-light justify-center">Contact sales</Link>
+            <Link href="#" className="btn-dark justify-center">Log in</Link>
+          </div>
         </div>
       )}
     </header>

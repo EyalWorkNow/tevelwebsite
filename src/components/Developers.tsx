@@ -1,12 +1,7 @@
 import { Arrow, Check } from "./icons";
+import { sentence, title } from "@/lib/lorem";
 
-const points = [
-  ["Designed API-first", "Predictable REST resources with JSON everywhere"],
-  ["Docs you can trust", "Every endpoint documented with runnable examples"],
-  ["Event-sourced core", "An append-only log behind every shipment state"],
-  ["Built to scale", "Multi-region, horizontally scaled infrastructure"],
-  ["Open sandbox", "Test with real carrier responses, no contract needed"],
-];
+const points = [0, 1, 2, 3, 4].map((i) => [title(2, 150 + i * 3), sentence(7, 160 + i).slice(0, -1)]);
 
 export default function Developers() {
   return (
@@ -14,7 +9,7 @@ export default function Developers() {
       <div className="wrap">
         <div className="inner grid gap-10 py-14 md:grid-cols-2 md:gap-6 md:py-0">
           <div className="md:py-[72px]">
-            <h2 className="h2">Build your first shipment today</h2>
+            <h2 className="h2">Lorem ipsum dolor today</h2>
             <ul className="mt-10 space-y-5">
               {points.map(([t, d]) => (
                 <li key={t} className="flex gap-3">
@@ -24,8 +19,8 @@ export default function Developers() {
               ))}
             </ul>
             <div className="mt-10 flex flex-wrap gap-3">
-              <a href="#" className="btn-light">Get API keys <Arrow /></a>
-              <a href="#" className="btn-dark">Read the docs</a>
+              <a href="#" className="btn-light">Lorem ipsum <Arrow /></a>
+              <a href="#" className="btn-dark">Dolor sit</a>
             </div>
           </div>
 
@@ -33,19 +28,19 @@ export default function Developers() {
             style={{ background: "linear-gradient(180deg,#6e8db0 0%,#b9cde0 45%,#e9eef2 70%,#7d8b97 100%)" }}>
             <div className="w-[360px] max-w-[88%] space-y-2 font-mono text-xs">
               <div className="rounded-md border border-line bg-ink p-3">
-                <div className="text-muted">// CREATE SHIPMENT</div>
-                <div className="mt-3 font-sans text-[10px] text-muted">Destination</div>
-                <div className="flex items-center gap-2 font-sans text-2xl">Lyon, FR <Check className="text-mint" /></div>
+                <div className="text-muted">// LOREM IPSUM</div>
+                <div className="mt-3 font-sans text-[10px] text-muted">Dolor sit amet</div>
+                <div className="flex items-center gap-2 font-sans text-2xl">Lorem Ipsum <Check className="text-mint" /></div>
               </div>
               <div className="rounded-md border border-line bg-ink p-3">
                 <div className="flex justify-between text-muted"><span>// REQUEST</span><span>+</span></div>
                 <pre className="mt-3 overflow-x-auto leading-5">
-<span className="text-paper">curl</span> <span className="text-stone">https://api.meridian.dev/v1/shipments</span>{"\n"}
-<span className="text-rose">  -H</span> <span className="text-stone">{`"Authorization: Bearer $MERIDIAN_KEY"`}</span>{"\n"}
+<span className="text-paper">curl</span> <span className="text-stone">"https://api.lorem.dev/v0/ipsum"</span>{"\n"}
+<span className="text-rose">  -H</span> <span className="text-stone">{`"Authorization: Bearer $LOREM_KEY"`}</span>{"\n"}
 <span className="text-rose">  -d</span> <span className="text-stone">{`'{`}</span>{"\n"}
-<span className="text-muted">{`    "from": "NL-3011",`}</span>{"\n"}
-<span className="text-muted">{`    "to": "FR-69002",`}</span>{"\n"}
-<span className="text-muted">{`    "weight_kg": 4.2`}</span>{"\n"}
+<span className="text-muted">{`    "dolor": "Lorem Ipsum",`}</span>{"\n"}
+<span className="text-muted">{`    "sit-amet": "35890906",`}</span>{"\n"}
+<span className="text-muted">{`    "elit": "000000"`}</span>{"\n"}
 <span className="text-stone">{`  }'`}</span>
                 </pre>
               </div>

@@ -1,20 +1,16 @@
 import { ArrowUpRight } from "./icons";
+import { sentence, title } from "@/lib/lorem";
 
-const cards = [
-  ["Pricing", "Pay per label. Volume discounts kick in automatically."],
-  ["Sandbox", "Real carrier responses, zero charges, no commitment."],
-  ["Documentation", "Guides and references for every endpoint."],
-  ["Go-live checklist", "Everything you need before your first real parcel."],
-];
+const cards = [0, 1, 2, 3].map((i) => [title(1 + (i % 2), 170 + i * 2), sentence(9, 175 + i)]);
 
 export default function Speed() {
   return (
     <section className="rule">
       <div className="wrap">
         <div className="inner py-14 md:py-[72px]">
-          <h2 className="h2">Ready when you are</h2>
+          <h2 className="h2">Lorem for speed</h2>
           <p className="mt-4 max-w-[420px] font-light leading-6 text-stone">
-            Sign up and send a test shipment in minutes. No demo call, no trial clock, no paperwork.
+            {sentence(22, 180)}
           </p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {cards.map(([t, d]) => (

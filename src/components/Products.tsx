@@ -1,17 +1,14 @@
 import { IconBox, IconRoute, IconShield, IconStack, IconWarehouse, IconScan, IconSwap, IconGlobe } from "./icons";
 import type { ComponentType } from "react";
+import { title, words } from "@/lib/lorem";
 
 type Item = { i: ComponentType; t: string; d: string };
-const left: [string, Item[]][] = [["Shipping", [
-  { i: IconBox, t: "Labels and rates", d: "Compare and buy postage from every carrier" },
-  { i: IconRoute, t: "Smart routing", d: "Rules that pick the best lane per order" },
-  { i: IconShield, t: "Shipment protection", d: "Cover loss and damage at checkout" },
-  { i: IconStack, t: "Batch operations", d: "Thousands of labels in one request" },
-]]];
+const mk = (n: number, s: number, icons: ComponentType[]): Item[] => icons.slice(0, n).map((i, k) => ({ i, t: title(3, s + k * 2), d: words(6, s + k * 3 + 1) }));
+const left: [string, Item[]][] = [[title(2, 110), mk(4, 111, [IconBox, IconRoute, IconShield, IconStack])]];
 const right: [string, Item[]][] = [
-  ["Fulfilment", [{ i: IconWarehouse, t: "Warehouse network", d: "Store inventory close to your customers" }]],
-  ["Visibility", [{ i: IconScan, t: "Tracking", d: "Normalised events from every carrier" }]],
-  ["Cross-border", [{ i: IconSwap, t: "Returns", d: "Labels, refunds and restocking in one flow" }, { i: IconGlobe, t: "Customs", d: "Duties, taxes and documents, pre-filled" }]],
+  [title(2, 120), mk(1, 121, [IconWarehouse])],
+  [title(1, 125), mk(1, 126, [IconScan])],
+  [title(1, 130), mk(2, 131, [IconSwap, IconGlobe])],
 ];
 
 const Row = ({ it }: { it: Item }) => (
@@ -40,7 +37,7 @@ export default function Products() {
     <section className="rule">
       <div className="wrap">
         <div className="inner py-14 md:py-[72px]">
-          <h2 className="h2 mb-10">What you can build</h2>
+          <h2 className="h2 mb-10">Lorem products</h2>
           <div className="grid gap-10 md:grid-cols-2 md:gap-24">
             <Col groups={left} />
             <Col groups={right} />

@@ -1,22 +1,11 @@
 "use client";
 import { useState } from "react";
 import { IconBox } from "./icons";
+import { sentence, title } from "@/lib/lorem";
 
-const items = [
-  { t: "Marketplaces", d: "Give every seller on your platform negotiated rates and a label in one call.", f: ["Multi-carrier rating", "Split shipments", "Seller-level billing"] },
-  { t: "D2C brands", d: "Branded tracking pages and returns that keep shoppers in your store.", f: ["Branded tracking", "Self-serve returns", "Delivery promises"] },
-  { t: "3PLs and warehouses", d: "Route each order to the cheapest compliant lane, automatically.", f: ["Rules engine", "Batch labels", "Dock scheduling"] },
-  { t: "Cross-border trade", d: "Duties, taxes and customs documents calculated before checkout.", f: ["Landed cost", "Commercial invoices", "HS code lookup"] },
-  { t: "Freight forwarders", d: "Digitise quotes and bookings without rebuilding your TMS.", f: ["Instant quotes", "Booking API", "Milestone webhooks"] },
-  { t: "Fleet and last mile", d: "Dispatch your own drivers alongside partner carriers.", f: ["Driver app", "Proof of delivery", "Live ETAs"] },
-];
+const items = Array.from({ length: 6 }, (_, i) => ({ t: title(i === 0 ? 2 : 3, 60 + i * 4), d: sentence(18, 70 + i), f: [title(2, 80 + i), title(2, 90 + i), title(3, 100 + i)] }));
 
-const events = [
-  ["ORD-88412", "Picked up", "Rotterdam", "+2h"],
-  ["ORD-88409", "In transit", "Hamburg", "+6h"],
-  ["ORD-88397", "Customs cleared", "Antwerp", "+1d"],
-  ["ORD-88381", "Delivered", "Lyon", "done"],
-];
+const events = [["LOR-4201", "Ipsum", "Dolor", "+£2,400"], ["LOR-4198", "Amet", "Consect", "−£850"], ["LOR-4187", "Elit", "Tempor", "+£1,200"], ["LOR-4172", "Magna", "Aliqua", "−£25.40"]];
 
 export default function Solutions() {
   const [open, setOpen] = useState(0);
@@ -27,7 +16,7 @@ export default function Solutions() {
       <div className="wrap">
         <div className="inner grid gap-10 py-14 md:grid-cols-2 md:gap-6 md:py-0">
           <div className="md:py-[72px]">
-            <h2 className="h2">Made for how you ship</h2>
+            <h2 className="h2">Lorem ipsum dolor sit</h2>
             <div className="mt-10">
               {items.map((it, i) => (
                 <div key={it.t} className={i ? "border-t border-line" : ""}>
@@ -60,34 +49,34 @@ export default function Solutions() {
               {mode === "ui" ? (
                 <>
                   <div className="flex justify-between">
-                    <div><div className="text-paper">ACME OUTDOOR</div><div className="text-muted">ACCOUNT #2207</div></div>
-                    <div className="text-mint">LIVE SHIPMENTS</div>
+                    <div><div className="text-paper">LOREM IPSUM</div><div className="text-muted">DOLOR #4201</div></div>
+                    <div className="text-mint">SIT AMET</div>
                   </div>
-                  <div className="mt-4 font-sans text-muted">In transit this week</div>
-                  <div className="mt-2 text-right text-3xl text-paper">1,284</div>
+                  <div className="mt-4 font-sans text-muted">Lorem ipsum</div>
+                  <div className="mt-2 text-right text-3xl text-paper">£142,800.55</div>
                   <div className="mt-3 grid grid-cols-2 gap-2">
-                    {[["Carriers", "14"], ["On time", "97.2%"], ["Avg. cost", "€6.40"], ["Lanes", "EU / UK"]].map(([a, b]) => (
+                    {[["Lorem", "04-09-20"], ["Ipsum", "12847391"], ["Dolor", "Sit amet"], ["Elit", "LOR / IPS"]].map(([a, b]) => (
                       <div key={a} className="flex justify-between rounded border border-line px-2 py-2"><span className="font-sans text-muted">{a}</span><span>{b}</span></div>
                     ))}
                   </div>
-                  <div className="mt-4 font-sans text-muted">Recent events</div>
+                  <div className="mt-4 font-sans text-muted">Consectetur</div>
                   {events.map(([id, s, c, t]) => (
                     <div key={id} className="mt-2 flex justify-between font-sans">
                       <span>{id} <span className="text-muted">{s}</span></span>
-                      <span className={t === "done" ? "text-mint" : "text-stone"}>{c}</span>
+                      <span className={t.startsWith("+") ? "text-mint" : "text-stone"}>{t}</span>
                     </div>
                   ))}
                 </>
               ) : (
-                <pre className="overflow-x-auto leading-5 text-stone">{`GET /v1/shipments?status=in_transit
+                <pre className="overflow-x-auto leading-5 text-stone">{`GET /v0/lorem/ipsum
 
 {
-  "count": 1284,
-  "on_time_rate": 0.972,
+  "balance": "142800.55",
+  "currency": "GBP",
   "data": [
-    { "id": "ORD-88412",
-      "status": "picked_up",
-      "location": "Rotterdam" }
+    { "id": "lor-4201",
+      "type": "ipsum",
+      "amount": "2400.00" }
   ]
 }`}</pre>
               )}

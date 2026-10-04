@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 
 // Drifting character field drawn on canvas — the hero's bottom band.
-const CHARS = " .·:-=+*#%";
+const CHARS = " ///·+×#§";
 
 export default function AsciiField({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
