@@ -6,7 +6,7 @@ import "./globals.css";
 
 // ponytail: free stand-ins for the reference's licensed Söhne / Cambon / Söhne Mono
 const sans = Inter({ variable: "--font-sans-src", subsets: ["latin"] });
-const serif = Newsreader({ variable: "--font-serif-src", subsets: ["latin"], weight: ["300"], style: ["normal", "italic"] });
+const serif = Newsreader({ variable: "--font-serif-src", subsets: ["latin"], weight: ["300", "500", "600"], style: ["normal", "italic"] });
 const mono = IBM_Plex_Mono({ variable: "--font-mono-src", subsets: ["latin"], weight: ["400"] });
 
 export const metadata: Metadata = {

@@ -109,7 +109,7 @@ export default function Platform() {
 
           {/* Right: exploding isometric stack */}
           <div className="hidden items-center justify-center md:flex" style={{ backgroundImage: "radial-gradient(#363533 1px, transparent 1px)", backgroundSize: "16px 16px" }}>
-            <svg viewBox="-280 -330 560 660" className="h-[80vh] max-h-[660px] w-auto" aria-hidden>
+            <svg viewBox="-300 -380 600 760" className="h-[85vh] max-h-[720px] w-auto overflow-visible" aria-hidden>
               {steps.map((s, i) => {
                 const y = (i - 1.5) * (40 + 110 * spread);
                 const on = i === active;

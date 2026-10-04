@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
-import { Arrow, ArrowUpRight } from "./icons";
+import { Arrow } from "./icons";
 
 /* ---------- Buttons (pill, mono, uppercase) ---------- */
 export function Button({ href = "#", children, variant = "accent", arrow, className = "" }: { href?: string; children: ReactNode; variant?: "accent" | "default"; arrow?: boolean; className?: string }) {
@@ -49,7 +49,7 @@ export function Placeholder({ seed = 0, className = "", label }: { seed?: number
   const [a, b, c] = tones[seed % tones.length];
   const angle = 110 + (seed * 37) % 120;
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ background: `linear-gradient(${angle}deg, ${a}, ${b} 55%, ${c})` }} aria-hidden={!label} role={label ? "img" : undefined} aria-label={label}>
+    <div className={`${/\b(absolute|fixed|sticky)\b/.test(className) ? "" : "relative"} overflow-hidden ${className}`} style={{ background: `linear-gradient(${angle}deg, ${a}, ${b} 55%, ${c})` }} aria-hidden={!label} role={label ? "img" : undefined} aria-label={label}>
       <div className="absolute inset-0 opacity-[0.18] mix-blend-overlay" style={{ backgroundImage: "radial-gradient(#fff 0.6px, transparent 0.6px)", backgroundSize: "3px 3px" }} />
     </div>
   );
@@ -58,14 +58,14 @@ export function Placeholder({ seed = 0, className = "", label }: { seed?: number
 /* ---------- Link card (bordered, arrow top-right) ---------- */
 export function LinkCard({ href = "#", title, body, image }: { href?: string; title: string; body?: string; image?: number }) {
   return (
-    <Link href={href} className="group flex flex-col overflow-hidden rounded border border-line transition-colors duration-300 hover:border-line-2 hover:bg-ink-2">
+    <Link href={href} className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors duration-300 hover:border-line-2 hover:bg-ink-2">
       {image !== undefined && <Placeholder seed={image} className="aspect-[16/9]" />}
-      <div className="flex min-h-[150px] flex-1 flex-col justify-between p-4">
+      <div className="flex min-h-[202px] flex-1 flex-col justify-between p-4">
         <div className="flex justify-between gap-4">
-          <span className="text-lg font-light leading-6">{title}</span>
-          <ArrowUpRight className="shrink-0 text-muted transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-paper" />
+          <span className="text-xl font-light leading-7">{title}</span>
+          <Arrow width={20} height={20} className="shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-paper" />
         </div>
-        {body && <p className="mt-8 text-sm leading-5 text-muted">{body}</p>}
+        {body && <p className="mt-8 leading-6 text-muted">{body}</p>}
       </div>
     </Link>
   );
@@ -85,7 +85,7 @@ export function CtaBand({ text = "Lorem ipsum dolor sit amet, consectetur adipis
   return (
     <section className="wrap">
       <div className="inner flex flex-col items-center py-24 text-center md:py-[120px]">
-        <Reveal><p className="max-w-[420px] font-serif text-[32px] font-light leading-9 tracking-[-0.04em] md:text-[36px] md:leading-10">{text}</p></Reveal>
+        <Reveal><p className="max-w-[480px] font-serif text-[32px] font-light leading-9 tracking-[-0.04em] md:text-[40px] md:leading-[44px]">{text}</p></Reveal>
         <Reveal delay={120}><Button className="mt-8" arrow>Contact sales</Button></Reveal>
       </div>
     </section>
@@ -98,8 +98,8 @@ export function PageHero({ eyebrow, heading, lede, children }: { eyebrow?: strin
     <section className="wrap">
       <div className="inner flex flex-col items-center pb-16 pt-12 text-center md:pt-[72px]">
         {eyebrow && <Reveal><Eyebrow>{eyebrow}</Eyebrow></Reveal>}
-        <Reveal delay={80}><h1 className="mt-6 max-w-[620px] font-serif text-[40px] font-light leading-[44px] tracking-[-0.04em] md:text-[56px] md:leading-[56px]">{heading}</h1></Reveal>
-        {lede && <Reveal delay={160}><p className="mt-6 max-w-[560px] text-lg font-light leading-7">{lede}</p></Reveal>}
+        <Reveal delay={80}><h1 className="mt-6 max-w-[620px] font-serif text-[40px] font-light leading-[44px] tracking-[-0.05em] md:text-[48px] md:leading-[48px]">{heading}</h1></Reveal>
+        {lede && <Reveal delay={160}><p className="mt-6 max-w-[560px] text-lg font-light leading-[26px]">{lede}</p></Reveal>}
         {children && <Reveal delay={240} className="mt-8 flex flex-wrap justify-center gap-3">{children}</Reveal>}
       </div>
     </section>

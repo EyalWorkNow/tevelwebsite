@@ -24,8 +24,8 @@
 html { background: var(--color-ink); color-scheme: dark; }
 body { background: var(--color-ink); color: var(--color-paper); font-family: var(--font-sans); }
 
-@utility wrap { @apply mx-auto max-w-[1400px] px-4; }
-@utility inner { @apply px-6 md:px-10; }
+@utility wrap { @apply mx-auto max-w-[1432px] px-4; } /* 1400 content + 16px gutters, matches reference x=60 @1440 */
+@utility inner { @apply px-3 md:px-10; } /* 28px mobile gutter, 60px desktop */
 @utility rule { @apply border-t border-line; }
 @utility label { @apply font-mono text-xs uppercase leading-4 tracking-[0.06em]; }
 @utility display { @apply font-serif font-light text-[44px] leading-[44px] tracking-[-0.02em] md:text-[72px] md:leading-[72px]; }
