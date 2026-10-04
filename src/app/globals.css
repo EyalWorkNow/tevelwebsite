@@ -1,26 +1,39 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tokens measured from the reference via getComputedStyle */
+@theme {
+  --color-ink: #0c0c0b;        /* page bg */
+  --color-ink-2: #1a1918;      /* raised surfaces */
+  --color-line: #363533;       /* section borders */
+  --color-line-2: #514e4b;
+  --color-paper: #f9f5ef;      /* primary text */
+  --color-paper-2: #e6e1d9;    /* light button bg */
+  --color-stone: #d4cfc6;
+  --color-stone-2: #c2bcb2;
+  --color-muted: #959089;
+  --color-mint: #85eda5;
+  --color-rose: #f35c95;
+  --color-amber: #e5b53a;
+  --color-teal: #3ad4c4;
+  --color-violet: #a78bfa;
+  --font-sans: var(--font-sans-src), system-ui, sans-serif;
+  --font-serif: var(--font-serif-src), Baskerville, serif;
+  --font-mono: var(--font-mono-src), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+html { background: var(--color-ink); color-scheme: dark; }
+body { background: var(--color-ink); color: var(--color-paper); font-family: var(--font-sans); }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@utility wrap { @apply mx-auto max-w-[1400px] px-4; }
+@utility inner { @apply px-6 md:px-10; }
+@utility rule { @apply border-t border-line; }
+@utility label { @apply font-mono text-xs uppercase leading-4 tracking-[0.06em]; }
+@utility display { @apply font-serif font-light text-[44px] leading-[44px] tracking-[-0.02em] md:text-[72px] md:leading-[72px]; }
+@utility h2 { @apply font-serif font-light text-[32px] leading-9 tracking-[-0.05em] md:text-[40px] md:leading-[44px]; }
+@utility btn { @apply label inline-flex items-center gap-1.5 rounded-full px-5 py-3 transition-colors duration-300; }
+@utility btn-light { @apply btn bg-paper-2 text-ink hover:bg-paper; }
+@utility btn-dark { @apply btn border border-line-2 text-paper hover:border-stone; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
