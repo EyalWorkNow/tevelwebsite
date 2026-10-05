@@ -56,14 +56,14 @@ export const nav: NavItem[] = [
   {
     label: "Insights",
     groups: [{ label: "", links: [
-      { href: "/blog", label: "Insights" }, { href: "/customer-stories", label: "תרחישים לדוגמה" }, { href: "/podcast", label: "R&D" }, { href: "/onboarding", label: "למי זה מתאים" },
+      { href: "/blog", label: "Insights" }, { href: "/answers", label: "שאלות ותשובות" }, { href: "/customer-stories", label: "תרחישים לדוגמה" }, { href: "/podcast", label: "R&D" }, { href: "/onboarding", label: "למי זה מתאים" },
     ] }],
   },
 ];
 
 export const footer: { label: string; links: NavLink[] }[] = [
   { label: "תחומים", links: [{ href: "/pricing", label: "איך עובדים" }, ...slugs.products.map((s, i) => ({ href: `/products/${s}`, label: names.products[i] }))] },
-  { label: "חברה", links: [["/about", "אודות"], ["/team", "הצוות והתחומים"], ["/culture", "ערכים"], ["/careers", "עבודה איתנו"], ["/blog", "Insights"], ["/reports", "רמות פתרון"], ["/company-facts", "תבל בקצרה"], ["/contact", "צרו קשר"]].map(([href, label]) => ({ href, label })) },
+  { label: "חברה", links: [["/about", "אודות"], ["/team", "הצוות והתחומים"], ["/culture", "ערכים"], ["/careers", "עבודה איתנו"], ["/blog", "Insights"], ["/answers", "שאלות ותשובות"], ["/reports", "רמות פתרון"], ["/company-facts", "תבל בקצרה"], ["/contact", "צרו קשר"]].map(([href, label]) => ({ href, label })) },
   { label: "משפטי", links: slugs.legal.map((s, i) => ({ href: `/legal/${s}`, label: names.legal[i] })) },
   { label: "פתרונות", links: slugs.solutions.map((s, i) => ({ href: `/solutions/${s}`, label: names.solutions[i] })) },
 ];
