@@ -48,6 +48,7 @@ export default function AboutPage() {
       <Shell>
         <article className="mx-auto max-w-[820px] px-2 md:mt-8 md:px-0">
           <Reveal>
+            <p className="label mb-4 text-brand">אודות בית תוכנה תבל</p>
             <h1 className="font-serif text-[32px] font-light leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">טכנולוגיה צריכה להבין את העסק.</h1>
           </Reveal>
           <Reveal delay={80}>

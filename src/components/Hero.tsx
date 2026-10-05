@@ -10,6 +10,7 @@ export default function Hero() {
       <div className="wrap">
         <div className="inner grid gap-6 pb-10 pt-12 md:grid-cols-2 md:items-end md:pt-20">
           <div>
+            <p className="label mb-6 text-brand animate-[slide-up-and-fade_.7s_cubic-bezier(.16,1,.3,1)_both]">בית תוכנה תבל · TEVEL</p>
             <h1 className="display">
               <span className="block animate-[slide-up-and-fade_.7s_cubic-bezier(.16,1,.3,1)_both]">העסק שלכם לא צריך</span>
               <span className="block animate-[slide-up-and-fade_.7s_.08s_cubic-bezier(.16,1,.3,1)_both]">לעבוד סביב התוכנה שלו.</span>
