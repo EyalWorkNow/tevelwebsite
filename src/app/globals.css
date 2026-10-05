@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* Tokens measured from the reference via getComputedStyle */
+@theme {
+  --color-ink: #0c0c0b;        /* page bg */
+  --color-ink-2: #1a1918;      /* raised surfaces */
+  --color-line: #363533;       /* section borders */
+  --color-line-2: #514e4b;
+  --color-paper: #f9f5ef;      /* primary text */
+  --color-paper-2: #e6e1d9;    /* light button bg */
+  --color-stone: #d4cfc6;
+  --color-stone-2: #c2bcb2;
+  --color-muted: #959089;
+  --color-mint: #85eda5;
+  --color-rose: #f35c95;
+  --color-amber: #e5b53a;
+  --color-teal: #3ad4c4;
+  --color-violet: #a78bfa;
+  --color-brand: #02bd8f;      /* TEVEL green (logo) */
+  --color-brand-deep: #015742;
+  --font-sans: var(--font-heebo), system-ui, sans-serif;
+  --font-serif: var(--font-heebo), system-ui, sans-serif;
+  --font-mono: var(--font-heebo), system-ui, sans-serif;
+}
+
+html { background: var(--color-ink); color-scheme: dark; }
+body { background: var(--color-ink); color: var(--color-paper); font-family: var(--font-sans); }
+
+@utility wrap { @apply mx-auto max-w-[1432px] px-4; } /* 1400 content + 16px gutters, matches reference x=60 @1440 */
+@utility inner { @apply px-3 md:px-10; } /* 28px mobile gutter, 60px desktop */
+@utility rule { @apply border-t border-line; }
+@utility label { @apply font-mono text-xs uppercase leading-4 tracking-[0.06em]; }
+@utility display { @apply font-serif font-light text-[44px] leading-[44px] md:text-[60px] md:leading-[70px]; }
+@utility h2 { @apply font-serif font-light text-[30px] leading-[38px] md:text-[40px] md:leading-[50px]; }
+@utility btn { @apply label inline-flex items-center gap-1.5 rounded-full px-5 py-3 transition-colors duration-300; }
+@utility btn-light { @apply btn bg-paper-2 text-ink hover:bg-paper; }
+@utility btn-dark { @apply btn border border-line-2 text-paper hover:border-stone; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Keyframes measured from the reference */
+@keyframes slide-up-and-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes slide-down-and-fade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@keyframes menu-in { from { opacity: 0; rotate: x -8deg; scale: .97; } to { opacity: 1; rotate: x 0deg; scale: 1; } }
+@keyframes pulse-ring { from { box-shadow: 0 0 0 0 rgba(255,255,255,.5); } to { box-shadow: 0 0 0 .5em transparent; } }
+@keyframes eyebrow-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes step-up { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes shimmer { 0% { transform: translateX(-100%); } 80%, 100% { transform: translateX(100%); } }
+
+/* Visible keyboard focus everywhere */
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Accessibility widget modes (classes set on <html> by AccessibilityWidget) ---------- */
+.skip-link { position: fixed; top: 12px; inset-inline-start: 12px; z-index: 100; padding: 10px 16px; border-radius: 9999px; background: var(--color-brand); color: var(--color-ink); font-weight: 500; transform: translateY(-200%); transition: transform .2s; }
+.skip-link:focus { transform: none; }
+main:focus { outline: none; }
+
+/* Text size: scales page content, not the widget itself */
+body > :not(#a11y-root):not(.skip-link) { zoom: var(--a11y-zoom, 1); }
+
+.a11y-contrast-high body, .a11y-contrast-high body *:not(#a11y-root):not(#a11y-root *) { background-color: #000 !important; color: #fff !important; border-color: #fff !important; box-shadow: none !important; text-shadow: none !important; }
+.a11y-contrast-high a:not(#a11y-root):not(#a11y-root *), .a11y-contrast-high a:not(#a11y-root):not(#a11y-root *) * { color: #ffeb3b !important; }
+.a11y-contrast-high img, .a11y-contrast-high svg, .a11y-contrast-high canvas { filter: contrast(1.4); }
+
+.a11y-contrast-light body, .a11y-contrast-light body *:not(#a11y-root):not(#a11y-root *) { background-color: #fff !important; color: #111 !important; border-color: #555 !important; box-shadow: none !important; }
+.a11y-contrast-light a:not(#a11y-root):not(#a11y-root *), .a11y-contrast-light a:not(#a11y-root):not(#a11y-root *) * { color: #0b4f3f !important; }
+.a11y-contrast-light canvas { filter: invert(1); }
+
+.a11y-gray body > :not(#a11y-root) { filter: grayscale(1); }
+.a11y-invert body > :not(#a11y-root) { filter: invert(1) hue-rotate(180deg); }
+.a11y-invert img, .a11y-invert video { filter: invert(1) hue-rotate(180deg); }
+
+.a11y-links a:not(#a11y-root):not(#a11y-root *) { text-decoration: underline !important; text-underline-offset: 3px; outline: 2px dashed var(--color-brand); outline-offset: 2px; }
+.a11y-headings :is(h1, h2, h3, h4) { outline: 2px solid var(--color-amber); outline-offset: 4px; }
+
+.a11y-readable body, .a11y-readable body *:not(#a11y-root):not(#a11y-root *) { font-family: Arial, "Segoe UI", system-ui, sans-serif !important; font-weight: 400 !important; font-style: normal !important; }
+.a11y-readable :is(h1, h2, h3, h4, strong, b) { font-weight: 700 !important; }
+
+.a11y-spacing body *:not(#a11y-root):not(#a11y-root *) { line-height: 1.9 !important; letter-spacing: .06em !important; word-spacing: .16em !important; }
+.a11y-spacing p { margin-bottom: 1em; }
+
+.a11y-no-motion *, .a11y-no-motion *::before, .a11y-no-motion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+
+.a11y-cursor, .a11y-cursor * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'%3E%3Cpath d='M4 2l15 10-7 1.5L8.5 21z' fill='%23000' stroke='%23fff' stroke-width='1.5'/%3E%3C/svg%3E") 4 2, auto !important; }
+
+/* Widget always readable, whatever mode is on */
+#a11y-root, #a11y-root * { font-family: var(--font-sans) !important; letter-spacing: normal !important; line-height: normal; }
