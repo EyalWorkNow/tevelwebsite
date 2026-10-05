@@ -1,10 +1,11 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Placeholder, Reveal } from "@/components/ui";
 import { BlogCard } from "@/components/pages/blog/Card";
 import { featured, posts } from "@/components/pages/blog/data";
 
-export const metadata: Metadata = { title: "Insights" };
+export const metadata: Metadata = seo("/blog");
 
 export default function BlogIndex() {
   return (

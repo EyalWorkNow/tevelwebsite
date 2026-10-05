@@ -1,3 +1,4 @@
+import { trimDesc, OG_IMAGES, SITE } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { slugs } from "@/lib/site";
@@ -11,7 +12,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: article(slug).title };
+  const a = article(slug);
+  return { title: a.title, description: trimDesc(a.lede), alternates: { canonical: `/blog/${slug}` }, openGraph: { type: "article", url: `/blog/${slug}`, images: OG_IMAGES } };
 }
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
@@ -40,11 +42,16 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <div className="text-base leading-6 tracking-[0.01em] md:text-[18px] md:leading-8">
             {a.sections.map((s, k) => (
               <div key={k}>
-                <h3 className={`mb-3 font-serif text-[25px] font-light leading-8 tracking-[-0.04em] ${k ? "mt-5" : ""}`}>{s.heading}</h3>
+                <h2 className={`mb-3 font-serif text-[25px] font-light leading-8 tracking-[-0.04em] ${k ? "mt-5" : ""}`}>{s.heading}</h2>
                 {s.paras.map((p, j) => <p key={j} className={j ? "mt-3" : ""}>{p}</p>)}
               </div>
             ))}
           </div>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org", "@type": "Article", headline: a.title, description: a.lede, inLanguage: "he-IL",
+            mainEntityOfPage: `${SITE}/blog/${slug}`, author: { "@type": "Organization", name: "TEVEL | תבל", url: SITE },
+            publisher: { "@type": "Organization", name: "TEVEL | תבל", logo: { "@type": "ImageObject", url: `${SITE}/brand/tevel-logo.svg` } }, image: `${SITE}/og.png`,
+          }) }} />
         </article>
       </div>
     </section>

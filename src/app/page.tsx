@@ -1,3 +1,4 @@
+import { seo } from "@/lib/seo";
 import Hero from "@/components/Hero";
 import Logos from "@/components/Logos";
 import Platform from "@/components/Platform";
@@ -7,6 +8,8 @@ import Stories from "@/components/Stories";
 import Developers from "@/components/Developers";
 import Speed from "@/components/Speed";
 import { CtaBand } from "@/components/ui";
+
+export const metadata = seo("/");
 
 export default function Home() {
   return (

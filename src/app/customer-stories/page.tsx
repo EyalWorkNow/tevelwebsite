@@ -1,9 +1,10 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import { CtaBand, Reveal } from "@/components/ui";
 import { StoryCard } from "@/components/pages/stories/StoryCard";
 import { stories } from "@/components/pages/stories/data";
 
-export const metadata: Metadata = { title: "תרחישים לדוגמה" };
+export const metadata: Metadata = seo("/customer-stories");
 
 // Alternating wide/narrow rows on the 12-column grid, as in the reference.
 const spans = ["md:col-span-7", "md:col-span-5", "md:col-span-5", "md:col-span-7"];

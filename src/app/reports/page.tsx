@@ -1,9 +1,10 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/ui";
 import CurrencyField from "@/components/pages/reports/CurrencyField";
 
-export const metadata: Metadata = { title: "שלוש רמות פתרון" };
+export const metadata: Metadata = seo("/reports");
 
 type Doc = { name: string; body: string };
 const years: { year: string; intro: string; docs: Doc[]; padded: boolean }[] = [

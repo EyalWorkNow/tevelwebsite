@@ -1,9 +1,10 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Placeholder, Reveal } from "@/components/ui";
 import { Arrow } from "@/components/icons";
 
-export const metadata: Metadata = { title: "למי זה מתאים" };
+export const metadata: Metadata = seo("/onboarding");
 
 type Item = { title: string; body: string; cta?: string };
 type Group = { heading: string; sub: string; items: Item[] };

@@ -1,10 +1,11 @@
+import { trimDesc } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { slugs } from "@/lib/site";
 import { CtaBand, Placeholder, Reveal } from "@/components/ui";
 import { BackLink } from "@/components/pages/blog/BackLink";
 import { Wordmark } from "@/components/pages/stories/Wordmark";
-import { story } from "@/components/pages/stories/data";
+import { story, LABEL } from "@/components/pages/stories/data";
 
 export function generateStaticParams() {
   return slugs.stories.map((slug) => ({ slug }));
@@ -12,7 +13,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: `${story(slug).brand} · תרחיש לדוגמה` };
+  const s = story(slug);
+  return { title: `${s.brand} · תרחיש לדוגמה`, description: trimDesc(`${LABEL}. ${s.lede ?? ""}`), alternates: { canonical: `/customer-stories/${slug}` } };
 }
 
 const Crosshairs = () => (

@@ -1,8 +1,9 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import { Placeholder, Reveal } from "@/components/ui";
 import { CenterHeading, PhotoMarquee, Shell } from "@/components/pages/company/parts";
 
-export const metadata: Metadata = { title: "הצוות והתחומים" };
+export const metadata: Metadata = seo("/team");
 
 // Disciplines, not people: name = discipline, role = what it does, bio = 1–2 lines.
 type Discipline = { name: string; role: string; bio: string; note?: string };

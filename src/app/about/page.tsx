@@ -1,8 +1,9 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import { Reveal } from "@/components/ui";
 import { ExploreCard, Shell } from "@/components/pages/company/parts";
 
-export const metadata: Metadata = { title: "אודות" };
+export const metadata: Metadata = seo("/about");
 
 // Each paragraph: optional bold lead-in + body.
 const sections: { heading: string; paras: { lead?: string; body: string }[] }[] = [

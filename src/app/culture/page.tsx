@@ -1,10 +1,11 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui";
 import { Shell } from "@/components/pages/company/parts";
 
-export const metadata: Metadata = { title: "ערכים" };
+export const metadata: Metadata = seo("/culture");
 
 type CardSpec = { title: string; lead: string; paras: ReactNode[] };
 
