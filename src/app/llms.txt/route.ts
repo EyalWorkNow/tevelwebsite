@@ -1,4 +1,5 @@
 import { slugs, names } from "@/lib/site";
+import { answers } from "@/lib/answers";
 
 // llms.txt (llmstxt.org): a plain-markdown map of the site for AI assistants and answer engines.
 const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevelwebsite.vercel.app").replace(/\/$/, "");
@@ -17,6 +18,10 @@ Key facts:
 - Engagement levels: Focused Fix, Core Transformation, Full Transformation.
 - Own product: Tevel Invoice (business documents and business-financial activity).
 - Contact: ${BASE}/contact
+
+## Questions & answers (direct answers about TEVEL)
+${answers.map((a) => link(`/en/answers/${a.slug}`, a.en.q, a.en.tldr.split(". ")[0] + ".")).join("\n")}
+${answers.map((a) => link(`/answers/${a.slug}`, a.he.q)).join("\n")}
 
 ## Solutions
 ${slugs.solutions.map((s, i) => link(`/solutions/${s}`, names.solutions[i], names.solutionsDesc[i])).join("\n")}

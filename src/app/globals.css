@@ -90,3 +90,7 @@ body > :not(#a11y-root):not(.skip-link) { zoom: var(--a11y-zoom, 1); }
 
 /* Widget always readable, whatever mode is on */
 #a11y-root, #a11y-root * { font-family: var(--font-sans) !important; letter-spacing: normal !important; line-height: normal; }
+
+/* English (dir=ltr) islands inside the RTL site: un-flip direction-aware icons */
+[dir="ltr"] .rtl\:-scale-x-100 { --tw-scale-x: 100% !important; }
+[dir="ltr"] .group:hover .group-hover\:-translate-x-0\.5 { --tw-translate-x: 0.125rem !important; }
