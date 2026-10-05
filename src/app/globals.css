@@ -103,4 +103,5 @@ body > :not(#a11y-root):not(.skip-link) { zoom: var(--a11y-zoom, 1); }
   .tachles * { color: #111 !important; border-color: #ccc !important; background: transparent !important; box-shadow: none !important; }
   .tachles .text-brand, .tachles [style*="color"] { color: #015742 !important; }
   .tachles section, .tachles li, .tachles div.rounded-lg { break-inside: avoid; }
+  .tachles [style*="animation"], .tachles .opacity-0 { opacity: 1 !important; animation: none !important; transform: none !important; }
 }
