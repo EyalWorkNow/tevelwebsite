@@ -20,6 +20,7 @@ const jsonLd = {
       description: "בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות מידע, CRM ו-ERP, AI ואוטומציות, שירות לקוחות מבוסס AI, אפליקציות ומוצרים דיגיטליים.",
       knowsAbout: ["Custom CRM", "ERP", "Information systems", "AI agents", "RAG", "Automation", "Integrations", "AI customer service", "Web apps", "Mobile apps", "Computer Vision", "IoT", "R&D", "Proof of Concept"],
       contactPoint: { "@type": "ContactPoint", contactType: "sales", url: `${BASE}/contact`, availableLanguage: ["he", "en"] },
+      founder: { "@type": "Person", "@id": `${BASE}/#founder`, name: "Eyal Atia", worksFor: { "@id": `${BASE}/#org` }, sameAs: ["https://www.linkedin.com/in/eyal-atia-24a8a5246"] },
     },
     { "@type": "WebSite", "@id": `${BASE}/#site`, url: BASE, name: "בית תוכנה תבל", alternateName: ["TEVEL", "תבל", "Tevel Space"], inLanguage: "he-IL", publisher: { "@id": `${BASE}/#org` } },
   ],
