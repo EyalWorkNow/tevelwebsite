@@ -1,0 +1,18 @@
+import type { MetadataRoute } from "next";
+import { slugs } from "@/lib/site";
+
+// Set NEXT_PUBLIC_SITE_URL (e.g. https://tevel.co.il) in the hosting env once the domain is live.
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevelwebsite.vercel.app").replace(/\/$/, "");
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const paths = [
+    "/", "/pricing", "/contact", "/contact/sales", "/about", "/team", "/culture", "/careers", "/reports",
+    "/company-facts", "/podcast", "/onboarding", "/blog", "/customer-stories",
+    ...slugs.solutions.map((s) => `/solutions/${s}`),
+    ...slugs.products.map((s) => `/products/${s}`),
+    ...slugs.posts.map((s) => `/blog/${s}`),
+    ...slugs.stories.map((s) => `/customer-stories/${s}`),
+    ...slugs.legal.map((s) => `/legal/${s}`),
+  ];
+  return paths.map((p) => ({ url: BASE + p, changeFrequency: "monthly", priority: p === "/" ? 1 : 0.7 }));
+}
