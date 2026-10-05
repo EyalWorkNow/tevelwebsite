@@ -3,7 +3,7 @@ import { slugs } from "@/lib/site";
 import { answers } from "@/lib/answers";
 
 // Set NEXT_PUBLIC_SITE_URL (e.g. https://tevel.co.il) in the hosting env once the domain is live.
-const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevelwebsite.vercel.app").replace(/\/$/, "");
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevel.tech").replace(/\/$/, "");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [

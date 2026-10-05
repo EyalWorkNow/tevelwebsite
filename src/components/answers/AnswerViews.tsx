@@ -4,7 +4,7 @@ import { answers, type Answer, type Lang } from "@/lib/answers";
 import { Button, CtaBand, Reveal } from "@/components/ui";
 import { Arrow } from "@/components/icons";
 
-const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevelwebsite.vercel.app").replace(/\/$/, "");
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevel.tech").replace(/\/$/, "");
 const path = (lang: Lang, slug?: string) => `${lang === "en" ? "/en" : ""}/answers${slug ? `/${slug}` : ""}`;
 const ui = {
   he: { eyebrow: "שאלות ותשובות", indexH1: "שאלות שעסקים שואלים — ותשובות ישירות", indexLede: "תשובות קצרות וברורות לשאלות הנפוצות על פיתוח מערכות, CRM ו-ERP, אוטומציות, AI, אפליקציות ו-R&D — ואיך תבל ניגשת לכל אחת מהן.", short: "התשובה הקצרה", faq: "שאלות נוספות", related: "לקריאה נוספת", other: "שאלות נוספות", lang: "English", back: "כל השאלות", cta: "בואו נדבר" },
