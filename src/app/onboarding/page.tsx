@@ -2,37 +2,76 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Placeholder, Reveal } from "@/components/ui";
 import { Arrow } from "@/components/icons";
-import { paragraph, sentence, title, words } from "@/lib/lorem";
 
-export const metadata: Metadata = { title: "Onboarding" };
+export const metadata: Metadata = { title: "למי זה מתאים" };
 
 type Item = { title: string; body: string; cta?: string };
 type Group = { heading: string; sub: string; items: Item[] };
 
-// Item / group counts and text lengths mirror the reference page.
-const shape: [number, number[], (string | null)[], number[]][] = [
-  // [heading words, item title words, ctas, item body words]
-  [4, [4, 2, 5], [null, null, null], [11, 24, 11]],
-  [3, [4, 4, 3], ["Lorem ipsum", "Lorem ipsum", "Dolor sit"], [8, 9, 29]],
-  [5, [1, 1, 4, 2, 4, 2], ["Amet elit", "Sed do", "Tempor ut", "Magna aliqua", "Lorem ipsum", "Veniam quis"], [9, 8, 7, 5, 8, 8]],
-  [3, [4, 3, 1], ["Tempor ut", "Nisi aliquip", null], [14, 11, 12]],
-  [3, [2], ["Lorem ipsum"], [10]],
+// Item / group counts mirror the reference page (3 · 3 · 6 · 3 · 1); copy per brief §10 + R&D §29–30.
+const groups: Group[] = [
+  {
+    heading: "פרופיל טיפוסי",
+    sub: "עסקים וארגונים עם פעילות ומורכבות תפעולית אמיתית.",
+    items: [
+      { title: "כ-10 עובדים ומעלה", body: "מספר מחלקות או בעלי תפקידים, ומחזור של מיליוני שקלים." },
+      { title: "נפח לקוחות משמעותי", body: "פניות, הזמנות ולקוחות בכמות שכבר אי אפשר לנהל בזיכרון של עובד אחד או בקובץ משותף." },
+      { title: "מערכות שונות ומידע מפוזר", body: "עבודה ידנית, מידע שמתפצל בין כלים — וצורך לגדול בצורה יעילה." },
+    ],
+  },
+  {
+    heading: "מאיפה מתחילים",
+    sub: "אפשר להגיע עם בעיה ולא עם מפרט טכני.",
+    items: [
+      { title: "יש בעיה, אין מפרט", body: "ספרו לנו מה לא עובד. הפתרון נקבע אחרי הבנת הבעיה.", cta: "בואו נדבר" },
+      { title: "לא ברור מה באמת לא עובד", body: "מתחילים ב-Discovery: ממפים אנשים, מערכות, מידע ותהליכים.", cta: "קבעו שיחת Discovery" },
+      { title: "רוצים AI אבל לא יודעים איפה", body: "AI נכנס כשיש לו תפקיד עסקי ברור. לפעמים אוטומציה פשוטה תהיה אמינה וזולה יותר — ואנחנו נגיד את זה.", cta: "בואו נדבר" },
+    ],
+  },
+  {
+    heading: "סימנים שאתם במקום הנכון",
+    sub: "משפטים שאנחנו שומעים בשיחה הראשונה.",
+    items: [
+      { title: "״הכול אצלנו באקסלים.״", body: "נתונים בקבצים, מסמכים במייל ומשימות בקבוצות.", cta: "בואו נדבר" },
+      { title: "״המערכות שלנו לא מדברות.״", body: "עובדים מעתיקים מידע ידנית בין כלים.", cta: "בואו נדבר" },
+      { title: "״רק עובד אחד יודע איך התהליך עובד.״", body: "תלות באנשים ספציפיים במקום בתהליך.", cta: "בואו נדבר" },
+      { title: "״אין לי תמונת מצב.״", body: "להנהלה קשה לראות את העסק במקום אחד.", cta: "בואו נדבר" },
+      { title: "״ה-CRM לא מתאים לנו.״", body: "המערכת מכתיבה את הדרך שבה העסק עובד — ולא להפך.", cta: "בואו נדבר" },
+      { title: "״כל צמיחה מחייבת עוד אנשים.״", body: "ככל שהעסק גדל, החיכוך גדל איתו.", cta: "בואו נדבר" },
+    ],
+  },
+  {
+    heading: "R&D: למי זה מתאים",
+    sub: "כשאין עדיין פתרון מוכן — ולמי זה פחות מתאים.",
+    items: [
+      { title: "מוצר חדש או בעיה בלי SaaS מתאים", body: "חברה שרוצה לפתח מוצר חדש, יזם שצריך להוכיח היתכנות, או ארגון שרוצה לבדוק טכנולוגיה לפני השקעה מלאה.", cta: "תביאו את הבעיה" },
+      { title: "תוכנה, חומרה, AI ולמידה", body: "חיבור תוכנה לחומרה, רעיון AI מורכב, Prototype, או לומדה ומערכת הדרכה מותאמת.", cta: "תביאו את הבעיה" },
+      { title: "מתי R&D פחות מתאים", body: "כשמחפשים התחייבות לתוצאה לפני בדיקת היתכנות, כשאין דרך סבירה לבדוק את הרעיון, או כשמוצר מדף פותר את הבעיה באופן מלא וזול משמעותית. R&D טוב כולל גם את היכולת לומר: לא כדאי לבנות." },
+    ],
+  },
+  {
+    heading: "מה להכין לשיחה",
+    sub: "לא צריך מצגת ולא מסמך דרישות.",
+    items: [
+      { title: "לפני השיחה הראשונה", body: "תיאור קצר של הבעיה, אילו מערכות וכלים אתם משתמשים בהם היום, מי מעורב בתהליך ואיפה הוא נתקע.", cta: "קבעו שיחת Discovery" },
+    ],
+  },
 ];
 
-const groups: Group[] = shape.map(([hw, tws, ctas, bws], g) => ({
-  heading: title(hw, 30 + g * 4),
-  sub: sentence(4 + (g % 3), 50 + g * 3),
-  items: tws.map((tw, i) => ({ title: title(tw + 1, 70 + g * 9 + i * 2), body: sentence(bws[i], 90 + g * 7 + i * 3), cta: ctas[i] ?? undefined })),
-}));
+const intro = [
+  "ליבת השירות של תבל מיועדת לעסקים וארגונים עם פעילות ומורכבות תפעולית אמיתית — כאלה שגדלו, ועכשיו הכלים שלהם כבר לא עובדים יחד.",
+  "לידים ב-WhatsApp, לקוחות ב-CRM, נתונים ב-Excel, מסמכים במייל ושירות הלקוחות במקום נוסף. עובדים מעתיקים מידע ידנית, וההנהלה מתקשה לקבל תמונת מצב אחת.",
+  "לא צריך להגיע עם מפרט טכני. מספיק להגיע עם בעיה.",
+];
 
 function GuideButton({ children }: { children: string }) {
   return (
     <Link
-      href="#"
+      href="/contact"
       className="group inline-flex h-11 shrink-0 items-center gap-2 self-start rounded-lg bg-paper px-5 font-mono text-base uppercase leading-4 text-ink-2 transition-colors duration-300 hover:bg-paper-2 md:mb-3 md:self-center"
     >
       {children}
-      <Arrow className="transition-transform duration-300 group-hover:translate-x-0.5" />
+      <Arrow className="transition-transform duration-300 group-hover:-translate-x-0.5" />
     </Link>
   );
 }
@@ -44,19 +83,19 @@ export default function OnboardingPage() {
       <section className="grid gap-12 md:grid-cols-2 md:gap-5">
         <div className="flex flex-col gap-3 md:gap-5">
           <Reveal>
-            <h1 className="font-serif text-[30px] leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">{title(2, 11)}</h1>
+            <h1 className="font-serif text-[30px] leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">למי זה מתאים</h1>
           </Reveal>
-          {[3, 3, 2].map((n, i) => (
+          {intro.map((t, i) => (
             <Reveal key={i} delay={80 + i * 60}>
-              <p className="text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{paragraph(n === 3 ? 2 : 1, 12 + i * 4)}</p>
+              <p className="text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{t}</p>
             </Reveal>
           ))}
           <Reveal delay={260}>
-            <p className="text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{sentence(3, 40)}</p>
+            <p className="text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">ספרו לנו איך אתם עובדים היום.</p>
           </Reveal>
         </div>
         <Reveal delay={120} className="md:pt-[7px]">
-          <Placeholder seed={2} className="aspect-[3/2] w-full" label={words(3, 5)} />
+          <Placeholder seed={2} className="aspect-[3/2] w-full" label="תהליכים · מערכות · מידע" />
         </Reveal>
       </section>
 

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand, Reveal } from "@/components/ui";
-import { ContactForm } from "@/components/pages/contact/Form";
-import { sentence, title, words } from "@/lib/lorem";
+import { LeadForm } from "@/components/LeadForm";
 
-export const metadata: Metadata = { title: "Contact" };
+export const metadata: Metadata = { title: "צרו קשר" };
 
 /* Original 24px line icons in the reference's thin-stroke style. */
 const icon = (d: string) => (
@@ -19,12 +18,12 @@ const icons = [
   icon("M8.5 7l-5 5 5 5M15.5 7l5 5-5 5M13.5 4.5l-3 15"),
 ];
 const cards = [
-  [title(4, 1), "FAQs", "#"],
-  [title(4, 2), "Contact sales", "/contact/sales"],
-  [title(4, 3), `${words(1, 4)}@lorem.com`, "#"],
-  [title(4, 5), `${words(1, 6)}@lorem.com`, "#"],
-  [title(4, 7), title(2, 8), "/careers"],
-  [title(4, 9), title(1, 10), "#"],
+  ["שיחת Discovery", "קבעו שיחת Discovery", "#leave-details"],
+  ["מערכות, CRM ו-ERP", "ספרו לנו איך אתם עובדים היום", "/contact/sales"],
+  ["AI בעסק", "בואו נמצא איפה AI באמת יכול לעזור", "/products/ai-for-business"],
+  ["שירות לקוחות", "תכננו איתנו את מערך השירות הבא שלכם", "/solutions/ai-customer-service"],
+  ["פרויקט R&D וטכנולוגיה מותאמת", "R&D וטכנולוגיה מותאמת", "/solutions/rd"],
+  ["Tevel Invoice", "על Tevel Invoice", "/products/tevel-invoice"],
 ];
 
 export default function ContactPage() {
@@ -32,8 +31,8 @@ export default function ContactPage() {
     <>
       <div className="my-10 flex flex-col gap-10 md:my-16 md:gap-16">
         <header className="mx-auto flex max-w-[820px] flex-col gap-3 px-6 text-center md:gap-5">
-          <Reveal><h1 className="font-serif text-[30px] font-light leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">Contact us</h1></Reveal>
-          <Reveal delay={80}><p className="mx-auto max-w-[598px] leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{sentence(16, 11)}</p></Reveal>
+          <Reveal><h1 className="font-serif text-[30px] font-light leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">ספרו לנו מה לא עובד.</h1></Reveal>
+          <Reveal delay={80}><p className="mx-auto max-w-[598px] leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">לא צריך לדעת איזו מערכת אתם צריכים. ספרו לנו מה אתם מנסים לשפר ואנחנו נתחיל מהבעיה.</p></Reveal>
         </header>
 
         <ul className="mx-auto grid w-full max-w-[1304px] gap-5 px-5 md:grid-cols-2 md:px-8 lg:grid-cols-3">
@@ -48,15 +47,15 @@ export default function ContactPage() {
           ))}
         </ul>
 
-        <section className="flex flex-col gap-10 md:gap-16">
+        <section id="leave-details" className="flex scroll-mt-24 flex-col gap-10 md:gap-16">
           <header className="mx-auto flex max-w-[820px] flex-col gap-3 px-6 text-center md:gap-5">
-            <Reveal><h2 className="font-serif text-[26px] font-light leading-8 tracking-[-0.04em] md:text-[39px] md:leading-[44px]">{title(2, 12)}</h2></Reveal>
-            <Reveal delay={80}><p className="mx-auto max-w-[748px] leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{sentence(16, 13)} {sentence(14, 14)}</p></Reveal>
+            <Reveal><h2 className="font-serif text-[26px] font-light leading-8 tracking-[-0.04em] md:text-[39px] md:leading-[44px]">השאירו פרטים</h2></Reveal>
+            <Reveal delay={80}><p className="mx-auto max-w-[748px] leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">נחזור אליכם לשיחת Discovery קצרה — בלי מפרט ובלי התחייבות לפרויקט. בשיחה נבין איך אתם עובדים היום, נמפה את התהליכים והמערכות, ורק אז נציע פתרון והצעה.</p></Reveal>
           </header>
           <div className="mx-auto w-full max-w-[852px] px-5 md:px-4">
             <Reveal>
               <div className="rounded-xl border border-line bg-ink-2 p-6 md:p-10">
-                <ContactForm />
+                <LeadForm source="contact" />
               </div>
             </Reveal>
           </div>

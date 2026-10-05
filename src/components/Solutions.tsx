@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
 import { IconBox } from "./icons";
-import { sentence, title } from "@/lib/lorem";
+import Link from "next/link";
+import { slugs, names } from "@/lib/site";
 
-const items = Array.from({ length: 6 }, (_, i) => ({ t: title(i === 0 ? 2 : 3, 60 + i * 4), d: sentence(18, 70 + i), f: [title(2, 80 + i), title(2, 90 + i), title(3, 100 + i)] }));
+const items = [
+  { d: "מערכות מידע, Back Office ומערכות תפעול שמותאמות לתהליכים של הארגון. העסק לא צריך לעבוד סביב התוכנה שלו.", f: ["Workflow Management", "Customer & Employee Portals", "Dashboards ודוחות"] },
+  { d: "CRM שמנהל את הדרך שבה העסק עובד עם הלקוחות, ו-ERP מלא, מודול או שכבת אינטגרציה — לפי מה שנכון.", f: ["Lead → Sale → Customer → Retention", "Order → Inventory → Suppliers", "Custom modules ו-Migration"] },
+  { d: "AI שעובד בתוך העסק — לא לידו. ואם workflow דטרמיניסטי פשוט עושה את העבודה טוב יותר, אין סיבה להכניס LLM.", f: ["Agents ו-Internal Copilots", "RAG ו-Document AI", "Workflow automation"] },
+  { d: "מערכי שירות שמשלבים AI, אוטומציות ונציגים, ומחוברים לידע ולמערכות של העסק. AI מטפל בנפח, אנשים במה שדורש אנשים.", f: ["Intent detection ו-Routing", "Approved actions", "Escalation עם הקשר מלא"] },
+  { d: "אפליקציות, Web Apps ואתרים שנבנים כחלק מהעסק — UX, performance, אינטגרציות ואנליטיקה, לא רק נראות.", f: ["Mobile apps", "SaaS, Portals, Dashboards", "Corporate & Commerce websites"] },
+  { d: "כשאין פתרון מוכן: מחקר, בדיקת היתכנות, PoC ואבות-טיפוס — עד מוצר שאפשר להפעיל.", f: ["Research & Feasibility", "PoC ו-Prototype", "AI, Computer Vision, IoT"] },
+].map((x, i) => ({ ...x, t: names.solutions[i], href: `/solutions/${slugs.solutions[i]}` }));
 
-const events = [["LOR-4201", "Ipsum", "Dolor", "+£2,400"], ["LOR-4198", "Amet", "Consect", "−£850"], ["LOR-4187", "Elit", "Tempor", "+£1,200"], ["LOR-4172", "Magna", "Aliqua", "−£25.40"]];
+const events = [["TKT-2041", "פנייה חדשה", "WhatsApp", "+ AI"], ["ORD-1198", "הזמנה", "ERP", "+ סונכרן"], ["LEAD-387", "ליד חדש", "CRM", "+ נותב"], ["DOC-072", "מסמך", "OCR", "− ממתין לאישור"]];
 
 export default function Solutions() {
   const [open, setOpen] = useState(0);
@@ -16,7 +24,7 @@ export default function Solutions() {
       <div className="wrap">
         <div className="inner grid gap-10 py-14 md:grid-cols-2 md:gap-6 md:py-0">
           <div className="md:py-[72px]">
-            <h2 className="h2">Lorem ipsum dolor sit</h2>
+            <h2 className="h2">טכנולוגיה שנבנית סביב העסק</h2>
             <div className="mt-10">
               {items.map((it, i) => (
                 <div key={it.t} className={i ? "border-t border-line" : ""}>
@@ -33,7 +41,7 @@ export default function Solutions() {
                       <ul className="mt-5 space-y-3 text-sm">
                         {it.f.map((f) => <li key={f} className="flex items-center gap-3"><IconBox width={16} height={16} className="text-muted" />{f}</li>)}
                       </ul>
-                      <a href="#" className="label mt-6 mb-6 inline-flex rounded-full border border-line-2 px-3.5 py-2 transition-colors hover:border-stone">Learn more</a>
+                      <Link href={it.href} className="label mt-6 mb-6 inline-flex rounded-full border border-line-2 px-3.5 py-2 transition-colors hover:border-brand">למידע נוסף</Link>
                     </div>
                   </div>
                 </div>
@@ -49,17 +57,17 @@ export default function Solutions() {
               {mode === "ui" ? (
                 <>
                   <div className="flex justify-between">
-                    <div><div className="text-paper">LOREM IPSUM</div><div className="text-muted">DOLOR #4201</div></div>
-                    <div className="text-mint">SIT AMET</div>
+                    <div><div className="text-paper">TEVEL · OPERATIONS</div><div className="text-muted">דוגמה להמחשה</div></div>
+                    <div className="text-brand">● LIVE</div>
                   </div>
-                  <div className="mt-4 font-sans text-muted">Lorem ipsum</div>
-                  <div className="mt-2 text-right text-3xl text-paper">£142,800.55</div>
+                  <div className="mt-4 font-sans text-muted">אירועים שטופלו היום</div>
+                  <div className="mt-2 text-end text-3xl text-paper">128</div>
                   <div className="mt-3 grid grid-cols-2 gap-2">
-                    {[["Lorem", "04-09-20"], ["Ipsum", "12847391"], ["Dolor", "Sit amet"], ["Elit", "LOR / IPS"]].map(([a, b]) => (
+                    {[["מערכות", "6"], ["אוטומציות", "14"], ["AI", "פעיל"], ["נציגים", "3"]].map(([a, b]) => (
                       <div key={a} className="flex justify-between rounded border border-line px-2 py-2"><span className="font-sans text-muted">{a}</span><span>{b}</span></div>
                     ))}
                   </div>
-                  <div className="mt-4 font-sans text-muted">Consectetur</div>
+                  <div className="mt-4 font-sans text-muted">אירועים אחרונים</div>
                   {events.map(([id, s, c, t]) => (
                     <div key={id} className="mt-2 flex justify-between font-sans">
                       <span>{id} <span className="text-muted">{s}</span></span>
@@ -68,15 +76,15 @@ export default function Solutions() {
                   ))}
                 </>
               ) : (
-                <pre className="overflow-x-auto leading-5 text-stone">{`GET /v0/lorem/ipsum
+                <pre className="overflow-x-auto leading-5 text-stone">{`GET /v1/events?today
 
 {
-  "balance": "142800.55",
-  "currency": "GBP",
+  "handled": 128,
+  "automated": 94,
   "data": [
-    { "id": "lor-4201",
-      "type": "ipsum",
-      "amount": "2400.00" }
+    { "id": "tkt-2041",
+      "type": "workflow",
+      "route": "ai → crm" }
   ]
 }`}</pre>
               )}

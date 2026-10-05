@@ -1,19 +1,20 @@
 import { Button, CtaBand, Reveal } from "@/components/ui";
 import { Glyph } from "@/components/icons";
-import { sentence, title, words } from "@/lib/lorem";
+import { slugs } from "@/lib/site";
+import { products } from "./content";
 import { Block, CenteredHero, FeatureList, Heading } from "@/components/pages/solutions/parts";
 
 const marks = ["frame", "spark", "globe", "swap", "pulse", "lock"];
 
-/** Customer strip under the ASCII band — fictional lorem wordmarks, not real logos. */
-function Wordmarks({ seed }: { seed: number }) {
+/** Capability strip under the ASCII band — neutral labels, not logos. */
+function Wordmarks({ seed, labels }: { seed: number; labels: string[] }) {
   return (
     <div className="wrap">
       <ul className="grid grid-cols-3 border-x border-line">
         {[0, 1, 2].map((i) => (
-          <li key={i} className={`flex h-12 items-center justify-center gap-1.5 text-paper md:h-16 ${i ? "border-l border-line" : ""}`}>
+          <li key={i} className={`flex h-12 items-center justify-center gap-1.5 text-paper md:h-16 ${i ? "border-s border-line" : ""}`}>
             <Glyph name={marks[(seed + i) % marks.length]} width={16} height={16} strokeWidth={2} />
-            <span className="text-[15px] font-semibold tracking-[-0.03em] md:text-lg">{words(1, seed + i * 5)}{i === 0 ? "." : ""}</span>
+            <span className="text-[15px] font-semibold tracking-[-0.03em] md:text-lg">{labels[i]}</span>
           </li>
         ))}
       </ul>
@@ -28,25 +29,28 @@ const ChecklistIcon = () => (
   </svg>
 );
 
-/** Neutral placeholder for a third-party badge: plain circle + mono lorem. */
-const BadgeStub = ({ seed }: { seed: number }) => (
+/** Neutral badge: plain circle + mono label. */
+const BadgeStub = ({ label }: { label: string }) => (
   <span aria-hidden className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-stone">
     <span className="size-5 rounded-full border border-line-2 bg-ink-2" />
-    {words(1, seed)}
+    {label}
   </span>
 );
 
 export default function ProductPage({ index }: { index: number }) {
-  const s = 400 + index * 17; // per-slug seed
+  const s = 400 + index * 17; // per-slug seed (icons only)
+  const c = products[slugs.products[index]];
 
   return (
     <>
       <CenteredHero
-        eyebrow={words(3, s)}
-        heading={sentence(6, s + 1).slice(0, -1)}
-        lede={sentence(34, s + 2)}
+        eyebrow={c.hero.eyebrow}
+        heading={c.hero.heading}
+        lede={c.hero.lede}
+        primary={c.hero.primary}
+        secondary={c.hero.secondary}
         wideLede
-        after={<Wordmarks seed={s + 3} />}
+        after={<Wordmarks seed={s + 3} labels={c.marks} />}
       />
 
       {/* Highlights: two halves with a centre rule */}
@@ -54,10 +58,10 @@ export default function ProductPage({ index }: { index: number }) {
         <div className="wrap">
           <div className="grid md:grid-cols-2">
             {[0, 1].map((k) => (
-              <Reveal key={k} delay={k * 120} className={`inner py-12 md:py-20 ${k ? "border-t border-line max-md:-mx-4 max-md:px-10 md:border-l md:border-t-0" : ""}`}>
+              <Reveal key={k} delay={k * 120} className={`inner py-12 md:py-20 ${k ? "border-t border-line max-md:-mx-4 max-md:px-10 md:border-s md:border-t-0" : ""}`}>
                 <Glyph name={k ? "spark" : "swap"} width={32} height={32} strokeWidth={1.1} />
-                <h2 className="mt-2 font-serif text-[28px] font-light leading-8 tracking-[-0.05em] md:text-[32px] md:leading-9">{title(3 + k, s + 4 + k * 3)}</h2>
-                <p className="mt-4 max-w-[493px] font-light leading-6">{sentence(k ? 35 : 27, s + 6 + k * 8)}</p>
+                <h2 className="mt-2 font-serif text-[28px] font-light leading-8 tracking-[-0.05em] md:text-[32px] md:leading-9">{c.highlights[k].title}</h2>
+                <p className="mt-4 max-w-[493px] font-light leading-6">{c.highlights[k].body}</p>
               </Reveal>
             ))}
           </div>
@@ -65,41 +69,41 @@ export default function ProductPage({ index }: { index: number }) {
       </section>
 
       <Block>
-        <Reveal><Heading className="max-w-[640px]">{title(5, s + 10)}</Heading></Reveal>
-        <div className="mt-6"><FeatureList seed={s + 11} counts={[17, 16, 13, 12]} /></div>
+        <Reveal><Heading className="max-w-[640px]">{c.featuresTitle}</Heading></Reveal>
+        <div className="mt-6"><FeatureList seed={s + 11} items={c.features} /></div>
       </Block>
 
       {/* Editorial list: title left, caption right, dashed separators */}
       <Block>
-        <Reveal><Heading className="max-w-[640px]">{title(4, s + 12)}</Heading></Reveal>
+        <Reveal><Heading className="max-w-[640px]">{c.listTitle}</Heading></Reveal>
         <ul className="mt-6">
-          {[14, 16, 26, 18].map((n, i) => (
+          {c.list.map((row, i) => (
             <Reveal as="li" key={i} className={`grid gap-2 md:grid-cols-2 md:gap-x-10 ${i ? "border-t border-dashed border-line pt-6 md:pt-8" : ""} pb-6 md:pb-8`}>
-              <h3 className="text-2xl font-light leading-[1.2] md:text-[28px]">{title(1 + (i % 3), s + 13 + i * 4)}</h3>
-              <p className="max-w-[394px] font-light leading-[22.4px]">{sentence(n, s + 14 + i * 6)}</p>
+              <h3 className="text-2xl font-light leading-[1.2] md:text-[28px]">{row.title}</h3>
+              <p className="max-w-[394px] font-light leading-[22.4px]">{row.body}</p>
             </Reveal>
           ))}
           <Reveal as="li" className="grid gap-2 border-t border-dashed border-line pt-6 md:grid-cols-2 md:gap-x-10 md:pt-8">
-            <p className="max-w-[460px] font-light leading-6 text-stone">{sentence(6, s + 40)}<br />{sentence(10, s + 41)}</p>
-            <div className="pt-1 md:pt-0"><Button variant="default" href="/contact">Get in touch</Button></div>
+            <p className="max-w-[460px] font-light leading-6 text-stone">{c.note[0]}<br />{c.note[1]}</p>
+            <div className="pt-1 md:pt-0"><Button variant="default" href={c.noteButton.href}>{c.noteButton.label}</Button></div>
           </Reveal>
         </ul>
       </Block>
 
-      <CtaBand />
+      <CtaBand text={c.cta.text} cta={c.cta.label} href={c.cta.href} />
 
       {/* Eligibility / protection pair */}
       <section className="border-t border-line">
         <div className="wrap">
           <div className="grid md:grid-cols-2">
             {[0, 1].map((k) => (
-              <Reveal key={k} delay={k * 120} className={`inner py-12 md:py-20 ${k ? "border-t border-line max-md:-mx-4 max-md:px-10 md:border-l md:border-t-0" : ""}`}>
+              <Reveal key={k} delay={k * 120} className={`inner py-12 md:py-20 ${k ? "border-t border-line max-md:-mx-4 max-md:px-10 md:border-s md:border-t-0" : ""}`}>
                 {k ? <Glyph name="shield" width={32} height={32} strokeWidth={1.1} /> : <ChecklistIcon />}
-                <Heading className="mt-3">{title(1 + k, s + 50 + k * 3)}</Heading>
-                <p className="mt-2 max-w-[394px] font-light leading-[22.4px]">{sentence(k ? 5 : 8, s + 52 + k * 5)}</p>
+                <Heading className="mt-3">{c.pair[k].title}</Heading>
+                <p className="mt-2 max-w-[394px] font-light leading-[22.4px]">{c.pair[k].body}</p>
                 <div className="mt-5 flex items-center gap-4">
-                  <Button variant="default" href={k ? "/legal/deposits" : "/legal/eligibility"}>Learn more</Button>
-                  {k === 1 && <BadgeStub seed={s + 60} />}
+                  <Button variant="default" href={c.pair[k].button.href}>{c.pair[k].button.label}</Button>
+                  {k === 1 && <BadgeStub label={c.pair[1].badge} />}
                 </div>
               </Reveal>
             ))}

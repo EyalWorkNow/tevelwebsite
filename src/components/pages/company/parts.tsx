@@ -20,7 +20,7 @@ export function ExploreCard({ href = "#", title, body, seed, delay = 0 }: { href
         <Placeholder seed={seed} className="aspect-video grayscale transition-[scale] duration-[400ms] group-hover:scale-[1.03]" />
       </div>
       <Link href={href} className="text-base leading-6 transition-colors md:text-xl md:leading-7 duration-200 after:absolute after:inset-0 after:content-['']">{title}</Link>
-      <Arrow width={20} height={20} className="mt-1 text-muted transition-[color,translate] duration-200 group-hover:translate-x-0.5 group-hover:text-paper" />
+      <Arrow width={20} height={20} className="mt-1 text-muted transition-[color,translate] duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 group-hover:text-paper" />
       <p className="col-span-2 text-sm leading-5 text-stone md:text-base md:leading-6">{body}</p>
     </Reveal>
   );
@@ -49,7 +49,7 @@ function MosaicGroup({ hidden }: { hidden?: boolean }) {
 
 export function PhotoMarquee() {
   return (
-    <div className="overflow-hidden py-6 [--col:126px] [--gap:12px] [--row:100px] md:[--col:266.4px] md:[--gap:22px] md:[--row:177.6px]">
+    <div dir="ltr" className="overflow-hidden py-6 [--col:126px] [--gap:12px] [--row:100px] md:[--col:266.4px] md:[--gap:22px] md:[--row:177.6px]">
       <div className="flex w-max animate-[marquee_140s_linear_infinite]">
         <MosaicGroup />
         <MosaicGroup hidden />

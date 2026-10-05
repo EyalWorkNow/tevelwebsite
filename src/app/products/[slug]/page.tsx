@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPage from "@/components/pages/products/ProductPage";
-import { title } from "@/lib/lorem";
-import { slugs } from "@/lib/site";
+import { names, slugs } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -12,7 +11,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: title(2, 50 + slugs.products.indexOf(slug)) };
+  return { title: names.products[slugs.products.indexOf(slug)] };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

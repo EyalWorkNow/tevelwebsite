@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/lib/site";
-import { Logo, Glyph } from "./icons";
+import { TevelLogo, Glyph } from "./icons";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,21 +24,17 @@ export default function Header() {
   return (
     <header className="wrap relative z-50">
       <div className="inner flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-paper" aria-label="Home">
-          <Logo />
-          <span className="font-serif text-[24px] tracking-[-0.03em]">Lorem</span>
-        </Link>
+        <Link href="/" aria-label="תבל — דף הבית"><TevelLogo className="h-7 w-auto md:h-8" /></Link>
         <div className="hidden items-center gap-2 md:flex">
-          <Link href="#" className="label rounded-full px-3.5 py-2 transition-colors hover:text-stone">Log in</Link>
-          <Link href="/contact/sales" className="label rounded-full bg-paper-2 px-3.5 py-2 text-ink transition-colors hover:bg-paper">Contact sales</Link>
+                    <Link href="/contact" className="label rounded-full bg-paper-2 px-3.5 py-2 text-ink transition-colors hover:bg-paper">בואו נדבר</Link>
         </div>
         <button className="label rounded-full border border-line-2 px-3.5 py-2 md:hidden" onClick={() => setMobile(!mobile)} aria-expanded={mobile}>
-          {mobile ? "Close" : "Menu"}
+          {mobile ? "סגירה" : "תפריט"}
         </button>
       </div>
 
       {/* Fixed centred pill: logo scrolls away, nav stays */}
-      <nav className="fixed left-1/2 top-3 hidden -translate-x-1/2 md:block" aria-label="Main" onMouseLeave={leave}>
+      <nav className="fixed left-1/2 top-3 hidden -translate-x-1/2 md:block" aria-label="ניווט ראשי" onMouseLeave={leave}>
         <ul className="relative flex h-10 items-center rounded-full bg-ink/40 px-1 backdrop-blur-[12px]">
           {nav.map((item) => (
             <li key={item.label} className="relative" onMouseEnter={() => open(item.groups ? item.label : null)}>
@@ -57,7 +53,7 @@ export default function Header() {
               {menu === item.label && item.groups && (
                 <div
                   onMouseEnter={() => open(item.label)}
-                  className="absolute left-0 top-[calc(100%+10px)] min-w-[190px] origin-top animate-[menu-in_.2s_ease_both] rounded-lg bg-ink-2/60 p-4 shadow-[inset_0_0_0_1px_#625d58,0_6px_18px_rgba(0,0,0,.024),0_3px_9px_rgba(0,0,0,.043)] backdrop-blur-[48px] [perspective:2000px]"
+                  className="absolute start-0 top-[calc(100%+10px)] min-w-[190px] origin-top animate-[menu-in_.2s_ease_both] rounded-lg bg-ink-2/60 p-4 shadow-[inset_0_0_0_1px_#625d58,0_6px_18px_rgba(0,0,0,.024),0_3px_9px_rgba(0,0,0,.043)] backdrop-blur-[48px] [perspective:2000px]"
                 >
                   {item.groups.map((grp) => (
                     <div key={grp.label || "g"}>
@@ -69,7 +65,7 @@ export default function Header() {
                       <ul className="mb-2">
                         {grp.links.map((l) => (
                           <li key={l.href + l.label}>
-                            <Link href={l.href} onClick={() => setMenu(null)} className="group flex items-center gap-3 rounded-md py-2 pr-2 transition-colors">
+                            <Link href={l.href} onClick={() => setMenu(null)} className="group flex items-center gap-3 rounded-md py-2 pe-2 transition-colors">
                               {l.icon && <span className="grid size-9 shrink-0 place-items-center rounded border border-line-2 text-stone transition-colors group-hover:border-stone group-hover:text-paper"><Glyph name={l.icon} width={18} height={18} /></span>}
                               <span>
                                 <span className="block whitespace-nowrap leading-5 transition-colors group-hover:text-stone">{l.label}</span>
@@ -85,8 +81,8 @@ export default function Header() {
               )}
             </li>
           ))}
-          <li className={`overflow-hidden transition-all duration-300 ${scrolled ? "ml-1 max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
-            <Link href="/contact/sales" tabIndex={scrolled ? 0 : -1} className="label inline-flex h-8 items-center whitespace-nowrap rounded-full bg-paper-2 px-3.5 text-ink">Contact sales</Link>
+          <li className={`overflow-hidden transition-all duration-300 ${scrolled ? "ms-1 max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
+            <Link href="/contact" tabIndex={scrolled ? 0 : -1} className="label inline-flex h-8 items-center whitespace-nowrap rounded-full bg-paper-2 px-3.5 text-ink">בואו נדבר</Link>
           </li>
         </ul>
       </nav>
@@ -115,9 +111,8 @@ export default function Header() {
             </div>
           ))}
           <div className="mt-6 grid gap-3">
-            <Link href="/contact/sales" className="btn-light justify-center">Contact sales</Link>
-            <Link href="#" className="btn-dark justify-center">Log in</Link>
-          </div>
+            <Link href="/contact" className="btn-light justify-center">בואו נדבר</Link>
+                      </div>
         </div>
       )}
     </header>

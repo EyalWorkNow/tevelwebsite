@@ -13,12 +13,12 @@ function Runs({ runs }: { runs: Run[] }) {
 function Table({ head, rows }: { head: string[]; rows: Run[][][] }) {
   const three = head.length === 3;
   return (
-    <div className="my-8 -mr-7 overflow-x-auto md:mr-0 md:relative md:left-1/2 md:w-[min(1261px,calc(100vw-48px))] md:-translate-x-1/2 md:overflow-visible">
-      <table className="w-full min-w-[600px] border-separate border-spacing-0 overflow-hidden rounded-md border border-[#e4e2e4] text-left md:min-w-0">
+    <div className="my-8 -ml-7 overflow-x-auto md:ml-0 md:relative md:left-1/2 md:w-[min(1261px,calc(100vw-48px))] md:-translate-x-1/2 md:overflow-visible">
+      <table className="w-full min-w-[600px] border-separate border-spacing-0 overflow-hidden rounded-md border border-[#e4e2e4] text-start md:min-w-0">
         <thead>
           <tr>
             {head.map((h, i) => (
-              <th key={i} scope="col" className={`border-[#e4e2e4] px-4 py-[17px] text-base font-normal leading-6 ${i ? "border-l" : ""} ${three ? ["w-[36%]", "w-[22%]", ""][i] : i ? "" : "w-[21%]"}`}>{h}</th>
+              <th key={i} scope="col" className={`border-[#e4e2e4] px-4 py-[17px] text-base font-normal leading-6 ${i ? "border-s" : ""} ${three ? ["w-[36%]", "w-[22%]", ""][i] : i ? "" : "w-[21%]"}`}>{h}</th>
             ))}
           </tr>
         </thead>
@@ -26,7 +26,7 @@ function Table({ head, rows }: { head: string[]; rows: Run[][][] }) {
           {rows.map((row, ri) => (
             <tr key={ri}>
               {row.map((cell, ci) => (
-                <td key={ci} className={`border-t border-[#e4e2e4] px-4 py-[17px] align-middle ${ci ? "border-l" : ""} ${three && ci === 2 ? "whitespace-pre-line text-[18px] leading-7 tracking-[0.01em]" : "text-base leading-[26px]"}`}>
+                <td key={ci} className={`border-t border-[#e4e2e4] px-4 py-[17px] align-middle ${ci ? "border-s" : ""} ${three && ci === 2 ? "whitespace-pre-line text-[18px] leading-7 tracking-[0.01em]" : "text-base leading-[26px]"}`}>
                   <Runs runs={cell} />
                 </td>
               ))}
@@ -49,7 +49,7 @@ export function LegalDoc({ blocks }: { blocks: Block[] }) {
             return <p key={i} className="mt-3 first:mt-0"><Runs runs={b.runs} /></p>;
           case "ul":
             return (
-              <ul key={i} className="my-5 list-disc pl-8 marker:text-paper">
+              <ul key={i} className="my-5 list-disc ps-8 marker:text-paper">
                 {b.items.map((it, j) => <li key={j} className="mt-2 first:mt-0"><Runs runs={it} /></li>)}
               </ul>
             );

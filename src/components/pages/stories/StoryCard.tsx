@@ -13,7 +13,7 @@ export function StoryCard({ href, seed, brand, title }: { href: string; seed: nu
         <div>
           <h3 className="mb-3 max-w-[700px] text-xl font-medium leading-[1.3] md:text-2xl">{title}</h3>
           <span className="flex items-center gap-2 font-mono text-sm uppercase opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:translate-y-1">
-            Read story <Arrow width={15} height={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            לקריאת התרחיש <Arrow width={15} height={15} className="transition-transform duration-300 group-hover:-translate-x-1" />
           </span>
         </div>
       </div>

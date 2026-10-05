@@ -33,9 +33,9 @@ export function PlatformGlyph({ name, className = "" }: { name: "play" | "wave" 
 const pill =
   "relative inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-ink px-5 font-mono text-xs uppercase leading-4 tracking-[0.06em] text-paper shadow-[inset_0_0_0_1px_var(--color-line)] transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_var(--color-stone-2)]";
 
-export function PlatformButton({ label, glyph }: { label: string; glyph: "play" | "wave" | "rss" }) {
+export function PlatformButton({ label, glyph, href = "#" }: { label: string; glyph: "play" | "wave" | "rss"; href?: string }) {
   return (
-    <Link href="#" className={`${pill} w-[220px] justify-between`}>
+    <Link href={href} className={`${pill} w-[220px] justify-between`}>
       <span className="flex-1 text-center">{label}</span>
       <PlatformGlyph name={glyph} />
     </Link>
@@ -54,8 +54,8 @@ function MiniPlayer({ ep, playing, toggle }: { ep: Episode; playing: boolean; to
     return () => clearInterval(id);
   }, [playing, total]);
   return (
-    <div className="mt-4 flex animate-[slide-up-and-fade_.4s_cubic-bezier(.16,1,.3,1)_both] items-center gap-3 rounded-full px-1 py-1 pr-5 shadow-[inset_0_0_0_1px_var(--color-line)] md:max-w-[560px]">
-      <button onClick={toggle} aria-label={playing ? "Pause" : "Play"} className="grid size-9 shrink-0 place-items-center rounded-full bg-paper text-ink transition-colors hover:bg-paper-2">
+    <div className="mt-4 flex animate-[slide-up-and-fade_.4s_cubic-bezier(.16,1,.3,1)_both] items-center gap-3 rounded-full px-1 py-1 pe-5 shadow-[inset_0_0_0_1px_var(--color-line)] md:max-w-[560px]">
+      <button onClick={toggle} aria-label={playing ? "עצירה" : "הפעלה"} className="grid size-9 shrink-0 place-items-center rounded-full bg-paper text-ink transition-colors hover:bg-paper-2">
         {playing ? (
           <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden><path d="M3.5 2v8M8.5 2v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
         ) : (
@@ -65,7 +65,7 @@ function MiniPlayer({ ep, playing, toggle }: { ep: Episode; playing: boolean; to
       <span className="font-mono text-xs tabular-nums text-stone">{fmt(t)}</span>
       <button
         className="group relative h-6 flex-1"
-        aria-label="Seek"
+        aria-label="התקדמות"
         onClick={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           setT(Math.round(((e.clientX - r.left) / r.width) * total));
@@ -96,15 +96,15 @@ function Cover({ ep, active, playing }: { ep: Episode; active: boolean; playing:
       <div className="absolute inset-0"><Placeholder seed={ep.seed} className="size-full" /></div>
       {/* original cover typography */}
       <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-5">
-        <span className="font-serif text-lg leading-none tracking-[-0.03em] text-paper/90">Lorem <span className="rounded-sm bg-paper px-1 text-ink">Ipsum</span></span>
+        <span className="font-serif text-lg leading-none tracking-[-0.03em] text-paper/90">TEVEL <span className="rounded-sm bg-paper px-1 text-ink">R&amp;D</span></span>
         <div>
-          <span className="block font-mono text-[10px] uppercase tracking-[0.08em] text-paper/80">Ep. {ep.n}</span>
+          <span className="block font-mono text-[10px] uppercase tracking-[0.08em] text-paper/80">{ep.n}</span>
           <span className="mt-1 block max-w-[80%] font-sans text-[22px] font-semibold uppercase leading-[22px] tracking-[-0.02em] text-paper md:text-2xl md:leading-6">{ep.title.split(" ").slice(0, 3).join(" ")}</span>
         </div>
       </div>
-      <div className={`absolute right-3 top-3 flex items-center gap-2 rounded-full bg-ink/80 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-paper backdrop-blur transition-opacity duration-300 ${active ? "opacity-100" : "opacity-0"}`}>
+      <div className={`absolute end-3 top-3 flex items-center gap-2 rounded-full bg-ink/80 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-paper backdrop-blur transition-opacity duration-300 ${active ? "opacity-100" : "opacity-0"}`}>
         {playing ? <Bars /> : null}
-        {playing ? "Playing" : "Paused"}
+        {playing ? "פתוח" : "סגור"}
       </div>
     </div>
   );
@@ -128,7 +128,7 @@ export function EpisodeList({ episodes }: { episodes: Episode[] }) {
           return (
             <Reveal as="li" key={ep.n} delay={i < 3 ? i * 80 : 0} className="flex max-w-[1304px] flex-col gap-4 md:flex-row md:items-start md:gap-5">
               <figure className="flex shrink-0 justify-center md:w-[32.3%]">
-                <button onClick={() => start(ep.n)} className="group block w-full text-left md:w-auto" aria-label={`Play episode ${ep.n}`}>
+                <button onClick={() => start(ep.n)} className="group block w-full text-start md:w-auto" aria-label={`פרטים: ${ep.title}`}>
                   <span className="block transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.02]">
                     <Cover ep={ep} active={isActive} playing={isActive && playing} />
                   </span>
@@ -137,7 +137,7 @@ export function EpisodeList({ episodes }: { episodes: Episode[] }) {
               <div className="min-w-0 flex-1 md:py-0.5">
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-sm uppercase leading-4 text-stone md:text-base">{ep.guest}</span>
-                  <span className="hidden font-mono text-xs uppercase leading-4 text-muted md:inline">· {ep.date} · {ep.duration} min</span>
+                  <span className="hidden font-mono text-xs uppercase leading-4 text-muted md:inline">· {ep.date}</span>
                 </div>
                 <div className="mt-2 flex flex-col md:gap-2">
                   <h3 className="font-serif text-2xl leading-7 tracking-[-0.04em] md:text-[31px] md:leading-10">{ep.n}: {ep.title}</h3>
@@ -145,11 +145,11 @@ export function EpisodeList({ episodes }: { episodes: Episode[] }) {
                 </div>
                 <div className="mt-5 flex items-center gap-3">
                   <button onClick={() => start(ep.n)} className={pill}>
-                    {isActive && playing ? "Pause episode" : "Play episode"}
+                    {isActive && playing ? "סגירה" : "פרטים"}
                     <PlatformGlyph name={isActive && playing ? "pause" : "play"} />
                   </button>
-                  <Link href="#" aria-label="Listen" className="transition-transform duration-300 hover:-translate-y-0.5"><PlatformGlyph name="wave" /></Link>
-                  {i % 4 !== 1 && <Link href="#" aria-label="Subscribe" className="transition-transform duration-300 hover:-translate-y-0.5"><PlatformGlyph name="rss" /></Link>}
+                  <Link href="/solutions/rd" aria-label="קראו עוד" className="transition-transform duration-300 hover:-translate-y-0.5"><PlatformGlyph name="wave" /></Link>
+                  {i % 4 !== 1 && <Link href="/contact" aria-label="תביאו את הבעיה" className="transition-transform duration-300 hover:-translate-y-0.5"><PlatformGlyph name="rss" /></Link>}
                 </div>
                 {isActive && <MiniPlayer ep={ep} playing={playing} toggle={() => setPlaying((p) => !p)} />}
               </div>

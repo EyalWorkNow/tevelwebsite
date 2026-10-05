@@ -16,9 +16,11 @@
   --color-amber: #e5b53a;
   --color-teal: #3ad4c4;
   --color-violet: #a78bfa;
-  --font-sans: var(--font-sans-src), system-ui, sans-serif;
-  --font-serif: var(--font-serif-src), Baskerville, serif;
-  --font-mono: var(--font-mono-src), ui-monospace, monospace;
+  --color-brand: #02bd8f;      /* TEVEL green (logo) */
+  --color-brand-deep: #015742;
+  --font-sans: var(--font-heebo), system-ui, sans-serif;
+  --font-serif: var(--font-heebo), system-ui, sans-serif;
+  --font-mono: var(--font-heebo), system-ui, sans-serif;
 }
 
 html { background: var(--color-ink); color-scheme: dark; }
@@ -28,8 +30,8 @@ body { background: var(--color-ink); color: var(--color-paper); font-family: var
 @utility inner { @apply px-3 md:px-10; } /* 28px mobile gutter, 60px desktop */
 @utility rule { @apply border-t border-line; }
 @utility label { @apply font-mono text-xs uppercase leading-4 tracking-[0.06em]; }
-@utility display { @apply font-serif font-light text-[44px] leading-[44px] tracking-[-0.02em] md:text-[72px] md:leading-[72px]; }
-@utility h2 { @apply font-serif font-light text-[32px] leading-9 tracking-[-0.05em] md:text-[40px] md:leading-[44px]; }
+@utility display { @apply font-serif font-light text-[44px] leading-[44px] md:text-[60px] md:leading-[70px]; }
+@utility h2 { @apply font-serif font-light text-[30px] leading-[38px] md:text-[40px] md:leading-[50px]; }
 @utility btn { @apply label inline-flex items-center gap-1.5 rounded-full px-5 py-3 transition-colors duration-300; }
 @utility btn-light { @apply btn bg-paper-2 text-ink hover:bg-paper; }
 @utility btn-dark { @apply btn border border-line-2 text-paper hover:border-stone; }
@@ -49,3 +51,6 @@ body { background: var(--color-ink); color: var(--color-paper); font-family: var
 @keyframes line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 80%, 100% { transform: translateX(100%); } }
+
+/* Visible keyboard focus everywhere */
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 4px; }

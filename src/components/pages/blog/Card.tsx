@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Placeholder } from "@/components/ui";
-import { title } from "@/lib/lorem";
-import { wordmark, type PostCard } from "./data";
+import type { PostCard } from "./data";
 
 /** Faint blueprint grid with corner ticks, used behind the graphic covers. */
 function Blueprint() {
@@ -18,8 +17,8 @@ function Blueprint() {
 
 const marks = ["#a78bfa", "#3ad4c4", "#f35c95", "#e5b53a"];
 
-export function Cover({ card }: { card: Pick<PostCard, "art" | "seed"> }) {
-  const { art, seed } = card;
+export function Cover({ card }: { card: Pick<PostCard, "art" | "seed" | "tag" | "word"> }) {
+  const { art, seed, tag, word } = card;
   if (art === "photo") return <div className="absolute inset-0"><Placeholder seed={seed} className="size-full" /></div>;
   if (art === "mark")
     return (
@@ -27,7 +26,7 @@ export function Cover({ card }: { card: Pick<PostCard, "art" | "seed"> }) {
         <Blueprint />
         <span className="relative flex items-center gap-3 text-[clamp(28px,3vw,40px)] font-semibold tracking-[-0.03em] text-white">
           <svg viewBox="0 0 24 32" className="h-[1.05em] w-auto" aria-hidden><path d="M14 0L2 18h9l-3 14L22 12h-9z" fill={marks[seed % marks.length]} /></svg>
-          {title(1, 500 + seed * 3)}
+          {tag}
         </span>
       </div>
     );
@@ -36,10 +35,10 @@ export function Cover({ card }: { card: Pick<PostCard, "art" | "seed"> }) {
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1a1a1a]">
       <Blueprint />
       <span className="relative text-center leading-[0.95] text-white">
-        <span className="block text-[clamp(28px,3vw,40px)] font-semibold tracking-[-0.03em]">{title(1, 600 + seed)}</span>
-        <span className="block font-serif text-[clamp(30px,3.2vw,44px)] font-light tracking-[-0.03em]">{wordmark(seed + 7)}</span>
+        <span className="block text-[clamp(28px,3vw,40px)] font-semibold tracking-[-0.03em]">{tag}</span>
+        <span className="block font-serif text-[clamp(30px,3.2vw,44px)] font-light tracking-[-0.03em]">{word}</span>
       </span>
-      <span className="relative mt-4 flex gap-2 font-mono text-[clamp(16px,1.6vw,22px)]">
+      <span dir="ltr" className="relative mt-4 flex gap-2 font-mono text-[clamp(16px,1.6vw,22px)]">
         {["01", "02", "03", "04"].map((l, k) => (
           <span key={l} className={`rounded-md border px-2 py-0.5 ${k === q ? "border-transparent bg-violet text-white" : "border-white/10 text-white/15"}`}>{l}</span>
         ))}

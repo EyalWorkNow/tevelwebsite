@@ -1,22 +1,20 @@
 "use client";
 import { useState } from "react";
-import { Placeholder } from "./ui";
-import { sentence, title } from "@/lib/lorem";
 
-// Fictional lorem wordmarks in varied type treatments — no third-party logos.
-const marks: [string, string][] = [
-  ["lorem", "font-sans font-semibold lowercase text-lg"],
-  ["IPSUM", "font-sans font-black tracking-tight text-lg"],
-  ["Dolor", "font-serif italic text-xl"],
-  ["sitamet", "font-sans font-light text-lg"],
-  ["CONSECT", "font-mono tracking-[0.2em] text-sm"],
-  ["Adipisc", "font-serif text-xl"],
-  ["elit·sed", "font-mono text-sm"],
-  ["Tempor", "font-sans font-medium text-lg"],
-  ["Magna&Co", "font-serif italic text-lg"],
-  ["ALIQUA", "font-mono font-bold text-sm"],
+// What TEVEL builds — capability wordmarks (no client logos until verified, brief §28).
+const marks: [string, string, string][] = [
+  ["CRM", "font-sans font-semibold text-lg", "CRM שלא רק שומר לקוחות — אלא מנהל את הדרך שבה העסק עובד איתם."],
+  ["ERP", "font-sans font-black tracking-tight text-lg", "רכש, מלאי, ספקים, הזמנות ותפעול — כמודול, שכבה או מערכת שלמה."],
+  ["AI Agents", "font-serif italic text-xl", "סוכנים שמבצעים פעולות מוגדרות בתוך תהליכי העבודה."],
+  ["RAG", "font-mono tracking-[0.2em] text-sm", "AI שעונה מתוך הידע המאושר של הארגון."],
+  ["Automation", "font-sans font-light text-lg", "פחות Copy/Paste, פחות פעולות שחייבים לזכור."],
+  ["Integrations", "font-serif text-xl", "מערכות קיימות שמתחילות לדבר זו עם זו."],
+  ["Web Apps", "font-mono text-sm", "פורטלים, דשבורדים ומערכות פנימיות."],
+  ["Mobile", "font-sans font-medium text-lg", "אפליקציות מאפיון ו-UX ועד השקה."],
+  ["Computer Vision", "font-serif italic text-lg", "מערכות שמקבלות מידע מתמונה ומווידאו."],
+  ["IoT", "font-mono font-bold text-sm", "חיבור בין תוכנה, חיישנים והעולם הפיזי."],
 ];
-const kinds = ["Customer story", "Blog", "Podcast"];
+const kinds = ["Build", "Intelligence", "R&D"];
 
 export default function Logos() {
   const [hover, setHover] = useState<number | null>(null);
@@ -39,7 +37,7 @@ export default function Logos() {
       <ul className="grid grid-cols-2 border-l border-dashed border-line md:grid-cols-6">
         <Cell n={0} /><Cell n={1} />
         <li className="col-span-2 grid h-16 place-items-center border-b border-r border-dashed border-line font-mono text-sm uppercase tracking-[0.06em] text-muted">
-          <span>Trusted by <span className="text-paper">50+ lorem</span></span>
+          <span>מה <span className="text-paper">אנחנו בונים</span></span>
         </li>
         <Cell n={2} /><Cell n={3} />
         {[4, 5, 6, 7, 8, 9].map((n) => <Cell key={n} n={n} />)}
@@ -47,13 +45,10 @@ export default function Logos() {
 
       {/* Quote popover — fixed bottom-left like the reference */}
       {hover !== null && (
-        <div className="pointer-events-none fixed bottom-6 left-6 z-40 hidden w-[280px] rounded-lg bg-ink-2/90 p-5 shadow-[inset_0_0_0_1px_#514e4b] backdrop-blur-xl animate-[slide-up-and-fade_.25s_ease_both] md:block">
-          <div className="font-serif text-4xl leading-none text-stone">“</div>
-          <p className="mt-2 font-medium leading-6">{sentence(14, hover * 3)}</p>
-          <div className="mt-5 flex items-end justify-between">
-            <div className="text-[13px] leading-5"><div>{title(2, hover + 20)}</div><div className="text-muted">{title(3, hover + 30)}</div><div className="text-muted">{marks[hover][0]}</div></div>
-            <Placeholder seed={hover} className="size-12 rounded" />
-          </div>
+        <div className="pointer-events-none fixed bottom-6 start-6 z-40 hidden w-[280px] rounded-lg bg-ink-2/90 p-5 shadow-[inset_0_0_0_1px_#514e4b] backdrop-blur-xl animate-[slide-up-and-fade_.25s_ease_both] md:block">
+          <div className="label text-brand" dir="ltr">{marks[hover][0]}</div>
+          <p className="mt-3 leading-6">{marks[hover][2]}</p>
+          <p className="mt-4 text-[13px] text-muted">{kinds[hover % 3]}</p>
         </div>
       )}
     </section>

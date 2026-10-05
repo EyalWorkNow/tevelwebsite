@@ -12,7 +12,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: story(slug).brand };
+  return { title: `${story(slug).brand} · תרחיש לדוגמה` };
 }
 
 const Crosshairs = () => (
@@ -27,12 +27,11 @@ export default async function Story({ params }: { params: Promise<{ slug: string
   const { slug } = await params;
   if (!slugs.stories.includes(slug)) notFound();
   const s = story(slug);
-  const cap = s.brand[0].toUpperCase() + s.brand.slice(1);
   return (
     <>
       <section className="wrap">
         <div className="inner grid grid-cols-1 gap-8 pb-10 pt-10 md:pt-20 lg:grid-cols-[1fr_minmax(0,837px)_1fr]">
-          <div><BackLink href="/customer-stories">Back to customer stories</BackLink></div>
+          <div><BackLink href="/customer-stories">חזרה לתרחישים לדוגמה</BackLink></div>
           <article className="flex flex-col gap-12 md:gap-16">
             <Reveal className="flex flex-col items-center gap-5 text-center">
               <h1 className="font-serif text-[30px] font-light leading-8 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">{s.title}</h1>
@@ -48,11 +47,11 @@ export default async function Story({ params }: { params: Promise<{ slug: string
             </Reveal>
             <div className="flex gap-16 text-base leading-6 md:text-lg tracking-[0.01em]">
               <div>
-                <p className="font-medium">Client</p>
-                <a href="#" className="text-stone-2 underline decoration-line-2 underline-offset-4 transition-colors hover:decoration-stone-2">{cap}</a>
+                <p className="font-medium">סוג ארגון</p>
+                <a href="/onboarding" className="text-stone-2 underline decoration-line-2 underline-offset-4 transition-colors hover:decoration-stone-2">{s.org}</a>
               </div>
               <div>
-                <p className="font-medium">Industry</p>
+                <p className="font-medium">תחום</p>
                 <p className="text-stone-2">{s.industry}</p>
               </div>
             </div>
@@ -63,8 +62,8 @@ export default async function Story({ params }: { params: Promise<{ slug: string
                   case "quote":
                     return (
                       <figure key={k} className={first ? "" : "mt-8"}>
-                        <blockquote className="pl-8 text-xl font-light leading-6 tracking-[0.01em] text-stone md:text-[25px] md:leading-8">{b.text}</blockquote>
-                        <figcaption className="my-5 flex gap-2 pb-8 pl-8 text-base leading-4 text-stone-2"><span aria-hidden>—</span>{b.by}</figcaption>
+                        <blockquote className="ps-8 text-xl font-light leading-6 tracking-[0.01em] text-stone md:text-[25px] md:leading-8">{b.text}</blockquote>
+                        <figcaption className="my-5 flex gap-2 pb-8 ps-8 text-base leading-4 text-stone-2"><span aria-hidden>—</span>{b.by}</figcaption>
                       </figure>
                     );
                   case "h2":
@@ -76,7 +75,7 @@ export default async function Story({ params }: { params: Promise<{ slug: string
                     return <p key={k} className={s.body[k - 1]?.t === "p" || s.body[k - 1]?.t === "img" ? "mt-3" : ""}>{b.text}</p>;
                   case "ul":
                     return (
-                      <ul key={k} className="my-5 list-disc pl-8 marker:text-paper">
+                      <ul key={k} className="my-5 list-disc ps-8 marker:text-paper">
                         {b.items.map((it, j) => <li key={j} className={j ? "mt-2" : ""}><strong className="font-medium">{it.lead}</strong>: {it.text}</li>)}
                       </ul>
                     );

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { footer } from "@/lib/site";
-import { sentence } from "@/lib/lorem";
-import { Logo } from "./icons";
+import { TevelLogo } from "./icons";
 
 export default function Footer() {
   return (
@@ -9,19 +8,18 @@ export default function Footer() {
       <div className="wrap">
         <div className="inner grid gap-10 py-14 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] md:py-[72px]">
           <div className="space-y-3 text-[11px] leading-4 text-stone-2">
-            <Link href="/" className="mb-6 flex items-center gap-2 text-paper"><Logo /><span className="font-serif text-[24px] tracking-[-0.03em]">Lorem</span></Link>
-            <p className="max-w-[240px]">{sentence(16, 3)}</p>
-            <p className="max-w-[240px]">{sentence(22, 9)}</p>
-            <p>{sentence(6, 14)}</p>
-            <div className="!mt-6 grid size-14 place-items-center rounded-full border border-line-2 font-mono text-[9px] uppercase text-muted">Badge</div>
-          </div>
+            <Link href="/" className="mb-6 inline-block"><TevelLogo className="h-8 w-auto" /></Link>
+            <p className="label text-muted">Software House &amp; Technology Partner</p>
+            <p className="max-w-[260px]">תבל בונה את המערכות שעליהן עסקים עובדים — ממערכות מידע, CRM ו-ERP ועד AI, אוטומציות ומוצרים דיגיטליים.</p>
+            <p>Understand first. Build what matters.</p>
+                      </div>
           {footer.map((col) => (
             <div key={col.label}>
               <h3 className="label mb-5">{col.label}</h3>
               <ul className="space-y-2.5 text-[13px] text-stone">
                 {col.links.map((l) => <li key={l.href + l.label}><Link href={l.href} className="transition-colors hover:text-paper">{l.label}</Link></li>)}
               </ul>
-              {col.label === "Developers" && (
+              {false && (
                 <>
                   <h3 className="label mb-4 mt-8">Social</h3>
                   <div className="flex gap-3 text-stone">
@@ -33,8 +31,8 @@ export default function Footer() {
           ))}
         </div>
         <div className="inner flex flex-col justify-between gap-2 border-t border-line py-5 text-[11px] text-stone-2 md:flex-row">
-          <span>© 2026 Lorem Ipsum Ltd</span>
-          <span>{sentence(12, 40)}</span>
+          <span>© {new Date().getFullYear()} TEVEL | תבל</span>
+          <span className="label text-muted">Technology built around the business.</span>
         </div>
       </div>
     </footer>

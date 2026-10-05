@@ -8,7 +8,7 @@ export function Button({ href = "#", children, variant = "accent", arrow, classN
   return (
     <Link href={href} className={`group ${variant === "accent" ? "btn-light" : "btn-dark"} ${className}`}>
       {children}
-      {arrow && <Arrow className="transition-transform duration-300 group-hover:translate-x-0.5" />}
+      {arrow && <Arrow className="transition-transform duration-300 group-hover:-translate-x-0.5" />}
     </Link>
   );
 }
@@ -63,7 +63,7 @@ export function LinkCard({ href = "#", title, body, image }: { href?: string; ti
       <div className="flex min-h-[202px] flex-1 flex-col justify-between p-4">
         <div className="flex justify-between gap-4">
           <span className="text-xl font-light leading-7">{title}</span>
-          <Arrow width={20} height={20} className="shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-paper" />
+          <Arrow width={20} height={20} className="shrink-0 text-muted transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:text-paper" />
         </div>
         {body && <p className="mt-8 leading-6 text-muted">{body}</p>}
       </div>
@@ -81,12 +81,12 @@ export function Section({ children, className = "", rule = true, id }: { childre
 }
 
 /* ---------- Closing CTA band (identical on every page) ---------- */
-export function CtaBand({ text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do." }: { text?: string }) {
+export function CtaBand({ text = "ספרו לנו מה לא עובד. אנחנו נתחיל משם.", cta = "בואו נדבר", href = "/contact" }: { text?: string; cta?: string; href?: string }) {
   return (
     <section className="wrap">
       <div className="inner flex flex-col items-center py-24 text-center md:py-[120px]">
         <Reveal><p className="max-w-[480px] font-serif text-[32px] font-light leading-9 tracking-[-0.04em] md:text-[40px] md:leading-[44px]">{text}</p></Reveal>
-        <Reveal delay={120}><Button className="mt-8" arrow>Contact sales</Button></Reveal>
+        <Reveal delay={120}><Button className="mt-8" href={href} arrow>{cta}</Button></Reveal>
       </div>
     </section>
   );

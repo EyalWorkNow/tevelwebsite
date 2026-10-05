@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui";
-import { sentence, title, words } from "@/lib/lorem";
 
-export const metadata: Metadata = { title: "Company facts" };
+export const metadata: Metadata = { title: "תבל בקצרה" };
 
-/* ---------- prose primitives (measured: p 18/28, h2 serif 31/40, h3 20/32, ul pl-32) ---------- */
-const url = (seed: number, path = words(2, seed).replace(" ", "-")) => `https://lorem.example/${path}`;
-const A = ({ seed, path }: { seed: number; path?: string }) => (
-  <Link href="#" className="[overflow-wrap:anywhere] underline decoration-paper/70 decoration-1 underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:decoration-transparent">
-    {url(seed, path)}
+/* ---------- prose primitives (measured: p 18/28, h2 serif 31/40, h3 20/32, ul ps-32) ---------- */
+const TBD = "[להשלמה]";
+const A = ({ href, children }: { href: string; children: ReactNode }) => (
+  <Link href={href} className="[overflow-wrap:anywhere] underline decoration-paper/70 decoration-1 underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:decoration-transparent">
+    {children}
   </Link>
 );
 const H2 = ({ children }: { children: ReactNode }) => (
@@ -29,36 +28,69 @@ const P = ({ k, children }: { k?: string; children: ReactNode }) => (
   <p className="mt-3 first:mt-0 [h3+&]:mt-0"><Fact k={k}>{children}</Fact></p>
 );
 const Ul = ({ children, nested }: { children: ReactNode; nested?: boolean }) => (
-  <ul className={`list-disc pl-8 marker:text-paper ${nested ? "mb-8 mt-3" : "my-5"} [&>li+li]:mt-2`}>{children}</ul>
+  <ul className={`list-disc ps-8 marker:text-paper ${nested ? "mb-8 mt-3" : "my-5"} [&>li+li]:mt-2`}>{children}</ul>
 );
 const Li = ({ k, children }: { k?: string; children: ReactNode }) => <li><Fact k={k}>{children}</Fact></li>;
 
-const label = (n: number, seed: number) => title(n, seed);
-const plain = (n: number, seed: number) => sentence(n, seed).slice(0, -1).toLowerCase();
+/* ---------- the layers (brief §44, R&D §45) ---------- */
+type Layer = { title: string; href: string; page: string; tagline: string; items: string[] };
+const layers: Layer[] = [
+  { title: "BUILD — Software Engineering", href: "/solutions/business-systems", page: "Business Systems", tagline: "אנחנו בונים תוכנה.", items: ["Business Systems", "CRM & ERP", "Web & Mobile"] },
+  { title: "INTELLIGENCE — AI & Automation", href: "/solutions/ai-automation", page: "AI & Automation", tagline: "אנחנו הופכים את התוכנה לחכמה ומחוברת.", items: ["AI", "Automation", "Integrations", "AI Customer Service"] },
+  { title: "TRANSFORM — Business Technology Transformation", href: "/pricing", page: "איך עובדים", tagline: "אנחנו עוזרים להבין מה בכלל צריך להשתנות.", items: ["Business Mapping", "Process Analysis", "Technology Roadmap", "Transformation"] },
+  { title: "INVENT — R&D & Custom Technology", href: "/solutions/rd", page: "R&D & Custom Technology", tagline: "כאשר אין פתרון מוכן, אנחנו חוקרים, בודקים היתכנות ומפתחים אותו.", items: ["Research & Prototyping", "AI & Computer Vision", "Robotics & IoT", "Learning Technology", "Custom Products"] },
+  { title: "PRODUCTS", href: "/products/tevel-invoice", page: "Tevel Invoice", tagline: "אנחנו גם בונים מוצרים משלנו.", items: ["Tevel Invoice — מוצר של תבל להפקת מסמכים עסקיים ולניהול פעילות עסקית-פיננסית"] },
+];
 
-function Product({ seed, usps, rails, first }: { seed: number; usps: number; rails?: boolean; first?: boolean }) {
+function Product({ layer, first }: { layer: Layer; first?: boolean }) {
   return (
     <>
-      <H3 first={first}>{title(3, seed)}</H3>
+      <H3 first={first}>{layer.title}</H3>
       <Ul>
-        <Li>{label(2, seed + 1)}: <A seed={seed} path={`products/${words(2, seed + 2).replace(" ", "-")}`} /></Li>
-        {!rails && <Li>{label(1, seed + 3)}: {plain(9 + (seed % 9), seed + 4)}.</Li>}
+        <Li>עמוד: <A href={layer.href}>{layer.page}</A></Li>
+        <Li>במשפט: {layer.tagline}</Li>
         <Li>
-          {rails ? `${label(3, seed + 5)}:` : `${label(3, seed + 6)}:`}
-          <Ul nested>{Array.from({ length: usps }, (_, i) => <Li key={i}>{sentence(5 + ((seed + i) % 7), seed + 10 + i * 3).slice(0, -1)}</Li>)}</Ul>
+          כולל:
+          <Ul nested>{layer.items.map((it) => <Li key={it}>{it}</Li>)}</Ul>
         </Li>
-        {rails ? (
-          <Li>
-            {label(2, seed + 7)}:
-            <Ul nested>{[2, 2, 4].map((n, i) => <Li key={i}>{title(n, seed + 20 + i * 2)}</Li>)}</Ul>
-          </Li>
-        ) : (
-          <Li>{label(3, seed + 8)}: {plain(10 + (seed % 14), seed + 9)}</Li>
-        )}
       </Ul>
     </>
   );
 }
+
+/* ---------- FAQ (brief §31, R&D §40) ---------- */
+const faq: { group: string; qa: [string, string][] }[] = [
+  {
+    group: "החברה והגישה",
+    qa: [
+      ["אתם חברת תוכנה או חברת ייעוץ?", "אנחנו בית תוכנה שמתחיל מהבעיה העסקית. כאשר נדרש, אנחנו מבצעים Discovery ומיפוי ולאחר מכן מתכננים, מפתחים ומטמיעים את הפתרון."],
+      ["אתם עובדים רק עם Custom?", "לא. אם מוצר קיים פותר את הבעיה היטב, אין סיבה לבנות מערכת מיותרת."],
+      ["אפשר להגיע בלי לדעת מה צריך לפתח?", "כן. זה בדיוק תפקיד ה-Discovery וה-Transformation."],
+      ["AI יכול להחליף את כל שירות הלקוחות?", "לא בהכרח, וברוב המקרים זו אינה נקודת המוצא הנכונה. אנחנו מגדירים מה ניתן לבצע אוטומטית ומה דורש אדם."],
+    ],
+  },
+  {
+    group: "מה אנחנו בונים",
+    qa: [
+      ["אפשר לעבוד אתכם רק על AI?", "כן, כאשר קיימת בעיה שמתאימה ל-AI."],
+      ["אתם מפתחים CRM?", "כן. ניתן לפתח CRM מותאם, להרחיב מערכת קיימת או לבנות אינטגרציות ושכבות מעליה."],
+      ["אתם מפתחים ERP?", "כן, בהתאם להיקף. לעיתים נכון יותר לבנות מודולים או שכבה משלימה."],
+      ["אתם בונים אפליקציות?", "כן, מאפיון ו-UX ועד Backend, Mobile והשקה."],
+      ["אתם בונים אתרים?", "כן, כולל אתרים עסקיים, מסחריים ומערכות Web."],
+      ["אתם עובדים עם מערכות קיימות?", "במקרים רבים כן, בכפוף ל-APIs, הרשאות והיכולות של אותן מערכות."],
+    ],
+  },
+  {
+    group: "R&D",
+    qa: [
+      ["אפשר להגיע רק עם רעיון?", "כן. R&D נועד בדיוק למצבים שבהם הפתרון עדיין אינו מוגדר."],
+      ["האם כל רעיון ניתן לבנייה?", "לא. זו בדיוק הסיבה ל-Feasibility ו-PoC. תהליך R&D רציני צריך להיות מסוגל גם להוכיח שהפתרון אינו כדאי או אינו אפשרי בתנאים הקיימים."],
+    ],
+  },
+];
+
+const profile = ["כ-10 עובדים ומעלה", "מספר מחלקות או בעלי תפקידים", "מחזור של מיליוני שקלים", "נפח לקוחות משמעותי", "מערכות שונות", "עבודה ידנית", "מידע מפוזר", "צורך לגדול בצורה יעילה"];
+const signs = ["\"הכול אצלנו באקסלים.\"", "\"המערכות שלנו לא מדברות.\"", "\"רק עובד אחד יודע איך התהליך עובד.\"", "\"אנחנו מקבלים יותר מדי פניות.\"", "\"אנחנו עושים את אותה פעולה כל היום.\"", "\"אין לי תמונת מצב.\"", "\"ה-CRM לא מתאים לנו.\"", "\"אנחנו רוצים AI אבל לא יודעים איפה הוא באמת יעזור.\"", "\"כל צמיחה מחייבת עוד אנשים.\""];
 
 export default function CompanyFactsPage() {
   return (
@@ -67,106 +99,87 @@ export default function CompanyFactsPage() {
         <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[1fr_minmax(0,837px)_1fr] md:gap-8">
           <article className="flex min-w-0 flex-col gap-5 md:col-start-2 md:gap-8">
             <header className="flex flex-col gap-2 text-center md:gap-5">
-              <Reveal><h1 className="font-serif text-[28px] font-light leading-8 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">{title(2, 30)}</h1></Reveal>
-              <Reveal delay={80}><p className="mx-auto max-w-[748px] text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{sentence(16, 31)}</p></Reveal>
+              <Reveal><h1 className="font-serif text-[28px] font-light leading-8 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">תבל בקצרה</h1></Reveal>
+              <Reveal delay={80}><p className="mx-auto max-w-[748px] text-base leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">תבל בונה את התשתית הטכנולוגית שמאחורי העסק — מערכות מידע, CRM ו-ERP, AI, אוטומציות, שירות לקוחות חכם ומוצרים דיגיטליים.</p></Reveal>
             </header>
 
             <Reveal delay={140} className="text-base leading-6 tracking-[0.01em] md:text-lg md:leading-7">
-              <p>{title(2, 32)}: 2026-08-26</p>
+              <p>עודכן לאחרונה: {TBD}</p>
 
-              <H2>{title(1, 33)}</H2>
-              <H3 first>{title(2, 34)}</H3>
-              <P k={sentence(4, 35).slice(0, -1) + "?"}>{sentence(20, 36)}</P>
-              <P k={label(2, 37)}>{title(1, 38)}</P>
-              <P k={label(2, 39)}>{title(2, 40)}</P>
-              <P k={label(1, 41)}><A seed={41} path="" /></P>
-              <P k={label(2, 42)}><A seed={42} path="ipsum/" /></P>
-              <P k={label(2, 43)}>{sentence(30, 44)} 970920.</P>
-              <P k={label(1, 45)}>{Array.from({ length: 7 }, (_, i) => title(1 + (i % 2), 46 + i * 3)).join(", ")}</P>
-              <P k={label(1, 47)}>{title(1, 48)}, {title(2, 49)}</P>
-              <P k={label(4, 50)}><A seed={50} path="register/firm?id=0000L0R3M1PSUMD0L0R" /></P>
-              <P k={label(4, 51)}><A seed={51} path="find-and-update/company-information/lorem/00000000" /></P>
+              <H2>החברה</H2>
+              <H3 first>מי אנחנו</H3>
+              <P k="מה זה תבל?">תבל היא בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות ומוצרים טכנולוגיים מקצה לקצה — מתחילים מהבעיה ובונים סביבה את הטכנולוגיה הנכונה.</P>
+              <P k="שם">TEVEL | תבל</P>
+              <P k="הגדרה">Software House & Technology Partner, R&D Studio</P>
+              <P k="אתר">{TBD}</P>
+              <P k="יצירת קשר"><A href="/contact">טופס יצירת קשר</A></P>
+              <P k="תחומים">מערכות מידע ותוכנה עסקית, CRM ו-ERP בהתאמה אישית, AI ואוטומציות, מערכי שירות לקוחות מבוססי AI, אינטגרציות, אפליקציות מובייל, Web Apps ואתרים, R&D ופיתוח טכנולוגי מיוחד.</P>
+              <P k="קהל יעד">עסקים וארגונים עם פעילות ומורכבות תפעולית אמיתית</P>
+              <P k="מוצרים">Tevel Invoice</P>
+              <P k="שנת הקמה">{TBD}</P>
+              <P k="מיקום">{TBD}</P>
 
-              <H3>{title(1, 52)}</H3>
-              <P k={label(3, 53)}>{title(2, 54)} (ex {title(1, 55)})</P>
-              <P k={label(3, 56)}>{title(2, 57)} ({title(2, 58)})</P>
+              <H3>Elevator pitch</H3>
+              <P k="10 שניות">תבל היא בית תוכנה שבונה מערכות עסקיות, AI ואוטומציות סביב הדרך שבה העסק באמת עובד.</P>
+              <P k="20 שניות">אנחנו מפתחים מערכות מידע, CRM ו-ERP, אפליקציות ומערכות Web ומטמיעים AI ואוטומציות. כשצריך, אנחנו מתחילים במיפוי העסק כדי להבין איפה הטכנולוגיה באמת יכולה לחסוך זמן, כסף ועבודה ידנית.</P>
 
-              <H3>{title(3, 59)}</H3>
+              <H3>Elevator pitch — R&D</H3>
               <Ul>
-                <Li k={label(2, 60)}>{plain(5, 61)} 2022, {plain(4, 62)} 2023, {plain(3, 63)} 2024</Li>
-                <Li k={label(5, 64)}>{sentence(6, 65).slice(0, -1)}</Li>
+                <Li k="10 שניות">תבל מספקת גם שירותי R&D לפרויקטים מיוחדים — מ-PoC ולומדות ועד AI, Computer Vision, IoT ורובוטיקה.</Li>
+                <Li k="30 שניות">מעבר למערכות עסקיות, יש לנו שכבת R&D שמיועדת לפרויקטים שאין עבורם פתרון מוכן. אנחנו יכולים להתחיל ממחקר ובדיקת היתכנות, לבנות PoC ואב-טיפוס ולהתקדם למוצר — כולל AI, לומדות, Computer Vision, IoT ושילובי תוכנה וחומרה, עם מומחים נוספים כאשר הפרויקט דורש זאת.</Li>
               </Ul>
 
-              <H3>{title(1, 66)}</H3>
+              <H3>מיצוב</H3>
               <Ul>
-                <Li k={label(1, 67)}>{sentence(7, 68).slice(0, -1)} 2023, {plain(3, 69)} 2024 {plain(5, 70)}</Li>
-                <Li k={label(2, 71)}>{plain(2, 72)}</Li>
+                <Li k="Positioning statement">עבור עסקים וארגונים שהמערכות הקיימות שלהם כבר אינן עומדות בקצב הפעילות, תבל היא בית תוכנה ושותף טכנולוגי שמבין את התהליך העסקי לפני הפיתוח ומסוגל לתכנן, לבנות ולהטמיע את המערכת הנכונה — במקום למכור פתרון מדף ולדרוש מהעסק להתאים את עצמו אליו.</Li>
+                <Li k="Engineering ו-R&D">תבל פועלת בשני מצבים משלימים. כאשר הבעיה ברורה, אנחנו מתכננים ובונים את המערכת. כאשר הפתרון עדיין אינו ברור, אנחנו חוקרים, בודקים היתכנות ומפתחים אותו.</Li>
               </Ul>
 
-              <H3>{title(1, 73)}</H3>
+              <H3>ההבטחה</H3>
               <Ul>
-                <Li k={`${label(2, 74)} (LI)`}>{Array.from({ length: 7 }, (_, i) => title(1 + (i % 2), 75 + i * 2)).join(", ")}</Li>
-                <Li k={label(2, 76)}>{Array.from({ length: 4 }, (_, i) => `${title(2, 77 + i * 5)} (${title(2, 78 + i * 5)})`).join(", ")}</Li>
-                <Li k={label(2, 79)}>{title(1, 80)} B</Li>
-                <Li k={label(2, 81)}>{plain(2, 82)} c. $42m</Li>
+                <Li k="נקודת הפתיחה">לקוח יכול להגיע לתבל עם בעיה ולא עם מפרט טכני.</Li>
+                <Li k="הרצף">Discovery → Business Mapping → Product Strategy → UX/UI → Architecture → Development → Integrations → AI → Deployment → Maintenance → Improvement</Li>
+                <Li k="Differentiator">Business understanding + UX + Engineering + End-to-End execution</Li>
+                <Li k="Primary outcome">Less friction. Better operations. Scalable technology.</Li>
               </Ul>
 
-              <H2>{title(1, 83)}</H2>
-              <Product seed={84} usps={2} first />
-              <Product seed={110} usps={2} />
-              <Product seed={136} usps={2} />
-              <Product seed={162} usps={4} />
-              <Product seed={188} usps={3} />
-              <Product seed={214} usps={3} />
-              <Product seed={240} usps={3} rails />
+              <H2>השכבות של תבל</H2>
+              {layers.map((l, i) => <Product key={l.title} layer={l} first={i === 0} />)}
 
-              <H3>{title(3, 270)}</H3>
-              <P>{title(2, 271)} <A seed={271} path="board" />.</P>
+              <H3>ההיגיון שמחבר הכול</H3>
+              <P>Understand the business → Build its technology → Connect it → Make it intelligent → Improve it continuously.</P>
 
-              <H2>{title(3, 272)}</H2>
-              <H3 first>{title(2, 273)}</H3>
+              <H2>שירותים וקהל יעד</H2>
+              <H3 first>שירותים</H3>
               <Ul>
-                <Li k={label(1, 274)}>{Array.from({ length: 7 }, (_, i) => title(1, 275 + i * 2)).join(", ")}</Li>
-                <Li k={label(1, 276)}>{Array.from({ length: 3 }, (_, i) => title(1 + (i % 2), 277 + i * 3)).join(", ")}</Li>
-                <Li k={label(1, 278)}>{sentence(8, 279).slice(0, -1)}</Li>
+                <Li k="פיתוח">מערכות מידע, Back Office, פורטלים, דשבורדים, CRM, ERP, Web Apps, אפליקציות מובייל, אתרים ו-APIs</Li>
+                <Li k="Intelligence">AI Agents, Internal Copilots, RAG, Document AI, אוטומציות, אינטגרציות ומערכי שירות לקוחות מבוססי AI</Li>
+                <Li k="שירותי תוכנה מקיפים">אפיון, Product Strategy, UX/UI, Architecture, Cloud, Deployment, QA, Monitoring, Security hardening, תחזוקה, פיתוח המשך וייעוץ טכנולוגי</Li>
               </Ul>
-              <H3>{title(2, 280)}</H3>
-              <Ul>{Array.from({ length: 14 }, (_, i) => <Li key={i}>{title(1 + (i % 3 === 0 ? 1 : 0), 281 + i * 2)}</Li>)}</Ul>
+              <H3>פרופיל לקוח טיפוסי</H3>
+              <Ul>{profile.map((p) => <Li key={p}>{p}</Li>)}</Ul>
 
-              <H2>{title(3, 300)}</H2>
+              <H2>סימנים לפנייה מתאימה</H2>
+              <Ul>{signs.map((s) => <Li key={s}>{s}</Li>)}</Ul>
+
+              <H2>שאלות נפוצות</H2>
               <Ul>
-                <Li k="API">{sentence(5, 301).slice(0, -1)} (<A seed={301} path="docs/index.html" />).</Li>
-                <Li k={label(1, 302)}>{sentence(12, 303).slice(0, -1)} <A seed={303} path="app/register" /></Li>
-                <Li k={label(3, 304)}>{sentence(12, 305).slice(0, -1)}</Li>
-                <Li k={`${label(4, 306)} (LIP)`}>{plain(7, 307)} 2025. {title(3, 308)} <A seed={308} path="lorem/ipsum-dolor-server" /></Li>
-                <Li k={label(1, 309)}>{plain(2, 310)} <A seed={310} path="status/" /></Li>
+                {faq.map((g) => (
+                  <Li key={g.group} k={g.group}>
+                    <Ul nested>{g.qa.map(([q, a]) => <Li key={q} k={q}>{a}</Li>)}</Ul>
+                  </Li>
+                ))}
               </Ul>
 
-              <H2>{title(3, 311)}</H2>
+              <H2>משפטי מותג</H2>
               <Ul>
-                <Li k={label(3, 312)}>
-                  <Ul nested>
-                    <Li>{title(1, 313)}: {plain(24, 314)}</Li>
-                    <Li>{title(1, 315)}: 8 {plain(18, 316)}</Li>
-                  </Ul>
-                </Li>
-                <Li k={label(3, 317)}>
-                  <Ul nested>
-                    <Li>{title(1, 318)}: {plain(14, 319)}</Li>
-                    <Li>{title(1, 320)}: {plain(20, 321)}</Li>
-                  </Ul>
-                </Li>
-              </Ul>
-
-              <H2>{title(5, 322)}</H2>
-              <Ul>
-                <Li k={label(2, 323)}><A seed={323} path="docs/index.html" /></Li>
-                <Li k={label(1, 324)}>{sentence(4, 325).slice(0, -1)} <A seed={325} path="app/register" /></Li>
-                <Li k={label(1, 326)}><A seed={326} path="social/lorem-ipsum" /></Li>
-                <Li k={label(1, 327)}><A seed={327} path="video/@LoremIpsum" /></Li>
-                <Li k={label(1, 328)}><A seed={328} path="contact/sales" /></Li>
-                <Li k={label(1, 329)}>support@lorem.example</Li>
-                <Li k={label(1, 330)}><A seed={330} path="community/shared_invite/zt-0l0rem1psum-D0L0RS1TAm3tC0nsecteturAd1p1sc1ng" /></Li>
+                <Li k="Brand line">TEVEL builds the systems businesses run on.</Li>
+                <Li k="עברית">תבל בונה את המערכות שעליהן עסקים עובדים.</Li>
+                <Li k="Differentiation line">אנחנו מבינים איך העסק עובד — ובונים את הטכנולוגיה שתגרום לו לעבוד טוב יותר.</Li>
+                <Li k="Core belief">Technology should serve the business, not become another problem the business has to manage.</Li>
+                <Li k="R&D">TEVEL — Build what matters.</Li>
+                <Li k="המסר הרחב">Bring us the problem. We&apos;ll find the technology.</Li>
+                <Li k="בואו נדבר"><A href="/contact">ספרו לנו מה לא עובד</A></Li>
               </Ul>
             </Reveal>
           </article>

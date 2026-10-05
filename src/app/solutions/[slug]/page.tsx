@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import SolutionPage from "@/components/pages/solutions/SolutionPage";
-import { title } from "@/lib/lorem";
-import { slugs } from "@/lib/site";
+import { names, slugs } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -12,7 +11,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: title(3, 20 + slugs.solutions.indexOf(slug)) };
+  return { title: names.solutions[slugs.solutions.indexOf(slug)] };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

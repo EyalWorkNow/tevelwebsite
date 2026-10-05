@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-// Original drifting glyph band: currency marks clustered in a field of slashes.
+// Original drifting glyph band: code marks clustered in a field of slashes.
 export default function CurrencyField() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -27,8 +27,8 @@ export default function CurrencyField() {
           for (let i = 0; i * cw < w; i++) {
             const x = i * cw + 2, y = j * ch + 2;
             const v = Math.sin(i * 0.31 + s * 3) * Math.cos(j * 0.9 - s * 2) + Math.sin(i * 0.07 - j * 0.4 + s * 5) + Math.sin((i * 13 + j * 7) * 0.37);
-            if (v > 1.05) { ctx.fillStyle = "rgba(194,188,178,.75)"; ctx.fillText((i * 3 + j) % 5 < 3 ? "£" : "$", x, y); }
-            else if (v > 0.75) { ctx.fillStyle = "rgba(149,144,137,.55)"; ctx.fillText("$", x, y); }
+            if (v > 1.05) { ctx.fillStyle = "rgba(194,188,178,.75)"; ctx.fillText((i * 3 + j) % 5 < 3 ? "{" : "}", x, y); }
+            else if (v > 0.75) { ctx.fillStyle = "rgba(149,144,137,.55)"; ctx.fillText("<", x, y); }
             else { ctx.fillStyle = "rgba(81,78,75,.7)"; ctx.fillText(v < -1.6 ? "·" : "/", x, y); }
           }
         }

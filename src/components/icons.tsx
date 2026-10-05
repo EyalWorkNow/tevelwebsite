@@ -4,10 +4,10 @@ type P = SVGProps<SVGSVGElement>;
 const base = { fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
 export const Arrow = (p: P) => (
-  <svg viewBox="0 0 16 16" width={12} height={12} {...base} {...p}><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+  <svg viewBox="0 0 16 16" width={12} height={12} {...base} {...p} className={`rtl:-scale-x-100 ${p.className ?? ""}`}><path d="M3 8h10M9 4l4 4-4 4" /></svg>
 );
 export const ArrowUpRight = (p: P) => (
-  <svg viewBox="0 0 16 16" width={14} height={14} {...base} {...p}><path d="M5 11l6-6M6 5h5v5" /></svg>
+  <svg viewBox="0 0 16 16" width={14} height={14} {...base} {...p} className={`rtl:-scale-x-100 ${p.className ?? ""}`}><path d="M5 11l6-6M6 5h5v5" /></svg>
 );
 export const Check = (p: P) => (
   <svg viewBox="0 0 16 16" width={16} height={16} {...p}>
@@ -15,7 +15,12 @@ export const Check = (p: P) => (
     <path d="M4.8 8.2l2 2 4.4-4.4" fill="none" stroke="#0c0c0b" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
-/** Original mark for the fictional brand — a compass meridian. */
+/** TEVEL wordmark (user-supplied, /public/brand). */
+export const TevelLogo = ({ className = "h-7 w-auto" }: { className?: string }) => (
+  // eslint-disable-next-line @next/next/no-img-element
+  <img src="/brand/tevel-logo.svg" alt="TEVEL תבל" className={className} />
+);
+/** Legacy placeholder mark. */
 export const Logo = (p: P) => (
   <svg viewBox="0 0 28 28" width={28} height={28} {...base} {...p}>
     <circle cx="14" cy="14" r="11" />
@@ -49,6 +54,7 @@ export const glyphs: Record<string, (p: P) => React.JSX.Element> = {
   percent: g("M5 15L15 5M6 7.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM14 15.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"),
   globe: g("M10 3a7 7 0 100 14 7 7 0 000-14zM3 10h14M10 3c2 2.2 2.8 4.5 2.8 7S12 14.8 10 17c-2-2.2-2.8-4.5-2.8-7S8 5.2 10 3z"),
   lock: g("M5 9h10v8H5zM7 9V6.5a3 3 0 016 0V9"),
+  stack: g("M10 3l7 3.5-7 3.5-7-3.5zM3 10l7 3.5 7-3.5M3 13.5L10 17l7-3.5"),
   spark: g("M10 2.5v4M10 13.5v4M2.5 10h4M13.5 10h4M5 5l2.5 2.5M12.5 12.5L15 15M15 5l-2.5 2.5M7.5 12.5L5 15"),
 };
 export const Glyph = ({ name, ...p }: P & { name: string }) => { const G = glyphs[name] ?? glyphs.spark; return <G {...p} />; };

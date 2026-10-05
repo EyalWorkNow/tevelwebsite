@@ -1,4 +1,4 @@
-/** Fictional customer wordmark: an original geometric glyph + lorem name. */
+/** Neutral scenario label: an original geometric glyph + scenario name (no company names). */
 const shapes = [
   "M2 14L10 4l8 10M6 14l4-5 4 5",
   "M3 3h14v4H3zM3 10h8v7H3z",

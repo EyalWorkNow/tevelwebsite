@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const steps = [
-  { tag: "Lorem ipsum", title: "Dolor sit", body: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt.", color: "var(--color-teal)", notes: [["Lorem UI", -150, -250, -40, -95], ["Ipsum dolor", 175, -205, 75, -60]] },
-  { tag: "Sit amet", title: "Consectetur", body: "Ut enim ad minim veniam, quis nostrud exercitation ullamco.", color: "var(--color-amber)", notes: [["Elit API", -175, -150, -60, -20], ["Tempor", 185, -110, 70, 10]] },
-  { tag: "Adipiscing", title: "Eiusmod", body: "Duis aute irure dolor in reprehenderit in voluptate velit.", color: "var(--color-violet)", notes: [["Magna core", -180, -60, -70, 40], ["Labore", 180, -20, 80, 60]] },
-  { tag: "Tempor elit", title: "Incididunt", body: "Excepteur sint occaecat cupidatat non proident, sunt in culpa.", color: "var(--color-rose)", notes: [["Aliqua", -175, 40, -60, 140], ["Veniam ledger", 170, 80, 70, 160]] },
+  { tag: "BUILD", title: "אנחנו בונים תוכנה", body: "מערכות מידע, CRM ו-ERP, Back Office, Web Apps ואפליקציות מובייל.", color: "var(--color-teal)", notes: [["Business Systems", -150, -250, -40, -95], ["CRM / ERP", 175, -205, 75, -60]] },
+  { tag: "INTELLIGENCE", title: "מחברים ומוסיפים חוכמה", body: "AI, אוטומציות, אינטגרציות ומערכי שירות לקוחות מבוססי AI.", color: "var(--color-brand)", notes: [["AI Layer", -175, -150, -60, -20], ["Automations", 185, -110, 70, 10]] },
+  { tag: "TRANSFORM", title: "מבינים מה צריך להשתנות", body: "מיפוי העסק, ניתוח תהליכים ו-Technology Roadmap לפני שכותבים קוד.", color: "var(--color-amber)", notes: [["Mapping", -180, -60, -70, 40], ["Roadmap", 180, -20, 80, 60]] },
+  { tag: "INVENT", title: "R&D כשאין פתרון מוכן", body: "מחקר, היתכנות, PoC ואבות-טיפוס — עד מוצר שאפשר להפעיל.", color: "var(--color-violet)", notes: [["PoC", -175, 40, -60, 140], ["Prototype", 170, 80, 70, 160]] },
 ] as const;
 
 const S = 150; // half-size of each plate in flat coords
@@ -67,34 +67,33 @@ export default function Platform() {
       <div className="wrap sticky top-0 h-screen">
         <div className="grid h-full md:grid-cols-2">
           {/* Left: intro copy, then the timeline */}
-          <div className="inner relative border-line md:border-r">
+          <div className="inner relative border-line md:border-e">
             <div className={`absolute inset-x-6 top-1/2 -translate-y-1/2 transition-opacity duration-500 md:inset-x-10 ${intro ? "opacity-100" : "pointer-events-none opacity-0"}`}>
-              <h2 className="h2">Lorem ipsum dolor sit <em>amet</em></h2>
-              <p className="mt-4 max-w-[380px] font-light leading-6">
-                Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.{" "}
-                <a href="#" className="underline underline-offset-4 hover:text-stone">Magna aliqua</a>. Ut enim. Ad minim veniam.
+              <h2 className="h2">אנחנו מבינים איך העסק עובד — ובונים את הטכנולוגיה <em>שתגרום לו לעבוד טוב יותר.</em></h2>
+              <p className="mt-4 max-w-[420px] font-light leading-7 text-stone">
+                ארבע שכבות, DNA אחד: להבין את העסק, לבנות את הטכנולוגיה שלו, לחבר אותה, להפוך אותה לחכמה — ולשפר אותה כל הזמן.
               </p>
             </div>
 
-            <div className={`absolute inset-y-16 left-6 w-px bg-line md:left-10 transition-opacity duration-500 ${intro ? "opacity-0" : "opacity-100"}`}>
+            <div className={`absolute inset-y-16 start-6 w-px bg-line md:start-10 transition-opacity duration-500 ${intro ? "opacity-0" : "opacity-100"}`}>
               <div className="absolute inset-x-0 top-0 transition-[height,background] duration-300" style={{ height: `${sp * 100}%`, background: color }} />
             </div>
 
-            <ol className={`absolute inset-y-16 left-6 right-6 transition-opacity duration-500 md:left-10 ${intro ? "opacity-0" : "opacity-100"}`}>
+            <ol className={`absolute inset-y-16 start-6 end-6 transition-opacity duration-500 md:start-10 ${intro ? "opacity-0" : "opacity-100"}`}>
               {steps.map((s, i) => {
                 const isActive = i === active;
                 const above = i < active;
                 return (
                   <li
                     key={s.tag}
-                    className="absolute left-0 right-0 -translate-y-1/2 transition-all duration-500"
+                    className="absolute inset-x-0 -translate-y-1/2 transition-all duration-500"
                     style={{ top: isActive ? "45%" : above ? `${i * 4}%` : `${88 + (i - active - 1) * 4}%` }}
                   >
                     <div key={`${i}-${active}`} className="label flex items-center gap-4 animate-[step-up_.35s_ease-out_both]">
-                      <span className="-ml-[7px] grid size-[15px] place-items-center rounded-full bg-ink" style={{ boxShadow: isActive ? `0 0 0 1px ${s.color}` : "none" }}>
+                      <span className="-ms-[7px] grid size-[15px] place-items-center rounded-full bg-ink" style={{ boxShadow: isActive ? `0 0 0 1px ${s.color}` : "none" }}>
                         <span className="size-[5px] rounded-full" style={{ background: isActive ? s.color : "var(--color-line-2)" }} />
                       </span>
-                      <span className="text-line-2">0{i + 1}</span>
+                      <span className="text-line-2" dir="ltr">0{i + 1}</span>
                       <span className={isActive ? "text-paper animate-[eyebrow-wipe_.5s_ease-out_both]" : "text-line-2"}>{s.tag}</span>
                     </div>
                     <div className={`overflow-hidden pl-[26px] transition-all duration-500 ${isActive ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
@@ -109,7 +108,7 @@ export default function Platform() {
 
           {/* Right: exploding isometric stack */}
           <div className="hidden items-center justify-center md:flex" style={{ backgroundImage: "radial-gradient(#363533 1px, transparent 1px)", backgroundSize: "16px 16px" }}>
-            <svg viewBox="-300 -380 600 760" className="h-[85vh] max-h-[720px] w-auto overflow-visible" aria-hidden>
+            <svg style={{ direction: "ltr" }} viewBox="-300 -380 600 760" className="h-[85vh] max-h-[720px] w-auto overflow-visible" aria-hidden>
               {steps.map((s, i) => {
                 const y = (i - 1.5) * (40 + 110 * spread);
                 const on = i === active;

@@ -21,7 +21,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   return (
     <section className="wrap">
       <div className="inner grid grid-cols-1 gap-8 pb-20 pt-10 md:pt-20 lg:grid-cols-[1fr_minmax(0,837px)_1fr]">
-        <div><BackLink href="/blog">Back to blog</BackLink></div>
+        <div><BackLink href="/blog">חזרה ל-Insights</BackLink></div>
         <article className="flex flex-col gap-8">
           <Reveal className="flex flex-col items-center gap-5 text-center">
             <h1 className="max-w-[640px] font-serif text-[30px] font-light leading-8 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">{a.title}</h1>
