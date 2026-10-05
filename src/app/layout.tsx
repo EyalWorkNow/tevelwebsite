@@ -9,7 +9,7 @@ import "./globals.css";
 const heebo = Heebo({ variable: "--font-heebo", subsets: ["hebrew", "latin"], weight: ["300", "400", "500", "700"] });
 
 
-const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevelwebsite.vercel.app").replace(/\/$/, "");
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevel.tech").replace(/\/$/, "");
 // Structured data so search and AI engines understand who TEVEL is.
 const jsonLd = {
   "@context": "https://schema.org",

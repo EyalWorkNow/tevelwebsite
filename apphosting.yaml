@@ -6,7 +6,7 @@ env:
   - variable: GMAIL_USER
     value: eyalatiyawork@gmail.com
   - variable: LEAD_TO_EMAIL
-    value: eyalatiyawork@gmail.com
+    value: Eyal@kalimo-tech.com
   # Stored in Google Secret Manager: firebase apphosting:secrets:set GMAIL_APP_PASSWORD
   - variable: GMAIL_APP_PASSWORD
     secret: GMAIL_APP_PASSWORD
