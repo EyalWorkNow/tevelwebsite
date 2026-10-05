@@ -13,6 +13,7 @@ export default function Footer() {
             <p className="label text-muted">Software House &amp; Technology Partner</p>
             <p className="max-w-[260px]">תבל בונה את המערכות שעליהן עסקים עובדים — ממערכות מידע, CRM ו-ERP ועד AI, אוטומציות ומוצרים דיגיטליים.</p>
             <p>Understand first. Build what matters.</p>
+            <a href="https://www.linkedin.com/in/eyal-atia-24a8a5246" target="_blank" rel="noopener me" className="inline-flex items-center gap-2 text-stone transition-colors hover:text-paper"><span className="grid size-6 place-items-center rounded border border-line-2 font-mono text-[10px]">in</span>LinkedIn</a>
                       </div>
           {footer.map((col) => (
             <div key={col.label}>
