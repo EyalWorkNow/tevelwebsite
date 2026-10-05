@@ -1,8 +1,9 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import { CtaBand, Reveal } from "@/components/ui";
 import { EpisodeList, PlatformButton, type Episode } from "@/components/pages/podcast/Episodes";
 
-export const metadata: Metadata = { title: "R&D & Custom Technology" };
+export const metadata: Metadata = seo("/podcast");
 
 // R&D capabilities and process (R&D master §4–§11, §21–§24). Same 14-entry list shape as before.
 const entries: [guest: string, title: string, body: string, date: string][] = [

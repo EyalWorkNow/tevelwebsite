@@ -28,14 +28,19 @@ const jsonLd = {
 export const metadata: Metadata = {
   title: { default: "TEVEL | תבל — בית תוכנה ושותף טכנולוגי", template: "%s | תבל" },
   metadataBase: new URL(BASE),
-  alternates: { canonical: "/", types: { "text/plain": "/llms.txt" } },
-  openGraph: { type: "website", locale: "he_IL", siteName: "TEVEL | תבל" },
+  alternates: { types: { "text/plain": "/llms.txt" } },
+  openGraph: { type: "website", locale: "he_IL", siteName: "TEVEL | תבל", images: [{ url: "/og.png", width: 1200, height: 630 }] },
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
   description: "תבל בונה את התשתית הטכנולוגית שמאחורי העסק — מערכות מידע, CRM ו-ERP, AI, אוטומציות, שירות לקוחות חכם ומוצרים דיגיטליים.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="he" dir="rtl" className={`${heebo.variable} antialiased`}>
+    <html lang="he" dir="rtl" suppressHydrationWarning className={`${heebo.variable} antialiased`}>
+      <head>
+        {/* Content stays visible without JS; reveal animations only hide it once JS is running */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>

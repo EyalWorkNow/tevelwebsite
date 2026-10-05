@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { answers, type Answer, type Lang } from "@/lib/answers";
 import { Button, CtaBand, Reveal } from "@/components/ui";
 import { Arrow } from "@/components/icons";
+import { trimDesc, OG_IMAGES } from "@/lib/seo";
 
 const BASE = (process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3010")).replace(/\/$/, "");
 const path = (lang: Lang, slug?: string) => `${lang === "en" ? "/en" : ""}/answers${slug ? `/${slug}` : ""}`;
@@ -15,9 +16,9 @@ export function answerMetadata(a: Answer, lang: Lang): Metadata {
   const t = a[lang];
   return {
     title: t.q,
-    description: t.tldr.slice(0, 160),
+    description: trimDesc(t.tldr),
     alternates: { canonical: path(lang, a.slug), languages: { he: path("he", a.slug), en: path("en", a.slug), "x-default": path("he", a.slug) } },
-    openGraph: { title: t.q, description: t.tldr.slice(0, 200), locale: lang === "he" ? "he_IL" : "en_US", type: "article" },
+    openGraph: { title: t.q, description: trimDesc(t.tldr, 200), url: path(lang, a.slug), images: OG_IMAGES, locale: lang === "he" ? "he_IL" : "en_US", type: "article" },
   };
 }
 
@@ -27,6 +28,17 @@ export function indexMetadata(lang: Lang): Metadata {
     description: ui[lang].indexLede,
     alternates: { canonical: path(lang), languages: { he: path("he"), en: path("en"), "x-default": path("he") } },
   };
+}
+
+// Related questions: rank by shared destination links (same topic), keep 6.
+function related(a: Answer) {
+  const mine = new Set(a.links.map((l) => l.href));
+  return answers
+    .filter((x) => x.slug !== a.slug)
+    .map((x, i) => ({ x, score: x.links.filter((l) => mine.has(l.href) || l.href.endsWith(a.slug)).length * 10 - i / 100 }))
+    .sort((p, q) => q.score - p.score)
+    .slice(0, 6)
+    .map((r) => r.x);
 }
 
 export function AnswerPage({ a, lang }: { a: Answer; lang: Lang }) {
@@ -102,7 +114,7 @@ export function AnswerPage({ a, lang }: { a: Answer; lang: Lang }) {
         <div className="wrap"><div className="inner py-14">
           <h2 className="label text-muted">{u.other}</h2>
           <ul className="mt-6 grid gap-3 md:grid-cols-2">
-            {answers.filter((x) => x.slug !== a.slug).map((x) => (
+            {related(a).map((x) => (
               <li key={x.slug}><Link href={path(lang, x.slug)} className="block rounded-lg border border-line p-4 leading-7 transition-colors hover:border-line-2 hover:bg-ink-2">{x[lang].q}</Link></li>
             ))}
           </ul>

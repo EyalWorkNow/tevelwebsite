@@ -31,7 +31,7 @@ export function Reveal({ children, delay = 0, className = "", as: Tag = "div" }:
   const style: CSSProperties = { animationDelay: `${delay}ms` };
   return (
     // @ts-expect-error polymorphic ref
-    <Tag ref={ref} style={style} className={`${on ? "animate-[slide-up-and-fade_.6s_cubic-bezier(.16,1,.3,1)_both]" : "opacity-0"} ${className}`}>
+    <Tag ref={ref} style={style} className={`reveal ${on ? "reveal-in animate-[slide-up-and-fade_.6s_cubic-bezier(.16,1,.3,1)_both]" : ""} ${className}`}>
       {children}
     </Tag>
   );

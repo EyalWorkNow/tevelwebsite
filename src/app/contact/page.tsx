@@ -1,9 +1,10 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand, Reveal } from "@/components/ui";
 import { LeadForm } from "@/components/LeadForm";
 
-export const metadata: Metadata = { title: "צרו קשר" };
+export const metadata: Metadata = seo("/contact");
 
 /* Original 24px line icons in the reference's thin-stroke style. */
 const icon = (d: string) => (

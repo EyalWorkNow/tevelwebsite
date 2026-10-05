@@ -1,9 +1,10 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/ui";
 import { LeadForm } from "@/components/LeadForm";
 
-export const metadata: Metadata = { title: "בואו נדבר" };
+export const metadata: Metadata = seo("/contact/sales");
 
 export default function ContactSalesPage() {
   return (

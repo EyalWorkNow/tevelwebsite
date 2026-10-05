@@ -1,3 +1,4 @@
+import { trimDesc } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { slugs } from "@/lib/site";
@@ -15,7 +16,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const i = slugs.legal.indexOf(slug);
-  return i < 0 ? {} : { title: buildLegal(i).heading };
+  if (i < 0) return {};
+  const d = buildLegal(i);
+  return { title: d.heading, description: trimDesc(d.lede), alternates: { canonical: `/legal/${slug}` } };
 }
 
 export default async function LegalPage({ params }: Props) {

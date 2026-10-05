@@ -1,3 +1,4 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -5,7 +6,7 @@ import Logos from "@/components/Logos";
 import { Button, CtaBand, Eyebrow, Reveal } from "@/components/ui";
 import { names, slugs } from "@/lib/site";
 
-export const metadata: Metadata = { title: "איך עובדים" };
+export const metadata: Metadata = seo("/pricing");
 
 /* ---------- building blocks (measured from the reference: pricing_card / cardHeader / cardBody) ---------- */
 function Card({ children, as: Tag = "div" }: { children: ReactNode; as?: "div" | "section" }) {

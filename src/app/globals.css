@@ -105,3 +105,7 @@ body > :not(#a11y-root):not(.skip-link) { zoom: var(--a11y-zoom, 1); }
   .tachles section, .tachles li, .tachles div.rounded-lg { break-inside: avoid; }
   .tachles [style*="animation"], .tachles .opacity-0 { opacity: 1 !important; animation: none !important; transform: none !important; }
 }
+
+/* Reveal: hidden only when JS runs (html.js), so no-JS / crawlers always see content */
+html.js .reveal:not(.reveal-in) { opacity: 0; }
+@media print { html.js .reveal { opacity: 1 !important; } }

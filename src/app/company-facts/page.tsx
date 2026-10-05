@@ -1,12 +1,12 @@
+import { seo } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui";
 
-export const metadata: Metadata = { title: "תבל בקצרה" };
+export const metadata: Metadata = seo("/company-facts");
 
 /* ---------- prose primitives (measured: p 18/28, h2 serif 31/40, h3 20/32, ul ps-32) ---------- */
-const TBD = "[להשלמה]";
 const A = ({ href, children }: { href: string; children: ReactNode }) => (
   <Link href={href} className="[overflow-wrap:anywhere] underline decoration-paper/70 decoration-1 underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:decoration-transparent">
     {children}
@@ -104,20 +104,19 @@ export default function CompanyFactsPage() {
             </header>
 
             <Reveal delay={140} className="text-base leading-6 tracking-[0.01em] md:text-lg md:leading-7">
-              <p>עודכן לאחרונה: {TBD}</p>
+              <p>עודכן לאחרונה: אוקטובר 2026</p>
 
               <H2>החברה</H2>
               <H3 first>מי אנחנו</H3>
               <P k="מה זה תבל?">תבל היא בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות ומוצרים טכנולוגיים מקצה לקצה — מתחילים מהבעיה ובונים סביבה את הטכנולוגיה הנכונה.</P>
               <P k="שם">TEVEL | תבל</P>
               <P k="הגדרה">Software House & Technology Partner, R&D Studio</P>
-              <P k="אתר">{TBD}</P>
+              <P k="אתר"><a href="https://www.tevel.space" className="underline underline-offset-4">www.tevel.space</a></P>
               <P k="יצירת קשר"><A href="/contact">טופס יצירת קשר</A></P>
               <P k="תחומים">מערכות מידע ותוכנה עסקית, CRM ו-ERP בהתאמה אישית, AI ואוטומציות, מערכי שירות לקוחות מבוססי AI, אינטגרציות, אפליקציות מובייל, Web Apps ואתרים, R&D ופיתוח טכנולוגי מיוחד.</P>
               <P k="קהל יעד">עסקים וארגונים עם פעילות ומורכבות תפעולית אמיתית</P>
               <P k="מוצרים">Tevel Invoice</P>
-              <P k="שנת הקמה">{TBD}</P>
-              <P k="מיקום">{TBD}</P>
+              <P k="מיקום">ישראל</P>
 
               <H3>Elevator pitch</H3>
               <P k="10 שניות">תבל היא בית תוכנה שבונה מערכות עסקיות, AI ואוטומציות סביב הדרך שבה העסק באמת עובד.</P>

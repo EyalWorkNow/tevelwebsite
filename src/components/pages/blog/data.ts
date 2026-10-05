@@ -32,22 +32,22 @@ const published: { excerpt: string; tag: string; word: string }[] = [
 ];
 
 /** Upcoming topics (brief §26 + R&D §41) — no route yet, so they point to /contact. */
-const upcoming: { title: string; excerpt: string; tag: string; word: string }[] = [
-  { title: "איך ממפים עסק לפני פיתוח?", excerpt: "מחלקות, מערכות, handoffs ועבודה ידנית: מה בודקים לפני שכותבים שורת קוד אחת.", tag: "Mapping", word: "Discovery" },
-  { title: "מתי ERP מותאם הגיוני?", excerpt: "לא כל ארגון צריך ERP שלם מאפס. לפעמים נכון יותר מודול, שכבת Orchestration או אינטגרציה.", tag: "ERP", word: "Operations" },
-  { title: "איך מחברים מערכות בלי להחליף הכול?", excerpt: "APIs, Webhooks וסנכרון נתונים: איך גורמים למערכות קיימות לדבר זו עם זו.", tag: "API", word: "Integrate" },
-  { title: "PoC, Prototype או MVP: מה ההבדל?", excerpt: "שלושה שלבים עם שלוש מטרות שונות, ולמה חשוב לדעת באיזה מהם הפרויקט נמצא.", tag: "PoC", word: "MVP" },
-  { title: "איך בודקים רעיון טכני לפני שבונים אותו?", excerpt: "הניסוי הקטן ביותר שמכריע את הסיכון המרכזי, לפני שמשקיעים בפיתוח מלא.", tag: "Validate", word: "Idea" },
-  { title: "למה Success Criteria חשובים ב-R&D?", excerpt: "בלי הגדרה מראש של הצלחה, קל מאוד \"להצליח\" בניסוי שלא מוכיח דבר.", tag: "Criteria", word: "Success" },
-  { title: "איך מעריכים סיכון טכנולוגי?", excerpt: "טכנולוגיה, נתונים, אינטגרציה, סקייל, עלות ו-UX: מפה של הסיכונים לפני שמתחייבים.", tag: "Risk", word: "Map" },
-  { title: "מתי Edge AI הגיוני?", excerpt: "מתי כדאי להריץ AI קרוב למקור הנתונים, ומתי עדיף להישאר בענן.", tag: "Edge", word: "AI" },
-  { title: "AI Tutor מול LMS מסורתי", excerpt: "מה משתנה כשמערכת למידה מתאימה את עצמה ללומד, ומה צריך להגדיר כדי שזה יעבוד.", tag: "Learning", word: "Tutor" },
+const upcoming: { href?: string; title: string; excerpt: string; tag: string; word: string }[] = [
+  { href: "/answers/digital-transformation-start", title: "איך ממפים עסק לפני פיתוח?", excerpt: "מחלקות, מערכות, handoffs ועבודה ידנית: מה בודקים לפני שכותבים שורת קוד אחת.", tag: "Mapping", word: "Discovery" },
+  { href: "/answers/custom-erp-development", title: "מתי ERP מותאם הגיוני?", excerpt: "לא כל ארגון צריך ERP שלם מאפס. לפעמים נכון יותר מודול, שכבת Orchestration או אינטגרציה.", tag: "ERP", word: "Operations" },
+  { href: "/answers/connect-systems", title: "איך מחברים מערכות בלי להחליף הכול?", excerpt: "APIs, Webhooks וסנכרון נתונים: איך גורמים למערכות קיימות לדבר זו עם זו.", tag: "API", word: "Integrate" },
+  { href: "/answers/rd-poc-prototype", title: "PoC, Prototype או MVP: מה ההבדל?", excerpt: "שלושה שלבים עם שלוש מטרות שונות, ולמה חשוב לדעת באיזה מהם הפרויקט נמצא.", tag: "PoC", word: "MVP" },
+  { href: "/answers/rd-poc-prototype", title: "איך בודקים רעיון טכני לפני שבונים אותו?", excerpt: "הניסוי הקטן ביותר שמכריע את הסיכון המרכזי, לפני שמשקיעים בפיתוח מלא.", tag: "Validate", word: "Idea" },
+  { href: "/answers/rd-poc-prototype", title: "למה Success Criteria חשובים ב-R&D?", excerpt: "בלי הגדרה מראש של הצלחה, קל מאוד \"להצליח\" בניסוי שלא מוכיח דבר.", tag: "Criteria", word: "Success" },
+  { href: "/answers/rd-poc-prototype", title: "איך מעריכים סיכון טכנולוגי?", excerpt: "טכנולוגיה, נתונים, אינטגרציה, סקייל, עלות ו-UX: מפה של הסיכונים לפני שמתחייבים.", tag: "Risk", word: "Map" },
+  { href: "/answers/computer-vision-development", title: "מתי Edge AI הגיוני?", excerpt: "מתי כדאי להריץ AI קרוב למקור הנתונים, ומתי עדיף להישאר בענן.", tag: "Edge", word: "AI" },
+  { href: "/answers/custom-lms-elearning", title: "AI Tutor מול LMS מסורתי", excerpt: "מה משתנה כשמערכת למידה מתאימה את עצמה ללומד, ומה צריך להגדיר כדי שזה יעבוד.", tag: "Learning", word: "Tutor" },
 ];
 
 /** 15 cards: the six articles, then upcoming topics marked "בקרוב". */
 export const posts: PostCard[] = [
   ...published.map((p, i) => ({ slug: slugs.posts[i], href: `/blog/${slugs.posts[i]}`, date: LABEL, title: names.posts[i], ...p })),
-  ...upcoming.map((p) => ({ slug: "", href: "/contact", date: SOON, ...p })),
+  ...upcoming.map((p) => ({ slug: "", date: "תשובה קצרה · מאמר מלא בקרוב", ...p, href: p.href ?? "/answers" })),
 ].map((p, i) => ({ ...p, seed: i + 3, author, art: arts[i % arts.length] }));
 
 export const featured = {
