@@ -94,3 +94,13 @@ body > :not(#a11y-root):not(.skip-link) { zoom: var(--a11y-zoom, 1); }
 /* English (dir=ltr) islands inside the RTL site: un-flip direction-aware icons */
 [dir="ltr"] .rtl\:-scale-x-100 { --tw-scale-x: 100% !important; }
 [dir="ltr"] .group:hover .group-hover\:-translate-x-0\.5 { --tw-translate-x: 0.125rem !important; }
+
+/* Print: clean one-pager (used by /tachles "PDF" button) */
+@media print {
+  @page { margin: 12mm; }
+  html, body { background: #fff !important; color: #111 !important; }
+  body > header, body > footer, #a11y-root, .skip-link, nav { display: none !important; }
+  .tachles * { color: #111 !important; border-color: #ccc !important; background: transparent !important; box-shadow: none !important; }
+  .tachles .text-brand, .tachles [style*="color"] { color: #015742 !important; }
+  .tachles section, .tachles li, .tachles div.rounded-lg { break-inside: avoid; }
+}
