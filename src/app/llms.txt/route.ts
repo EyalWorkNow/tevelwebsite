@@ -2,7 +2,7 @@ import { slugs, names } from "@/lib/site";
 import { answers } from "@/lib/answers";
 
 // llms.txt (llmstxt.org): a plain-markdown map of the site for AI assistants and answer engines.
-const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://tevel.tech").replace(/\/$/, "");
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3010")).replace(/\/$/, "");
 const link = (path: string, title: string, desc?: string) => `- [${title}](${BASE}${path})${desc ? `: ${desc}` : ""}`;
 
 export function GET() {
