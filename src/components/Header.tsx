@@ -53,23 +53,28 @@ export default function Header() {
               {menu === item.label && item.groups && (
                 <div
                   onMouseEnter={() => open(item.label)}
-                  className="absolute start-0 top-[calc(100%+10px)] min-w-[190px] origin-top animate-[menu-in_.2s_ease_both] rounded-lg bg-ink-2/60 p-4 shadow-[inset_0_0_0_1px_#625d58,0_6px_18px_rgba(0,0,0,.024),0_3px_9px_rgba(0,0,0,.043)] backdrop-blur-[48px] [perspective:2000px]"
+                  className="absolute start-0 top-[calc(100%+10px)] min-w-[240px] origin-top animate-[menu-in_.2s_ease_both] rounded-2xl border border-white/[0.12] bg-[#121211]/92 p-4 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.85),inset_0_1px_1px_0_rgba(255,255,255,0.22),inset_0_-1px_1px_0_rgba(0,0,0,0.4)] backdrop-blur-2xl backdrop-saturate-[180%] [perspective:2000px]"
                 >
                   {item.groups.map((grp) => (
                     <div key={grp.label || "g"}>
                       {grp.label && (
                         <div className="label mb-2 mt-1 flex items-center gap-2 text-[10px] text-stone-2 first:mt-0">
-                          <span className="whitespace-nowrap">{grp.label}</span><span className="h-px flex-1 bg-line-2" />
+                          <span className="whitespace-nowrap font-medium tracking-wider text-stone-2">{grp.label}</span>
+                          <span className="h-px flex-1 bg-white/10" />
                         </div>
                       )}
                       <ul className="mb-2">
                         {grp.links.map((l) => (
                           <li key={l.href + l.label}>
-                            <Link href={l.href} onClick={() => setMenu(null)} className="group flex items-center gap-3 rounded-md py-2 pe-2 transition-colors">
-                              {l.icon && <span className="grid size-9 shrink-0 place-items-center rounded border border-line-2 text-stone transition-colors group-hover:border-stone group-hover:text-paper"><Glyph name={l.icon} width={18} height={18} /></span>}
+                            <Link href={l.href} onClick={() => setMenu(null)} className="group flex items-center gap-3 rounded-xl p-2 transition-all duration-200 hover:bg-white/[0.06]">
+                              {l.icon && (
+                                <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-stone shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-200 group-hover:border-brand/40 group-hover:bg-brand/[0.08] group-hover:text-paper">
+                                  <Glyph name={l.icon} width={18} height={18} />
+                                </span>
+                              )}
                               <span>
-                                <span className="block whitespace-nowrap leading-5 transition-colors group-hover:text-stone">{l.label}</span>
-                                {l.desc && <span className="block whitespace-nowrap text-xs text-stone-2">{l.desc}</span>}
+                                <span className="block whitespace-nowrap leading-5 text-paper transition-colors group-hover:text-white">{l.label}</span>
+                                {l.desc && <span className="block whitespace-nowrap text-xs text-stone-2 transition-colors group-hover:text-stone">{l.desc}</span>}
                               </span>
                             </Link>
                           </li>

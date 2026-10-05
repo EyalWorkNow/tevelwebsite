@@ -30,7 +30,7 @@ export default function Developers() {
             </div>
           </div>
 
-          <div className="relative grid min-h-[560px] place-items-center overflow-hidden md:-mr-10"
+          <div className="relative grid min-h-[560px] place-items-center overflow-hidden md:-me-10"
             style={{ background: "linear-gradient(180deg,#6e8db0 0%,#b9cde0 45%,#e9eef2 70%,#7d8b97 100%)" }}>
             <div className="w-[360px] max-w-[88%] space-y-2 font-mono text-xs">
               <div className="rounded-md border border-line bg-ink p-3">

@@ -96,9 +96,9 @@ export default function Platform() {
                       <span className="text-line-2" dir="ltr">0{i + 1}</span>
                       <span className={isActive ? "text-paper animate-[eyebrow-wipe_.5s_ease-out_both]" : "text-line-2"}>{s.tag}</span>
                     </div>
-                    <div className={`overflow-hidden pl-[26px] transition-all duration-500 ${isActive ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className={`overflow-hidden ps-8 transition-all duration-500 ${isActive ? "max-h-48 opacity-100" : "max-h-0 opacity-0"}`}>
                       <h3 key={active} className="h2 mt-3 animate-[fade-in_.5s_ease-out_both]">{s.title}</h3>
-                      <p key={-active - 1} className="mt-3 max-w-[300px] text-xl font-light leading-7 animate-[fade-in_.5s_.1s_ease-out_both]">{s.body}</p>
+                      <p key={-active - 1} className="mt-3 max-w-[380px] text-xl font-light leading-7 animate-[fade-in_.5s_.1s_ease-out_both]">{s.body}</p>
                     </div>
                   </li>
                 );

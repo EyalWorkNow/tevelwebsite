@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-230 -140 460 290" width="460" height="290">
+  <!-- 3D Base Thickness -->
+  <g transform="translate(0 10) matrix(0.707 0.409 -0.707 0.409 0 0)">
+    <rect x="-150" y="-150" width="300" height="300" fill="#0c0c0b" stroke="#363533" stroke-width="1" />
+  </g>
+  <!-- Isometric Plate Surface -->
+  <g transform="matrix(0.707 0.409 -0.707 0.409 0 0)">
+    <rect x="-150" y="-150" width="300" height="300" fill="#1a1918" stroke="#e5b53a" stroke-width="1" />
+    <rect x="-125" y="-125" width="250" height="250" fill="#000000" />
+    <circle cx="-85" cy="-85" r="4" fill="#f9f5ef" />
+    <circle cx="-43" cy="-85" r="4" fill="#f9f5ef" />
+    <circle cx="-1" cy="-85" r="4" fill="#f9f5ef" />
+    <circle cx="41" cy="-85" r="4" fill="#f9f5ef" />
+    <circle cx="83" cy="-85" r="4" fill="#f9f5ef" />
+    <circle cx="-85" cy="-43" r="4" fill="#f9f5ef" />
+    <circle cx="-43" cy="-43" r="4" fill="#f9f5ef" />
+    <circle cx="-1" cy="-43" r="4" fill="#f9f5ef" />
+    <circle cx="41" cy="-43" r="4" fill="#f9f5ef" />
+    <circle cx="83" cy="-43" r="4" fill="#f9f5ef" />
+    <circle cx="-85" cy="-1" r="4" fill="#f9f5ef" />
+    <circle cx="-43" cy="-1" r="4" fill="#f9f5ef" />
+    <circle cx="-1" cy="-1" r="4" fill="#f9f5ef" />
+    <circle cx="41" cy="-1" r="4" fill="#f9f5ef" />
+    <circle cx="83" cy="-1" r="4" fill="#f9f5ef" />
+    <circle cx="-85" cy="41" r="4" fill="#f9f5ef" />
+    <circle cx="-43" cy="41" r="4" fill="#f9f5ef" />
+    <circle cx="-1" cy="41" r="4" fill="#f9f5ef" />
+    <circle cx="41" cy="41" r="4" fill="#f9f5ef" />
+    <circle cx="83" cy="41" r="4" fill="#f9f5ef" />
+    <circle cx="-85" cy="83" r="4" fill="#f9f5ef" />
+    <circle cx="-43" cy="83" r="4" fill="#f9f5ef" />
+    <circle cx="-1" cy="83" r="4" fill="#f9f5ef" />
+    <circle cx="41" cy="83" r="4" fill="#f9f5ef" />
+    <circle cx="83" cy="83" r="4" fill="#f9f5ef" />
+    <path d="M-85 -85 L-1 -43 L41 83 L83 -1" stroke="#f9f5ef" stroke-width="1.5" fill="none" />
+  </g>
+</svg>

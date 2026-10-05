@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Heebo } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AccessibilityWidget from "@/components/AccessibilityWidget";
 import "./globals.css";
 
 // One family site-wide: Heebo (headings, body and labels)
@@ -16,9 +17,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="he" dir="rtl" className={`${heebo.variable} antialiased`}>
       <body>
+        <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>
         <Header />
-        <main>{children}</main>
+        <main id="main" tabIndex={-1}>{children}</main>
         <Footer />
+        <AccessibilityWidget />
       </body>
     </html>
   );

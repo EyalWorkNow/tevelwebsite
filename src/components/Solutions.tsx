@@ -31,7 +31,7 @@ export default function Solutions() {
                   <button
                     onClick={() => setOpen(i)}
                     aria-expanded={open === i}
-                    className={`w-full py-4 text-left font-serif font-light transition-all duration-300 ${open === i ? "text-[32px] leading-10 tracking-[-0.05em] text-paper" : "text-xl leading-7 tracking-[-0.02em] text-stone-2 hover:text-paper"}`}
+                    className={`w-full py-4 text-start font-serif font-light transition-all duration-300 ${open === i ? "text-[32px] leading-10 tracking-[-0.05em] text-paper" : "text-xl leading-7 tracking-[-0.02em] text-stone-2 hover:text-paper"}`}
                   >
                     {it.t}
                   </button>
@@ -50,7 +50,7 @@ export default function Solutions() {
           </div>
 
           {/* Visual: generated dusk gradient instead of a photo */}
-          <div className="relative grid min-h-[560px] place-items-center overflow-hidden md:-mr-10"
+          <div className="relative grid min-h-[560px] place-items-center overflow-hidden md:-me-10"
             style={{ background: "radial-gradient(120% 80% at 70% 30%, #e26d4f 0%, #6b2f46 30%, #1c2a4a 60%, #0d1424 100%)" }}>
             <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ backgroundImage: "repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 4px)" }} />
             <div className="relative w-[360px] max-w-[88%] rounded-lg border border-line bg-ink/90 p-4 font-mono text-xs shadow-2xl backdrop-blur">
