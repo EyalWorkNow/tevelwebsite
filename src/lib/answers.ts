@@ -5,7 +5,7 @@ export type Lang = "he" | "en";
 type Text = { q: string; short: string; tldr: string; sections: { h: string; p: string; list?: string[] }[]; faq: [string, string][]; cta: string };
 export type Answer = { slug: string; links: { href: string; he: string; en: string }[]; he: Text; en: Text };
 
-export const answers: Answer[] = [
+const core: Answer[] = [
   {
     slug: "custom-crm-israel",
     links: [{ href: "/solutions/crm-erp", he: "CRM & ERP", en: "CRM & ERP" }, { href: "/products/custom-crm", he: "CRM בהתאמה אישית", en: "Custom CRM" }, { href: "/blog/when-custom-crm", he: "מתי Custom CRM מוצדק?", en: "When is a custom CRM justified?" }],
@@ -295,5 +295,12 @@ export const answers: Answer[] = [
     },
   },
 ];
+
+import { answers as appsWeb } from "./answers-extra/apps-web";
+import { answers as systems } from "./answers-extra/systems";
+import { answers as automationAi } from "./answers-extra/automation-ai";
+import { answers as rdVendor } from "./answers-extra/rd-vendor";
+
+export const answers: Answer[] = [...core, ...appsWeb, ...systems, ...automationAi, ...rdVendor];
 
 export const answerBySlug = (slug: string) => answers.find((a) => a.slug === slug);
