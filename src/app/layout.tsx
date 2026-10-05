@@ -15,21 +15,21 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization", "@id": `${BASE}/#org`, name: "TEVEL | תבל", alternateName: ["TEVEL", "תבל", "תבל בית תוכנה"], url: BASE,
+      "@type": "Organization", "@id": `${BASE}/#org`, name: "בית תוכנה תבל", alternateName: ["TEVEL", "TEVEL | תבל", "תבל", "תבל בית תוכנה", "Tevel Space"], url: BASE,
       logo: `${BASE}/brand/tevel-logo.svg`, areaServed: "IL",
       description: "בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות מידע, CRM ו-ERP, AI ואוטומציות, שירות לקוחות מבוסס AI, אפליקציות ומוצרים דיגיטליים.",
       knowsAbout: ["Custom CRM", "ERP", "Information systems", "AI agents", "RAG", "Automation", "Integrations", "AI customer service", "Web apps", "Mobile apps", "Computer Vision", "IoT", "R&D", "Proof of Concept"],
       contactPoint: { "@type": "ContactPoint", contactType: "sales", url: `${BASE}/contact`, availableLanguage: ["he", "en"] },
     },
-    { "@type": "WebSite", "@id": `${BASE}/#site`, url: BASE, name: "TEVEL | תבל", inLanguage: "he-IL", publisher: { "@id": `${BASE}/#org` } },
+    { "@type": "WebSite", "@id": `${BASE}/#site`, url: BASE, name: "בית תוכנה תבל", alternateName: ["TEVEL", "תבל", "Tevel Space"], inLanguage: "he-IL", publisher: { "@id": `${BASE}/#org` } },
   ],
 };
 
 export const metadata: Metadata = {
-  title: { default: "TEVEL | תבל — בית תוכנה ושותף טכנולוגי", template: "%s | תבל" },
+  title: { default: "TEVEL | תבל — בית תוכנה ושותף טכנולוגי", template: "%s | בית תוכנה תבל" },
   metadataBase: new URL(BASE),
   alternates: { types: { "text/plain": "/llms.txt" } },
-  openGraph: { type: "website", locale: "he_IL", siteName: "TEVEL | תבל", images: [{ url: "/og.png", width: 1200, height: 630 }] },
+  openGraph: { type: "website", locale: "he_IL", siteName: "בית תוכנה תבל", images: [{ url: "/og.png", width: 1200, height: 630 }] },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
   description: "תבל בונה את התשתית הטכנולוגית שמאחורי העסק — מערכות מידע, CRM ו-ERP, AI, אוטומציות, שירות לקוחות חכם ומוצרים דיגיטליים.",
 };

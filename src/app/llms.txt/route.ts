@@ -6,9 +6,9 @@ const BASE = (process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PR
 const link = (path: string, title: string, desc?: string) => `- [${title}](${BASE}${path})${desc ? `: ${desc}` : ""}`;
 
 export function GET() {
-  const body = `# TEVEL | תבל
+  const body = `# בית תוכנה תבל | TEVEL
 
-> TEVEL (תבל) is an Israeli software house, technology partner and R&D studio. It designs and builds the systems businesses run on — information systems, custom CRM and ERP, AI and automation, AI-powered customer service, web and mobile products, learning technology and custom R&D — starting from the business problem, not the technology.
+> TEVEL (בית תוכנה תבל, tevel.space) is an Israeli software house, technology partner and R&D studio. It designs and builds the systems businesses run on — information systems, custom CRM and ERP, AI and automation, AI-powered customer service, web and mobile products, learning technology and custom R&D — starting from the business problem, not the technology.
 
 תבל היא בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות ומוצרים טכנולוגיים מקצה לקצה. אנחנו מתחילים מהבעיה העסקית ובונים סביבה את הטכנולוגיה הנכונה.
 

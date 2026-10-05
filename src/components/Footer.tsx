@@ -9,6 +9,7 @@ export default function Footer() {
         <div className="inner grid gap-10 py-14 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] md:py-[72px]">
           <div className="space-y-3 text-[11px] leading-4 text-stone-2">
             <Link href="/" className="mb-6 inline-block"><TevelLogo className="h-8 w-auto" /></Link>
+            <p className="text-paper">בית תוכנה תבל</p>
             <p className="label text-muted">Software House &amp; Technology Partner</p>
             <p className="max-w-[260px]">תבל בונה את המערכות שעליהן עסקים עובדים — ממערכות מידע, CRM ו-ERP ועד AI, אוטומציות ומוצרים דיגיטליים.</p>
             <p>Understand first. Build what matters.</p>
