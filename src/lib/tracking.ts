@@ -36,6 +36,14 @@ export function getAttribution(): Record<string, string> {
   try { return JSON.parse(sessionStorage.getItem(ATTRIBUTION_KEY) || "{}"); } catch { return {}; }
 }
 
+// Sent with the form so the CRM can report the lead's later stages to Meta (Conversions API). Meta's browser/click
+// ids only when the visitor accepted the Pixel; otherwise just "no".
+export function getTracking(): { consent: boolean; fbp?: string; fbc?: string } {
+  if (readConsent() !== "granted") return { consent: false };
+  const cookie = (name: string) => document.cookie.split("; ").find((c) => c.startsWith(`${name}=`))?.slice(name.length + 1);
+  return { consent: true, fbp: cookie("_fbp"), fbc: cookie("_fbc") };
+}
+
 // Fires only when the visitor accepted the pixel (fbq exists only then).
 export function trackLead(eventId?: string) {
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
