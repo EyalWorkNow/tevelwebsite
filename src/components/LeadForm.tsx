@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from "react";
 import { Arrow } from "./icons";
 import Link from "next/link";
-import { getAttribution, trackLead } from "@/lib/tracking";
+import { getAttribution, getTracking, trackLead } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "sent" | "error";
 const ERR: Record<string, string> = {
@@ -22,7 +22,7 @@ async function submit(e: FormEvent<HTMLFormElement>, source: string, set: (s: St
     const res = await fetch("/api/lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), source, submissionId, page: window.location.pathname, utm: getAttribution() }),
+      body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), source, submissionId, page: window.location.pathname, utm: getAttribution(), tracking: getTracking() }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setErr(ERR[data.error] ?? "משהו השתבש. נסו שוב."); set("error"); return; }
