@@ -34,7 +34,7 @@ export default async function LegalPage({ params }: Props) {
         <div className="lg:grid lg:grid-cols-[1fr_minmax(0,837px)_1fr] lg:gap-8">
           <article className="flex flex-col gap-8 lg:col-start-2">
             <header className="flex flex-col items-center gap-5 text-center">
-              <p className="text-sm text-amber">טיוטה — יש להשלים פרטים ולבדוק משפטית לפני פרסום</p>
+              {slug !== "privacy" && <p className="text-sm text-amber">טיוטה — יש להשלים פרטים ולבדוק משפטית לפני פרסום</p>}
               <h1 className="font-serif text-[40px] font-light leading-[44px] tracking-[-0.04em] md:text-[49px] md:leading-[52px]">{heading}</h1>
               <p className="max-w-[748px] text-lg leading-7 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">{lede}</p>
             </header>
