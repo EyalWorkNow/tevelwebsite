@@ -3,6 +3,7 @@ import { Heebo } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AccessibilityWidget from "@/components/AccessibilityWidget";
+import MetaPixel from "@/components/MetaPixel";
 import "./globals.css";
 
 // One family site-wide: Heebo (headings, body and labels)
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" tabIndex={-1}>{children}</main>
         <Footer />
         <AccessibilityWidget />
+        <MetaPixel />
       </body>
     </html>
   );

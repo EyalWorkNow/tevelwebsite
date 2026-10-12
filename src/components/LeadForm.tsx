@@ -1,6 +1,8 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { Arrow } from "./icons";
+import Link from "next/link";
+import { getAttribution, trackLead } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "sent" | "error";
 const ERR: Record<string, string> = {
@@ -14,14 +16,18 @@ async function submit(e: FormEvent<HTMLFormElement>, source: string, set: (s: St
   e.preventDefault();
   const form = e.currentTarget;
   set("sending");
+  // One id per submission: retries never create a second lead, and the Pixel event can be de-duplicated.
+  const submissionId = form.dataset.submissionId || (form.dataset.submissionId = crypto.randomUUID());
   try {
     const res = await fetch("/api/lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), source }),
+      body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), source, submissionId, page: window.location.pathname, utm: getAttribution() }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setErr(ERR[data.error] ?? "משהו השתבש. נסו שוב."); set("error"); return; }
+    trackLead(submissionId);
+    delete form.dataset.submissionId;
     form.reset();
     set("sent");
   } catch {
@@ -89,9 +95,16 @@ export function LeadForm({ source = "contact" }: { source?: string }) {
         </button>
         {status === "error" && <p role="alert" className="text-sm text-rose">{err}</p>}
       </div>
+      <PrivacyNote className="sm:col-span-2" />
     </form>
   );
 }
+
+const PrivacyNote = ({ className = "" }: { className?: string }) => (
+  <p className={`text-xs text-muted ${className}`}>
+    הפרטים נשמרים במערכת ניהול הלקוחות של תבל ומשמשים רק כדי לחזור אליכם. <Link href="/legal/privacy" className="underline">מדיניות פרטיות</Link>
+  </p>
+);
 
 /** One-line email capture — Invoice waitlist / insights. */
 export function EmailCapture({ source, cta = "הצטרפות" }: { source: string; cta?: string }) {
@@ -106,6 +119,7 @@ export function EmailCapture({ source, cta = "הצטרפות" }: { source: strin
         <button type="submit" disabled={status === "sending"} className="btn-light shrink-0 disabled:opacity-60">{status === "sending" ? "…" : cta}</button>
       </div>
       {status === "error" && <p role="alert" className="text-sm text-rose">{err}</p>}
+      <PrivacyNote />
     </form>
   );
 }
