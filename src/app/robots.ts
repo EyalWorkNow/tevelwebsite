@@ -8,8 +8,8 @@ const AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: "/api/" },
-      { userAgent: AI_BOTS, allow: "/", disallow: "/api/" },
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/sign/"] },
+      { userAgent: AI_BOTS, allow: "/", disallow: ["/api/", "/sign/"] },
     ],
     sitemap: `${BASE}/sitemap.xml`,
   };

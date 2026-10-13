@@ -45,3 +45,7 @@ next-env.d.ts
 /docs/research/
 /docs/design-references/
 /project setup */
+
+# cloud mailbox: local store (RELAY_STORE=fs) and the pdf.js worker copied at build time
+/.relay-store/
+/public/pdfjs/

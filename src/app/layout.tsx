@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AccessibilityWidget from "@/components/AccessibilityWidget";
 import MetaPixel from "@/components/MetaPixel";
+import SiteChrome from "@/components/SiteChrome";
 import "./globals.css";
 
 // One family site-wide: Heebo (headings, body and labels)
@@ -46,11 +47,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>
-        <Header />
+        <SiteChrome><Header /></SiteChrome>
         <main id="main" tabIndex={-1}>{children}</main>
-        <Footer />
+        <SiteChrome><Footer /></SiteChrome>
         <AccessibilityWidget />
-        <MetaPixel />
+        <SiteChrome><MetaPixel /></SiteChrome>
       </body>
     </html>
   );

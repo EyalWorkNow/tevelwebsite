@@ -1,0 +1,49 @@
+/* The customer's signing page (/sign/<token>), in the tevel.space design system: ink surfaces, paper text,
+   Heebo, the brand green; the document pages themselves stay white paper. Mobile first, RTL. */
+.sign-root { min-height: 100vh; background: var(--color-ink); color: var(--color-paper); font-family: var(--font-sans); font-size: 16px; line-height: 1.6; padding-bottom: 56px; }
+.sign-wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+.sign-top { border-bottom: 1px solid var(--color-line); padding: 14px 0 18px; margin-bottom: 18px; }
+.sign-brand { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 48px; }
+.sign-eyebrow { font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-brand); margin: 14px 0 6px; }
+.sign-top h1 { margin: 0; font-weight: 300; font-size: 28px; line-height: 36px; }
+.sign-meta { color: var(--color-muted); font-size: 14px; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.sign-doc { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.sign-pages { display: flex; flex-direction: column; gap: 12px; }
+.sign-page { display: block; width: 100%; height: auto; background: #fff; border-radius: 8px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.9); }
+.sign-skeleton { border: 1px solid var(--color-line); background: var(--color-ink-2); border-radius: 8px; padding: 56px 16px; text-align: center; color: var(--color-muted); }
+.sign-card { background: var(--color-ink-2); border: 1px solid var(--color-line); border-radius: 12px; padding: 20px 18px; margin-bottom: 18px; }
+.sign-card h2 { margin: 0 0 12px; font-weight: 300; font-size: 24px; line-height: 32px; }
+.sign-notice { margin-top: 56px; text-align: center; } .sign-notice h1 { font-weight: 300; font-size: 28px; margin: 0 0 8px; } .sign-notice p { color: var(--color-stone); }
+.sign-done { text-align: center; border-color: color-mix(in srgb, var(--color-brand) 40%, transparent); background: color-mix(in srgb, var(--color-brand) 6%, var(--color-ink-2)); }
+.sign-done p { color: var(--color-stone); }
+.sign-ok { font-size: 40px; color: var(--color-brand); line-height: 1; margin-bottom: 8px; }
+.sign-field { margin: 14px 0; }
+.sign-missing .sign-input, .sign-missing .sign-sigbtn { border-color: var(--color-rose); }
+.sign-label { display: block; font-size: 14px; color: var(--color-stone); margin-bottom: 6px; } .sign-label span { color: var(--color-brand); }
+.sign-input { width: 100%; font: inherit; color: var(--color-paper); background: var(--color-ink); border: 1px solid var(--color-line-2); border-radius: 6px; padding: 10px 12px; min-height: 44px; outline: none; transition: border-color .2s; color-scheme: dark; }
+.sign-input:focus { border-color: var(--color-brand); }
+.sign-check, .sign-consent { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.sign-check input, .sign-consent input { width: 22px; height: 22px; flex-shrink: 0; accent-color: var(--color-brand); margin-top: 3px; }
+.sign-consent { margin: 18px 0 10px; padding: 14px; border: 1px solid var(--color-line); border-radius: 8px; color: var(--color-stone); }
+.sign-sigbtn { width: 100%; min-height: 96px; border: 1px dashed var(--color-brand); border-radius: 8px; background: color-mix(in srgb, var(--color-brand) 6%, transparent); color: var(--color-brand); font: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
+.sign-sigdone { border-style: solid; background: #fff; }
+.sign-preview-svg { width: 100%; max-height: 90px; } .sign-preview-img { max-width: 100%; max-height: 90px; }
+.sign-typed-small { font-style: italic; font-weight: 700; font-size: 1.4em; color: #0d1f66; }
+.sign-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; } .sign-center { justify-content: center; text-align: center; }
+.sign-primary, .sign-secondary, .sign-danger { font: inherit; font-size: 15px; border-radius: 9999px; padding: 12px 22px; min-height: 48px; cursor: pointer; transition: background-color .3s, border-color .3s; }
+.sign-primary { background: var(--color-brand); color: var(--color-ink); border: none; font-weight: 500; flex: 1 1 220px; } .sign-primary:hover { background: var(--color-mint); } .sign-primary:disabled { opacity: .5; cursor: not-allowed; }
+.sign-secondary { background: transparent; color: var(--color-paper); border: 1px solid var(--color-line-2); } .sign-secondary:hover { border-color: var(--color-stone); }
+.sign-danger { background: var(--color-rose); color: var(--color-ink); border: none; font-weight: 500; }
+.sign-link { background: none; border: none; color: var(--color-stone); text-decoration: underline; font: inherit; cursor: pointer; padding: 10px; min-height: 44px; } .sign-link:hover { color: var(--color-paper); }
+.sign-error { color: var(--color-rose); margin: 8px 0; }
+.sign-fine { color: var(--color-muted); font-size: 13px; text-align: center; margin: 14px 0; }
+.sign-modal { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: flex-end; justify-content: center; z-index: 200; }
+.sign-sheet { background: var(--color-ink-2); border: 1px solid var(--color-line); color: var(--color-paper); width: 100%; max-width: 640px; border-radius: 16px 16px 0 0; padding: 20px 18px; max-height: 92vh; overflow: auto; animation: slide-up-and-fade .25s ease both; }
+.sign-sheet h2 { margin: 0 0 12px; font-weight: 300; font-size: 24px; }
+@media (min-width: 700px) { .sign-modal { align-items: center; } .sign-sheet { border-radius: 16px; } .sign-top h1 { font-size: 40px; line-height: 50px; } }
+.sign-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.sign-tabs button { flex: 1; border: 1px solid var(--color-line-2); background: transparent; color: var(--color-paper); border-radius: 9999px; padding: 10px; font: inherit; cursor: pointer; min-height: 44px; }
+.sign-tabs button[aria-selected=true] { background: var(--color-paper-2); color: var(--color-ink); border-color: var(--color-paper-2); }
+.sign-pad { width: 100%; aspect-ratio: 3 / 1; border: 1px solid var(--color-brand); border-radius: 8px; background: #fff; touch-action: none; display: block; }
+.sign-typed { font-style: italic; font-weight: 700; font-size: 34px; color: #0d1f66; background: #fff; border-radius: 8px; text-align: center; min-height: 64px; padding: 8px; margin-top: 10px; }
+@media print { .sign-actions, .sign-link, .sign-top { display: none; } .sign-root { background: #fff; color: #000; } }

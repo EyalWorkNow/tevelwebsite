@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
+import { queueLeadForCrm } from "@/lib/relay/handlers";
 
 // Leads from every site form → Tevel CRM (which emails the owner about every new lead).
-// If the CRM is not configured or not reachable, the lead falls back to the Gmail email below, so nothing is lost.
+// If the CRM is not configured or not reachable, the lead waits in the cloud mailbox (RELAY_SHARED_SECRET + Blob store,
+// the CRM pulls it when it is back on) and also falls back to the Gmail email below, so nothing is lost.
 // Env: CRM_LEAD_URL (https://<crm>/s/tevel/website-lead), CRM_LEAD_SECRET (server-only, never NEXT_PUBLIC_),
 //      GMAIL_USER, GMAIL_APP_PASSWORD, LEAD_TO_EMAIL (defaults to GMAIL_USER) for the fallback.
 
@@ -44,11 +46,15 @@ export async function POST(req: Request) {
   if (!lead.email || !EMAIL_RE.test(lead.email)) return Response.json({ error: "invalid_email" }, { status: 400 });
   if (source === "contact" && !lead.name) return Response.json({ error: "missing_name" }, { status: 400 });
 
-  const crm = await sendToCrm(lead, source, body, req, ip);
+  const payload = crmPayload(lead, source, body, req, ip);
+  const crm = await sendToCrm(payload);
   if (crm === "ok") return Response.json({ ok: true });
+  // The CRM (on the office computer) is off or unreachable: the lead waits in the mailbox for it.
+  const queued = await queueLeadForCrm(payload);
 
   const user = process.env.GMAIL_USER, pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) {
+    if (queued) return Response.json({ ok: true });
     // Don't lose the lead if mail isn't configured yet.
     console.error("[lead] GMAIL_USER / GMAIL_APP_PASSWORD missing — lead not emailed:", JSON.stringify({ source, ...lead }));
     return Response.json({ error: "mail_not_configured" }, { status: 503 });
@@ -62,12 +68,13 @@ export async function POST(req: Request) {
       from: `"אתר תבל" <${user}>`,
       to: process.env.LEAD_TO_EMAIL || user,
       replyTo: lead.email,
-      subject: `${crm === "failed" ? "[CRM לא זמין] " : ""}ליד חדש מהאתר (${source}): ${lead.name ?? lead.email}${lead.company ? ` — ${lead.company}` : ""}`,
+      subject: `${crm === "failed" ? (queued ? "[CRM לא זמין – ייקלט כשיחזור] " : "[CRM לא זמין] ") : ""}ליד חדש מהאתר (${source}): ${lead.name ?? lead.email}${lead.company ? ` — ${lead.company}` : ""}`,
       text: `מקור: ${source}\n\n${text}`,
       html: `<div dir="rtl" style="font-family:Arial,sans-serif"><h2 style="margin:0 0 12px">ליד חדש מהאתר</h2><p style="color:#666">מקור: ${esc(source)}</p><table style="border-collapse:collapse">${rows}</table></div>`,
     });
   } catch (e) {
     console.error("[lead] send failed:", e, JSON.stringify({ source, ...lead }));
+    if (queued) return Response.json({ ok: true });
     return Response.json({ error: "send_failed" }, { status: 502 });
   }
   return Response.json({ ok: true });
@@ -75,10 +82,8 @@ export async function POST(req: Request) {
 
 const str = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
 
-// Server-to-server: the secret stays on Vercel. 8s budget so a sleeping CRM never blocks the visitor.
-async function sendToCrm(lead: Record<string, string>, source: string, body: Record<string, unknown>, req: Request, ip: string): Promise<"ok" | "failed" | "off"> {
-  const url = process.env.CRM_LEAD_URL, secret = process.env.CRM_LEAD_SECRET;
-  if (!url || !secret) return "off";
+// What the CRM's website-lead route receives (also what waits in the mailbox when the CRM is off).
+function crmPayload(lead: Record<string, string>, source: string, body: Record<string, unknown>, req: Request, ip: string): Record<string, unknown> {
   const utmIn = body.utm && typeof body.utm === "object" ? (body.utm as Record<string, unknown>) : {};
   const utm: Record<string, string> = {};
   for (const k of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid", "landing", "referrer"]) {
@@ -92,11 +97,20 @@ async function sendToCrm(lead: Record<string, string>, source: string, body: Rec
     ? { consent: true, fbp: str(trackIn.fbp, 200), fbc: str(trackIn.fbc, 600), clientIp: ip === "local" ? undefined : ip,
         userAgent: str(req.headers.get("user-agent") ?? "", 500), eventSourceUrl: page ? `https://tevel.space${page.startsWith("/") ? page : `/${page}`}` : undefined }
     : { consent: false };
+  // A submission id always travels, so a lead that reaches the CRM twice (slow answer + mailbox) is created once.
+  const submissionId = str(body.submissionId, 100) ?? `srv-${crypto.randomUUID()}`;
+  return { ...lead, source, submissionId, page: str(body.page, 200) ?? utm.landing, referrer: utm.referrer, utm, tracking };
+}
+
+// Server-to-server: the secret stays on Vercel. 8s budget so a sleeping CRM never blocks the visitor.
+async function sendToCrm(payload: Record<string, unknown>): Promise<"ok" | "failed" | "off"> {
+  const url = process.env.CRM_LEAD_URL, secret = process.env.CRM_LEAD_SECRET;
+  if (!url || !secret) return "off";
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json", "x-tevel-lead-secret": secret, "ngrok-skip-browser-warning": "1" },
-      body: JSON.stringify({ ...lead, source, submissionId: str(body.submissionId, 100), page: str(body.page, 200) ?? utm.landing, referrer: utm.referrer, utm, tracking }),
+      body: JSON.stringify(payload),
       signal: AbortSignal.timeout(8000),
     });
     const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
