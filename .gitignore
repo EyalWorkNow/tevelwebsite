@@ -45,3 +45,6 @@ next-env.d.ts
 /docs/research/
 /docs/design-references/
 /project setup */
+
+# Generated from pdfjs-dist during prebuild
+/public/pdfjs/
