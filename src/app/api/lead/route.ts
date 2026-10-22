@@ -73,9 +73,12 @@ export async function POST(req: Request) {
   return Response.json({ ok: true });
 }
 
+const CRM_TIMEOUT_MS = 5000;
+
 const str = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
 
-// Server-to-server: the secret stays on Vercel. 8s budget so a sleeping CRM never blocks the visitor.
+// Server-to-server: the secret stays on Vercel. 5s budget so a sleeping CRM never blocks the visitor.
+// Only HTTP 2xx with {ok:true} counts; 401 (bad secret), {ok:false}, non-JSON, timeout → Gmail fallback.
 async function sendToCrm(lead: Record<string, string>, source: string, body: Record<string, unknown>, req: Request, ip: string): Promise<"ok" | "failed" | "off"> {
   const url = process.env.CRM_LEAD_URL, secret = process.env.CRM_LEAD_SECRET;
   if (!url || !secret) return "off";
@@ -97,11 +100,11 @@ async function sendToCrm(lead: Record<string, string>, source: string, body: Rec
       method: "POST",
       headers: { "content-type": "application/json", "x-tevel-lead-secret": secret, "ngrok-skip-browser-warning": "1" },
       body: JSON.stringify({ ...lead, source, submissionId: str(body.submissionId, 100), page: str(body.page, 200) ?? utm.landing, referrer: utm.referrer, utm, tracking }),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(CRM_TIMEOUT_MS),
     });
     const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
     if (res.ok && data.ok) return "ok";
-    console.error("[lead] CRM rejected:", res.status, data.error);
+    console.error(res.status === 401 ? "[lead] CRM rejected the secret (401) — check CRM_LEAD_SECRET" : "[lead] CRM rejected:", res.status, data.error);
   } catch (e) {
     console.error("[lead] CRM unreachable:", e);
   }

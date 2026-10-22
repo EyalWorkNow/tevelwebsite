@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/relay/__tests__/*.test.ts"
+    "test": "tsx --test src/lib/relay/__tests__/*.test.ts src/app/api/lead/__tests__/*.test.ts"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.1",
