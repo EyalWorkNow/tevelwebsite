@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { SITE } from "@/lib/seo";
 
 // Leads from every site form → Tevel CRM (which emails the owner about every new lead).
 // If the CRM is not configured or not reachable, the lead falls back to the Gmail email below, so nothing is lost.
@@ -93,7 +94,7 @@ async function sendToCrm(lead: Record<string, string>, source: string, body: Rec
   const page = str(body.page, 200);
   const tracking = consent
     ? { consent: true, fbp: str(trackIn.fbp, 200), fbc: str(trackIn.fbc, 600), clientIp: ip === "local" ? undefined : ip,
-        userAgent: str(req.headers.get("user-agent") ?? "", 500), eventSourceUrl: page ? `https://tevel.space${page.startsWith("/") ? page : `/${page}`}` : undefined }
+        userAgent: str(req.headers.get("user-agent") ?? "", 500), eventSourceUrl: page ? `${SITE}${page.startsWith("/") ? page : `/${page}`}` : undefined }
     : { consent: false };
   try {
     const res = await fetch(url, {
