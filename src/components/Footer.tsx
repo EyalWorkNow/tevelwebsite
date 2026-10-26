@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { footer } from "@/lib/site";
+import { company, footer } from "@/lib/site";
 import { TevelLogo } from "./icons";
 
 export default function Footer() {
@@ -34,6 +34,13 @@ export default function Footer() {
         </div>
         <div className="inner flex flex-col justify-between gap-2 border-t border-line py-5 text-[11px] text-stone-2 md:flex-row">
           <span>© {new Date().getFullYear()} TEVEL | תבל</span>
+          <address className="not-italic">
+            <a href={`mailto:${company.email}`} className="transition-colors hover:text-paper" dir="ltr">{company.email}</a>
+            {" · "}
+            <a href={`tel:${company.phoneE164}`} className="transition-colors hover:text-paper" dir="ltr">{company.phone}</a>
+            {" · "}
+            {company.address}
+          </address>
           <span className="label text-muted">Technology built around the business.</span>
         </div>
       </div>

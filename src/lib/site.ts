@@ -1,10 +1,22 @@
+// Company contact details: the single source for the legal pages, footer, contact page and schema.org.
+export const company = {
+  name: "בית תוכנה תבל",
+  registration: "ח.פ. 325128361",
+  email: "help@tevel.space",
+  phone: "053-932-8311",
+  phoneE164: "+972539328311",
+  street: "ביאליק 6",
+  city: "אור עקיבא",
+  address: "ביאליק 6, אור עקיבא",
+} as const;
+
 // Sitemap (structure unchanged from the design study) — labels/content now TEVEL, per project setup/ briefs.
 export const slugs = {
   solutions: ["business-systems", "crm-erp", "ai-automation", "ai-customer-service", "web-mobile", "rd"],
   products: ["information-systems", "custom-crm", "erp-operations", "ai-for-business", "integrations", "mobile-apps", "tevel-invoice"],
   stories: ["service-at-scale", "operations-company", "sales-team", "training-organization"],
   posts: ["when-custom-crm", "when-not-ai", "automation-fit", "ai-service-architecture", "build-vs-buy", "manual-process-cost"],
-  legal: ["privacy", "terms", "accessibility", "cookies"],
+  legal: ["privacy", "terms", "accessibility", "cookies", "tevel-invoice"],
 };
 
 // Display names shared by nav, footer and pages.
@@ -15,7 +27,7 @@ export const names = {
   productsDesc: ["Back Office, פורטלים ודשבורדים", "מחזור החיים האמיתי של הלקוח", "רכש, מלאי, הזמנות ותפעול", "Agents, Copilots, RAG", "מערכות שמדברות זו עם זו", "מאפיון ועד השקה", "מסמכים ופעילות עסקית-פיננסית"],
   stories: ["מוקד שירות בסקייל", "חברת תפעול והפצה", "צוות מכירות", "ארגון הדרכה"],
   posts: ["מתי Custom CRM מוצדק?", "מתי לא צריך AI?", "איך מזהים תהליך שמתאים לאוטומציה?", "AI Customer Service Architecture", "Build vs Buy vs Integrate", "כמה עולה תהליך ידני?"],
-  legal: ["מדיניות פרטיות", "תנאי שימוש", "הצהרת נגישות", "מדיניות עוגיות"],
+  legal: ["מדיניות פרטיות", "תנאי שימוש", "הצהרת נגישות", "מדיניות עוגיות", "תנאי שימוש Tevel Invoice"],
 };
 
 export type NavLink = { href: string; label: string; desc?: string; icon?: string };

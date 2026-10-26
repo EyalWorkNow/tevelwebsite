@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand, Reveal } from "@/components/ui";
 import { LeadForm } from "@/components/LeadForm";
+import { company } from "@/lib/site";
 
 export const metadata: Metadata = seo("/contact");
 
@@ -34,6 +35,13 @@ export default function ContactPage() {
         <header className="mx-auto flex max-w-[820px] flex-col gap-3 px-6 text-center md:gap-5">
           <Reveal><h1 className="font-serif text-[30px] font-light leading-9 tracking-[-0.04em] md:text-[49px] md:leading-[52px]">ספרו לנו מה לא עובד.</h1></Reveal>
           <Reveal delay={80}><p className="mx-auto max-w-[598px] leading-6 tracking-[0.01em] text-stone-2 md:text-xl md:leading-8">לא צריך לדעת איזו מערכת אתם צריכים. ספרו לנו מה אתם מנסים לשפר ואנחנו נתחיל מהבעיה.</p></Reveal>
+          <Reveal delay={120}>
+            <address className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm not-italic text-stone">
+              <a href={`mailto:${company.email}`} className="underline underline-offset-4" dir="ltr">{company.email}</a>
+              <a href={`tel:${company.phoneE164}`} className="underline underline-offset-4" dir="ltr">{company.phone}</a>
+              <span>{company.address}</span>
+            </address>
+          </Reveal>
         </header>
 
         <ul className="mx-auto grid w-full max-w-[1304px] gap-5 px-5 md:grid-cols-2 md:px-8 lg:grid-cols-3">

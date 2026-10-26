@@ -6,6 +6,7 @@ import AccessibilityWidget from "@/components/AccessibilityWidget";
 import SiteChrome from "@/components/SiteChrome";
 import MetaPixel from "@/components/MetaPixel";
 import "./globals.css";
+import { company } from "@/lib/site";
 
 // One family site-wide: Heebo (headings, body and labels)
 const heebo = Heebo({ variable: "--font-heebo", subsets: ["hebrew", "latin"], weight: ["300", "400", "500", "700"] });
@@ -21,7 +22,9 @@ const jsonLd = {
       logo: `${BASE}/brand/tevel-logo.svg`, areaServed: "IL",
       description: "בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות מידע, CRM ו-ERP, AI ואוטומציות, שירות לקוחות מבוסס AI, אפליקציות ומוצרים דיגיטליים.",
       knowsAbout: ["Custom CRM", "ERP", "Information systems", "AI agents", "RAG", "Automation", "Integrations", "AI customer service", "Web apps", "Mobile apps", "Computer Vision", "IoT", "R&D", "Proof of Concept"],
-      contactPoint: { "@type": "ContactPoint", contactType: "sales", url: `${BASE}/contact`, availableLanguage: ["he", "en"] },
+      email: company.email, telephone: company.phoneE164,
+      address: { "@type": "PostalAddress", streetAddress: company.street, addressLocality: company.city, addressCountry: "IL" },
+      contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: company.email, telephone: company.phoneE164, url: `${BASE}/contact`, availableLanguage: ["he", "en"] },
       founder: { "@type": "Person", "@id": `${BASE}/#founder`, name: "Eyal Atia", worksFor: { "@id": `${BASE}/#org` }, sameAs: ["https://www.linkedin.com/in/eyal-atia-24a8a5246"] },
     },
     { "@type": "WebSite", "@id": `${BASE}/#site`, url: BASE, name: "בית תוכנה תבל", alternateName: ["TEVEL", "תבל", "Tevel Space"], inLanguage: "he-IL", publisher: { "@id": `${BASE}/#org` } },
