@@ -2,7 +2,7 @@
 export const company = {
   name: "בית תוכנה תבל",
   // The contracting party: a dealer (not a company) – as registered with the Tax Authority.
-  registration: "עטייה אייל – תבל, עוסק מס׳ 325128361",
+  registration: "עטייה אייל – תבל, עוסק מורשה 325128361",
   email: "help@tevel.space",
   phone: "053-932-8311",
   phoneE164: "+972539328311",
