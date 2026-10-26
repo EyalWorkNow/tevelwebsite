@@ -42,7 +42,7 @@ const Label = ({ children, req }: { children: string; req?: boolean }) => (
 const Honeypot = () => <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />;
 
 /** Full qualification form — /contact. Fields per brief §25, kept short. */
-export function LeadForm({ source = "contact" }: { source?: string }) {
+export function LeadForm({ source = "contact", campaign = false }: { source?: string; campaign?: boolean }) {
   const [status, setStatus] = useState<Status>("idle");
   const [err, setErr] = useState("");
 
@@ -58,28 +58,28 @@ export function LeadForm({ source = "contact" }: { source?: string }) {
       <Honeypot />
       <label><Label req>שם</Label><input name="name" required autoComplete="name" className={field} /></label>
       <label><Label>חברה</Label><input name="company" autoComplete="organization" className={field} /></label>
-      <label><Label>תפקיד</Label><input name="role" autoComplete="organization-title" className={field} /></label>
+      {!campaign && <label><Label>תפקיד</Label><input name="role" autoComplete="organization-title" className={field} /></label>}
       <label><Label req>אימייל</Label><input name="email" type="email" required dir="ltr" autoComplete="email" className={`${field} text-right`} /></label>
       <label><Label>טלפון</Label><input name="phone" type="tel" dir="ltr" autoComplete="tel" className={`${field} text-right`} /></label>
-      <label>
+      {!campaign && <label>
         <Label>גודל החברה</Label>
         <select name="size" defaultValue="" className={field}>
           <option value="" disabled>בחרו</option>
           {["1–9 עובדים", "10–49 עובדים", "50–199 עובדים", "200+ עובדים"].map((o) => <option key={o}>{o}</option>)}
         </select>
-      </label>
+      </label>}
       <label className="sm:col-span-2">
         <Label req>מה אתם מנסים לפתור?</Label>
         <textarea name="message" required rows={5} placeholder="לא צריך לדעת איזו מערכת אתם צריכים — ספרו מה לא עובד." className={`${field} h-auto py-3`} />
       </label>
-      <label>
+      {!campaign && <label>
         <Label>טווח תקציב (לא חובה)</Label>
         <select name="budget" defaultValue="" className={field}>
           <option value="">לא בטוחים עדיין</option>
           {["עד ₪50K", "₪50K–150K", "₪150K–500K", "₪500K+"].map((o) => <option key={o}>{o}</option>)}
         </select>
-      </label>
-      <fieldset>
+      </label>}
+      {!campaign && <fieldset>
         <Label>איך נוח לחזור אליכם?</Label>
         <div className="flex h-11 items-center gap-5">
           {["אימייל", "טלפון", "WhatsApp"].map((o, i) => (
@@ -88,10 +88,10 @@ export function LeadForm({ source = "contact" }: { source?: string }) {
             </label>
           ))}
         </div>
-      </fieldset>
+      </fieldset>}
       <div className="flex flex-col items-start gap-3 sm:col-span-2">
         <button type="submit" disabled={status === "sending"} className="btn-light disabled:opacity-60">
-          {status === "sending" ? "שולח…" : "שליחה"} <Arrow />
+          {status === "sending" ? "שולח…" : campaign ? "בואו נדבר על המערכת שלכם" : "שליחה"} <Arrow />
         </button>
         {status === "error" && <p role="alert" className="text-sm text-rose">{err}</p>}
       </div>
