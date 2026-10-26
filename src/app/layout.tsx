@@ -22,6 +22,7 @@ const jsonLd = {
       logo: `${BASE}/brand/tevel-logo.svg`, areaServed: "IL",
       description: "בית תוכנה, שותף טכנולוגי וסטודיו R&D שמתכנן ובונה מערכות מידע, CRM ו-ERP, AI ואוטומציות, שירות לקוחות מבוסס AI, אפליקציות ומוצרים דיגיטליים.",
       knowsAbout: ["Custom CRM", "ERP", "Information systems", "AI agents", "RAG", "Automation", "Integrations", "AI customer service", "Web apps", "Mobile apps", "Computer Vision", "IoT", "R&D", "Proof of Concept"],
+      legalName: "עטייה אייל – תבל", taxID: "325128361",
       email: company.email, telephone: company.phoneE164,
       address: { "@type": "PostalAddress", streetAddress: company.street, addressLocality: company.city, addressCountry: "IL" },
       contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: company.email, telephone: company.phoneE164, url: `${BASE}/contact`, availableLanguage: ["he", "en"] },

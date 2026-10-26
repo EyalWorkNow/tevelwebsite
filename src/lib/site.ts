@@ -1,7 +1,8 @@
 // Company contact details: the single source for the legal pages, footer, contact page and schema.org.
 export const company = {
   name: "בית תוכנה תבל",
-  registration: "ח.פ. 325128361",
+  // The contracting party: a dealer (not a company) – as registered with the Tax Authority.
+  registration: "עטייה אייל – תבל, עוסק מס׳ 325128361",
   email: "help@tevel.space",
   phone: "053-932-8311",
   phoneE164: "+972539328311",
