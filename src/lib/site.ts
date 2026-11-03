@@ -79,4 +79,6 @@ export const footer: { label: string; links: NavLink[] }[] = [
   { label: "חברה", links: [["/about", "אודות"], ["/team", "הצוות והתחומים"], ["/culture", "ערכים"], ["/careers", "עבודה איתנו"], ["/blog", "Insights"], ["/answers", "שאלות ותשובות"], ["/reports", "רמות פתרון"], ["/company-facts", "תבל בקצרה"], ["/contact", "צרו קשר"]].map(([href, label]) => ({ href, label })) },
   { label: "משפטי", links: slugs.legal.map((s, i) => ({ href: `/legal/${s}`, label: names.legal[i] })) },
   { label: "פתרונות", links: slugs.solutions.map((s, i) => ({ href: `/solutions/${s}`, label: names.solutions[i] })) },
+  // Customers sign in to their systems from here (CRM / ERP and invoicing run on the Tevel cloud).
+  { label: "כניסה ללקוחות", links: [{ href: "https://crm.tevel.space", label: "CRM / ERP" }, { href: "https://invoice.crm.tevel.space/app/", label: "מערכת חשבוניות" }] },
 ];

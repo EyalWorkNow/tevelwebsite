@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="rule">
       <div className="wrap">
-        <div className="inner grid gap-10 py-14 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] md:py-[72px]">
+        <div className="inner grid gap-10 py-14 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_1fr] md:py-[72px]">
           <div className="space-y-3 text-[11px] leading-4 text-stone-2">
             <Link href="/" className="mb-6 inline-block"><TevelLogo className="h-8 w-auto" /></Link>
             <p className="text-paper">בית תוכנה תבל</p>
@@ -19,7 +19,7 @@ export default function Footer() {
             <div key={col.label}>
               <h3 className="label mb-5">{col.label}</h3>
               <ul className="space-y-2.5 text-[13px] text-stone">
-                {col.links.map((l) => <li key={l.href + l.label}><Link href={l.href} className="transition-colors hover:text-paper">{l.label}</Link></li>)}
+                {col.links.map((l) => <li key={l.href + l.label}>{l.href.startsWith("https://") ? <a href={l.href} target="_blank" rel="noopener" className="transition-colors hover:text-paper">{l.label} ↗</a> : <Link href={l.href} className="transition-colors hover:text-paper">{l.label}</Link>}</li>)}
               </ul>
               {false && (
                 <>
