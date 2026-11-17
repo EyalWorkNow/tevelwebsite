@@ -42,22 +42,22 @@ const Label = ({ children, req }: { children: string; req?: boolean }) => (
 const Honeypot = () => <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />;
 
 /** Full qualification form — /contact. Fields per brief §25, kept short. */
-export function LeadForm({ source = "contact", campaign = false }: { source?: string; campaign?: boolean }) {
+export function LeadForm({ source = "contact", campaign = false, mobileApp = false }: { source?: string; campaign?: boolean; mobileApp?: boolean }) {
   const [status, setStatus] = useState<Status>("idle");
   const [err, setErr] = useState("");
 
   if (status === "sent") return (
-    <div className="rounded-lg border border-brand/40 bg-brand/5 p-8 text-center animate-[fade-in_.4s_ease_both]">
+    <div role="status" className="rounded-lg border border-brand/40 bg-brand/5 p-8 text-center animate-[fade-in_.4s_ease_both]">
       <p className="font-serif text-2xl font-light">תודה, קיבלנו.</p>
-      <p className="mt-2 text-stone">נחזור אליכם בהקדם כדי להבין מה לא עובד — ומשם נתחיל.</p>
+      <p className="mt-2 text-stone">{mobileApp ? "נחזור אליכם בהקדם לשיחה על האפליקציה שלכם." : "נחזור אליכם בהקדם כדי להבין מה לא עובד — ומשם נתחיל."}</p>
     </div>
   );
 
   return (
     <form onSubmit={(e) => submit(e, source, setStatus, setErr)} className="grid gap-5 sm:grid-cols-2">
       <Honeypot />
-      <label><Label req>שם</Label><input name="name" required autoComplete="name" className={field} /></label>
-      <label><Label>חברה</Label><input name="company" autoComplete="organization" className={field} /></label>
+      <label className={mobileApp ? "sm:col-span-2" : undefined}><Label req>שם</Label><input name="name" required autoComplete="name" className={field} /></label>
+      {!mobileApp && <label><Label>חברה</Label><input name="company" autoComplete="organization" className={field} /></label>}
       {!campaign && <label><Label>תפקיד</Label><input name="role" autoComplete="organization-title" className={field} /></label>}
       <label><Label req>אימייל</Label><input name="email" type="email" required dir="ltr" autoComplete="email" className={`${field} text-right`} /></label>
       <label><Label>טלפון</Label><input name="phone" type="tel" dir="ltr" autoComplete="tel" className={`${field} text-right`} /></label>
@@ -69,8 +69,8 @@ export function LeadForm({ source = "contact", campaign = false }: { source?: st
         </select>
       </label>}
       <label className="sm:col-span-2">
-        <Label req>מה אתם מנסים לפתור?</Label>
-        <textarea name="message" required rows={5} placeholder="לא צריך לדעת איזו מערכת אתם צריכים — ספרו מה לא עובד." className={`${field} h-auto py-3`} />
+        <Label req>{mobileApp ? "מה תרצו לפתח?" : "מה אתם מנסים לפתור?"}</Label>
+        <textarea name="message" required rows={mobileApp ? 3 : 5} placeholder={mobileApp ? "כמה מילים על הרעיון שלכם" : "לא צריך לדעת איזו מערכת אתם צריכים — ספרו מה לא עובד."} className={`${field} h-auto py-3`} />
       </label>
       {!campaign && <label>
         <Label>טווח תקציב (לא חובה)</Label>
@@ -91,7 +91,7 @@ export function LeadForm({ source = "contact", campaign = false }: { source?: st
       </fieldset>}
       <div className="flex flex-col items-start gap-3 sm:col-span-2">
         <button type="submit" disabled={status === "sending"} className="btn-light disabled:opacity-60">
-          {status === "sending" ? "שולח…" : campaign ? "בואו נדבר על המערכת שלכם" : "שליחה"} <Arrow />
+          {status === "sending" ? "שולח…" : mobileApp ? "אני רוצה הצעה לאפליקציה שלי" : campaign ? "בואו נדבר על המערכת שלכם" : "שליחה"} <Arrow />
         </button>
         {status === "error" && <p role="alert" className="text-sm text-rose">{err}</p>}
       </div>

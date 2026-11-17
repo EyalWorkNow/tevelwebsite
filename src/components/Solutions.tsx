@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { IconBox } from "./icons";
+import { IconBox, Glyph } from "./icons";
 import Link from "next/link";
 import { slugs, names } from "@/lib/site";
 
@@ -13,17 +13,20 @@ const items = [
   { d: "כשאין פתרון מוכן: מחקר, בדיקת היתכנות, PoC ואבות-טיפוס — עד מוצר שאפשר להפעיל.", f: ["Research & Feasibility", "PoC ו-Prototype", "AI, Computer Vision, IoT"] },
 ].map((x, i) => ({ ...x, t: names.solutions[i], href: `/solutions/${slugs.solutions[i]}` }));
 
-const events = [["TKT-2041", "פנייה חדשה", "WhatsApp", "+ AI"], ["ORD-1198", "הזמנה", "ERP", "+ סונכרן"], ["LEAD-387", "ליד חדש", "CRM", "+ נותב"], ["DOC-072", "מסמך", "OCR", "− ממתין לאישור"]];
+const workflow = [
+  { title: "הלקוח שולח הודעה", body: "״איפה ההזמנה שלי?״ — פנייה שמגיעה בוואטסאפ.", icon: "chat", status: "פנייה נכנסת" },
+  { title: "המערכת בודקת את הפרטים", body: "מזהים את הלקוח ושולפים את סטטוס ההזמנה מהמערכת.", icon: "swap", status: "בדיקה אוטומטית" },
+  { title: "הלקוח מקבל תשובה", body: "נשלח עדכון בוואטסאפ. אם צריך, נציג ממשיך עם כל המידע.", icon: "people", status: "מענה ושירות" },
+];
 
 export default function Solutions() {
   const [open, setOpen] = useState(0);
-  const [mode, setMode] = useState<"ui" | "api">("ui");
 
   return (
     <section className="rule">
       <div className="wrap">
         <div className="inner grid gap-10 py-14 md:grid-cols-2 md:gap-6 md:py-0">
-          <div className="md:py-[72px]">
+          <div className="min-w-0 md:py-[72px]">
             <h2 className="h2">טכנולוגיה שנבנית סביב העסק</h2>
             <div className="mt-10">
               {items.map((it, i) => (
@@ -49,54 +52,27 @@ export default function Solutions() {
             </div>
           </div>
 
-          {/* Visual: generated dusk gradient instead of a photo */}
-          <div className="relative grid min-h-[560px] place-items-center overflow-hidden md:-me-10"
-            style={{ background: "radial-gradient(120% 80% at 70% 30%, #e26d4f 0%, #6b2f46 30%, #1c2a4a 60%, #0d1424 100%)" }}>
-            <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ backgroundImage: "repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 4px)" }} />
-            <div className="relative w-[360px] max-w-[88%] rounded-lg border border-line bg-ink/90 p-4 font-mono text-xs shadow-2xl backdrop-blur">
-              {mode === "ui" ? (
-                <>
-                  <div className="flex justify-between">
-                    <div><div className="text-paper">TEVEL · OPERATIONS</div><div className="text-muted">דוגמה להמחשה</div></div>
-                    <div className="text-brand">● LIVE</div>
+          <figure className="min-w-0 self-center rounded-2xl border border-line bg-ink-2 p-4 sm:p-7 md:my-12" aria-labelledby="workflow-demo-title">
+            <figcaption>
+              <p className="text-xs font-medium text-brand">דוגמה לתהליך מחובר</p>
+              <h3 id="workflow-demo-title" className="mt-3 text-2xl font-bold leading-8 text-paper">מפנייה של לקוח<br />לתשובה שהוא צריך.</h3>
+              <p className="mt-3 text-sm leading-6 text-stone-2">ההודעה, המידע והטיפול עוברים יחד בין המערכות.</p>
+            </figcaption>
+            <ol className="mt-6 space-y-3">
+              {workflow.map((step, index) => (
+                <li key={step.title} className="relative min-w-0 rounded-xl border border-line bg-ink p-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand"><Glyph name={step.icon} /></span>
+                    <span className="min-w-0 flex-1 text-xs font-medium leading-5 text-brand">{step.status}</span>
+                    <span aria-hidden="true" dir="ltr" className="shrink-0 text-xs text-muted">0{index + 1}</span>
                   </div>
-                  <div className="mt-4 font-sans text-muted">אירועים שטופלו היום</div>
-                  <div className="mt-2 text-end text-3xl text-paper">128</div>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    {[["מערכות", "6"], ["אוטומציות", "14"], ["AI", "פעיל"], ["נציגים", "3"]].map(([a, b]) => (
-                      <div key={a} className="flex justify-between rounded border border-line px-2 py-2"><span className="font-sans text-muted">{a}</span><span>{b}</span></div>
-                    ))}
-                  </div>
-                  <div className="mt-4 font-sans text-muted">אירועים אחרונים</div>
-                  {events.map(([id, s, c, t]) => (
-                    <div key={id} className="mt-2 flex justify-between font-sans">
-                      <span>{id} <span className="text-muted">{s}</span></span>
-                      <span className={t.startsWith("+") ? "text-mint" : "text-stone"}>{t}</span>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <pre className="overflow-x-auto leading-5 text-stone">{`GET /v1/events?today
-
-{
-  "handled": 128,
-  "automated": 94,
-  "data": [
-    { "id": "tkt-2041",
-      "type": "workflow",
-      "route": "ai → crm" }
-  ]
-}`}</pre>
-              )}
-            </div>
-            <div className="absolute bottom-8 flex items-center gap-2 rounded-full border border-line bg-ink/90 px-2 py-1 font-mono text-[10px]">
-              <span className={mode === "ui" ? "text-paper" : "text-muted"}>UI</span>
-              <button onClick={() => setMode(mode === "ui" ? "api" : "ui")} aria-label="Toggle UI or API view" className="relative h-4 w-8 rounded-full bg-line">
-                <span className={`absolute top-0.5 size-3 rounded-full bg-paper transition-all duration-300 ${mode === "ui" ? "left-0.5" : "left-[18px]"}`} />
-              </button>
-              <span className={mode === "api" ? "text-paper" : "text-muted"}>API</span>
-            </div>
-          </div>
+                  <h4 className="mt-3 text-base font-bold leading-6 text-paper">{step.title}</h4>
+                  <p className="mt-1.5 text-sm leading-6 text-stone-2">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-5 text-xs leading-5 text-muted">הדמיה להמחשה. התהליך והחיבורים נקבעים לפי צורכי העסק.</p>
+          </figure>
         </div>
       </div>
     </section>

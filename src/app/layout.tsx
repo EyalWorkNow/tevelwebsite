@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Heebo } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CampaignFooter from "@/components/CampaignFooter";
 import AccessibilityWidget from "@/components/AccessibilityWidget";
 import SiteChrome from "@/components/SiteChrome";
 import MetaPixel from "@/components/MetaPixel";
@@ -53,7 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>
         <SiteChrome><Header /></SiteChrome>
         <main id="main" tabIndex={-1}>{children}</main>
-        <SiteChrome><Footer /></SiteChrome>
+        <SiteChrome campaignFooter={<CampaignFooter />}><Footer /></SiteChrome>
         <SiteChrome><AccessibilityWidget /></SiteChrome>
         <SiteChrome><MetaPixel /></SiteChrome>
       </body>

@@ -1,0 +1,1095 @@
+/* Campaign typography inherits the exact Heebo family loaded by the site layout. */
+.page {
+  --app-green: #02bd8f;
+  background: var(--color-ink);
+  color: #f9f5ef;
+  overflow: clip;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 400;
+}
+.page :is(button, input, textarea, select) {
+  font-family: inherit;
+}
+.container {
+  width: min(1250px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  min-height: 650px;
+  padding-block: 58px 45px;
+}
+.heroCopy {
+  position: relative;
+  z-index: 2;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #c9d5cb;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 27px;
+}
+.eyebrow > span {
+  width: 6px;
+  height: 6px;
+  background: var(--app-green);
+  border-radius: 50%;
+}
+.hero h1 {
+  font-size: clamp(48px, 5.25vw, 76px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -2.5px;
+  margin: 0;
+}
+.hero h1 > span {
+  color: #65dbb4;
+}
+.heroDescription {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #d4cfc6;
+  margin-top: 24px;
+  max-width: 480px;
+}
+.heroOffer {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin-block: 27px;
+}
+.priceLine {
+  white-space: nowrap;
+}
+.priceLine > span {
+  display: block;
+  color: #b6b9ad;
+  font-size: 13px;
+}
+.priceLine strong {
+  display: inline-block;
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -2px;
+}
+.priceLine small {
+  font-size: 26px;
+}
+.heroBonus {
+  display: grid;
+  gap: 9px;
+  border-inline-start: 1px solid #ffffff25;
+  padding-inline-start: 22px;
+}
+.heroBonus > span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: #d9dfd5;
+}
+.heroBonus svg {
+  width: 14px;
+  height: 14px;
+  color: var(--app-green);
+  flex-shrink: 0;
+}
+.page .primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 9px 19px 9px 9px;
+  min-height: 60px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.page .primaryButton:hover {
+  background: #24d4a6;
+  transform: translateY(-2px);
+}
+.ctaArrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: #043e2d;
+  color: #c5ffe5;
+  flex-shrink: 0;
+}
+.heroNote {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #b0b1a6;
+  max-width: 370px;
+  margin-top: 12px;
+}
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  font-size: 13px;
+  color: #e1e2d7;
+  text-decoration: none;
+  margin-top: 9px;
+}
+.textLink:hover {
+  color: #63dfb7;
+}
+.section {
+  padding-block: 95px;
+  scroll-margin-top: 50px;
+}
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 35px;
+  align-items: flex-end;
+  margin-bottom: 38px;
+}
+.page h2 {
+  font-size: clamp(30px, 3.15vw, 45px);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -1.1px;
+}
+.page h2 > span {
+  color: #9ea394;
+}
+.sectionHeading > p {
+  font-size: 15px;
+  color: #bdc0b2;
+  line-height: 1.8;
+}
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+.page .featureCard {
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #ffffff0c;
+}
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #dddcd2;
+}
+.cardTop small {
+  color: #7f897c;
+  font-size: 11px;
+}
+.featureCard h3 {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 25px;
+  letter-spacing: -0.4px;
+}
+.featureCard p {
+  color: #bfc3b4;
+  font-size: 14px;
+  line-height: 1.9;
+  margin-top: 13px;
+}
+.wireframe,
+.designPreview,
+.systemPreview {
+  height: 172px;
+  margin-top: 24px;
+  background: #0c0e0b;
+  border: 1px solid #ffffff0b;
+  border-radius: 8.4px;
+  overflow: hidden;
+}
+.wireframe {
+  padding: 21px;
+}
+.wireframe > span {
+  display: block;
+  width: 80px;
+  height: 7px;
+  background: #d3e8d921;
+  margin-bottom: 18px;
+}
+.wireframe > div {
+  display: flex;
+  gap: 10px;
+  float: left;
+  width: 44%;
+  height: 80px;
+}
+.wireframe i {
+  flex: 1;
+  display: block;
+  border: 1px dashed #72a18a70;
+  border-radius: 3.6px;
+}
+.wireframe b {
+  display: block;
+  height: 5px;
+  width: 45%;
+  background: #d3e8d921;
+  margin-bottom: 12px;
+}
+.wireframe b:nth-of-type(2) {
+  width: 30%;
+}
+.wireframe em {
+  display: block;
+  width: 60px;
+  height: 19px;
+  background: #02bd8f40;
+  border: 1px solid #02bd8f66;
+  border-radius: 3.6px;
+  margin-top: 18px;
+}
+.designPreview {
+  padding: 16px 21px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.designPreview > span {
+  font-size: 67px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -5px;
+  color: #e6e3d9;
+}
+.designPreview > div {
+  display: flex;
+  gap: 5px;
+}
+.designPreview i {
+  width: 23px;
+  height: 54px;
+  background: #02bd8f;
+  border-radius: 3.6px;
+  transform: rotate(-12deg);
+}
+.designPreview i:nth-child(2) {
+  background: #e7edd9;
+  margin-top: 9px;
+}
+.designPreview i:nth-child(3) {
+  background: #8771b5;
+}
+.designPreview small {
+  width: 100%;
+  font-size: 10px;
+  color: #8b9d8c;
+}
+.systemPreview {
+  display: grid;
+  grid-template-columns: 1fr 30px 1fr;
+  align-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 18px 0;
+}
+.systemPreview > div {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 15px 6px;
+  border: 1px solid #02bd8f35;
+  border-radius: 6px;
+  background: #02bd8f08;
+  color: #82d2b0;
+}
+.systemPreview > div > span {
+  font-size: 10px;
+  color: #d2deca;
+}
+.systemConnection {
+  height: 1px;
+  background: #02bd8f;
+  position: relative;
+}
+.systemConnection::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: 50%;
+  width: 7px;
+  height: 7px;
+  background: #7de9ba;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #02bd8f88;
+}
+.systemPreview > small {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #9cba97;
+}
+.systemPreview > small > svg {
+  width: 12px;
+  height: 12px;
+  color: #02bd8f;
+}
+.bonusGrid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 15px;
+  margin-top: 15px;
+}
+.page .crmCard {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 32px;
+  border-radius: 12px;
+  background: #111d16 !important;
+}
+.bonusCopy h3 {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+}
+.bonusCopy p {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #bccbb9;
+  line-height: 1.8;
+}
+.crmVisual {
+  padding: 17px;
+  background: #0e150e;
+  border: 1px solid #78b58c38;
+  border-radius: 10.8px;
+  transform: rotate(-4deg);
+  box-shadow: 0 15px 30px #0004;
+}
+.crmWindowBar {
+  display: flex;
+  direction: ltr;
+  gap: 4px;
+  margin-bottom: 23px;
+}
+.crmWindowBar i {
+  width: 4px;
+  height: 4px;
+  background: #7b8b75;
+  border-radius: 50%;
+}
+.crmWindowTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+.crmWindowTitle strong {
+  font-size: 11px;
+  font-weight: 700;
+}
+.crmWindowTitle > span {
+  font-size: 7px;
+  color: #6fc29d;
+}
+.crmRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-block: 13px;
+  border-top: 1px solid #ffffff0d;
+}
+.crmAvatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  background: #93bd8130;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #b4d59e;
+}
+.crmRow > div {
+  flex: 1;
+}
+.crmRow > div > span {
+  display: block;
+  height: 3px;
+  width: 37px;
+  margin-block: 5px;
+  background: #a5b79835;
+}
+.crmRow > div > span:last-child {
+  width: 23px;
+  opacity: 0.5;
+}
+.crmRow > small {
+  color: #aad79e;
+  font-size: 8px;
+}
+.freeLabel {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  align-items: center;
+  background: #a5deb2;
+  padding: 10px;
+  border-radius: 4.8px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #11331e;
+}
+.page .brandCard {
+  padding: 32px;
+  border-radius: 12px;
+  background: #211f19 !important;
+}
+.brandArt {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+  padding-bottom: 30px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e4d0a82b;
+}
+.brandArt > strong {
+  font-size: 90px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -8px;
+  color: #e7dfc9;
+}
+.brandArt > span {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #cfc6b2;
+}
+.brandArt > div {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  display: flex;
+  gap: 4px;
+}
+.brandArt i {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #b6c68e;
+}
+.brandArt i:nth-child(2) {
+  background: #b49a75;
+}
+.brandArt i:nth-child(3) {
+  background: #e7dfc9;
+}
+.brandCard h3 {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.brandCard p {
+  color: #c2baaa;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.faqSection {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 60px;
+  border-top: 1px solid #ffffff18;
+}
+.faqList details {
+  border-bottom: 1px solid #ffffff1a;
+}
+.faqList summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 23px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+.faqList summary::-webkit-details-marker {
+  display: none;
+}
+.faqList summary > span {
+  color: #02bd8f;
+  font-size: 25px;
+  font-weight: 400;
+  transition: transform 0.2s;
+}
+.faqList details[open] summary > span {
+  transform: rotate(45deg);
+}
+.faqList details > p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #bec4b3;
+  padding: 0 0 25px 28px;
+}
+.contactSection {
+  padding-block: 90px;
+  border-top: 1px solid #ffffff20;
+  background: #11180f;
+  scroll-margin-top: 30px;
+}
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 80px;
+  align-items: center;
+}
+.contactGrid h2 > span {
+  color: #69d9b1;
+}
+.contactDescription {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #bec8b3;
+  max-width: 410px;
+  margin-top: 25px;
+}
+.contactPhone {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #c8d6bc;
+  min-height: 44px;
+}
+.contactPhone b {
+  font-weight: 500;
+}
+.formPanel {
+  padding: 34px;
+  background: #0c110a;
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+}
+.formPanel > h3 {
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 700;
+  margin-top: 14px;
+}
+.formPanel > p {
+  font-size: 14px;
+  color: #bdc5b1;
+  margin-top: 12px;
+  margin-bottom: 26px;
+}
+.formPanel input,
+.formPanel textarea {
+  background: #171d12;
+  border-color: #b4c29b42;
+  font-size: 16px;
+  border-radius: 6px;
+}
+.formPanel input:focus,
+.formPanel textarea:focus {
+  border-color: #02bd8f;
+}
+.formPanel form > label > span {
+  font-size: 13px;
+  font-weight: 500;
+}
+.formPanel form > div {
+  align-items: stretch;
+}
+.formPanel form > div > button {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 7.2px;
+  background: #02bd8f;
+  color: #062117;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  justify-content: center;
+  gap: 14px;
+}
+.formPanel form > div > button:hover {
+  background: #32d7aa;
+}
+.formPanel form > p {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.mobileCta {
+  display: none;
+}
+@media (max-width: 1100px) {
+  .container {
+    width: calc(100% - 64px);
+  }
+  .heroGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 0;
+  }
+  .hero h1 {
+    font-size: 58px;
+  }
+  .heroDescription {
+    font-size: 16px;
+  }
+  .heroOffer {
+    gap: 16px;
+  }
+  .priceLine strong {
+    font-size: 46px;
+  }
+  .heroBonus {
+    padding-inline-start: 14px;
+  }
+  .heroBonus > span {
+    font-size: 11px;
+  }
+  .page .primaryButton {
+    font-size: 15px;
+    gap: 15px;
+  }
+  .contactGrid {
+    gap: 40px;
+  }
+  .page .crmCard {
+    padding: 25px;
+  }
+  .page .brandCard {
+    padding: 25px;
+  }
+  .bonusCopy h3 {
+    font-size: 25px;
+  }
+  .brandArt > strong {
+    font-size: 75px;
+  }
+  .brandArt > span {
+    font-size: 14px;
+  }
+}
+@media (max-width: 800px) {
+  .container {
+    width: calc(100% - 40px);
+  }
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-block: 35px 25px;
+  }
+  .hero h1 {
+    font-size: clamp(43px, 7.4vw, 65px);
+  }
+  .heroCopy {
+    max-width: 600px;
+  }
+  .eyebrow {
+    margin-bottom: 22px;
+  }
+  .heroOffer {
+    gap: 25px;
+  }
+  .heroBonus > span {
+    font-size: 13px;
+  }
+  .hero .primaryButton {
+    min-width: 340px;
+  }
+  .heroNote {
+    max-width: 420px;
+  }
+  .section {
+    padding-block: 65px;
+  }
+  .sectionHeading {
+    display: block;
+    margin-bottom: 28px;
+  }
+  .sectionHeading > p {
+    margin-top: 20px;
+    font-size: 15px;
+  }
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+  .page .featureCard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 28px;
+    padding: 27px;
+  }
+  .cardTop {
+    grid-column: 1;
+    align-self: end;
+  }
+  .wireframe,
+  .designPreview,
+  .systemPreview {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    margin-top: 0;
+    height: 185px;
+    align-self: center;
+  }
+  .featureCard h3 {
+    grid-column: 1;
+    margin-top: 20px;
+  }
+  .featureCard p {
+    grid-column: 1;
+    margin-top: 12px;
+  }
+  .bonusGrid {
+    grid-template-columns: 1fr;
+  }
+  .page .crmCard {
+    padding: 30px;
+    gap: 35px;
+  }
+  .page .brandCard {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 35px;
+  }
+  .brandArt {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    margin: 0;
+    border-bottom: 0;
+    padding: 0 0 30px;
+  }
+  .brandCard > h3,
+  .brandCard > p {
+    grid-column: 1;
+  }
+  .faqSection {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .contactSection {
+    padding-block: 65px;
+  }
+  .contactDescription {
+    max-width: 550px;
+  }
+}
+@media (max-width: 540px) {
+  .container {
+    width: calc(100% - 40px);
+  }
+  .heroGrid {
+    padding-top: 27px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 10.4vw, 55px);
+    line-height: 1.17;
+    letter-spacing: -1.8px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+  .heroDescription {
+    font-size: 16px;
+    line-height: 1.75;
+    margin-top: 18px;
+  }
+  .heroOffer {
+    gap: 18px;
+    margin-block: 23px;
+  }
+  .priceLine strong {
+    font-size: 46px;
+  }
+  .priceLine > span {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  .heroBonus {
+    gap: 9px;
+    padding-inline-start: 16px;
+  }
+  .heroBonus > span {
+    font-size: 11px;
+    gap: 6px;
+  }
+  .heroBonus svg {
+    width: 12px;
+    height: 12px;
+  }
+  .hero .primaryButton {
+    width: 100%;
+    min-width: 0;
+    font-size: 15px;
+    gap: 9px;
+    min-height: 58px;
+  }
+  .heroNote {
+    font-size: 11px;
+    margin-top: 13px;
+    max-width: 340px;
+  }
+  .hero .textLink {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  .section {
+    padding-block: 55px;
+  }
+  .page h2 {
+    font-size: 31px;
+    letter-spacing: -0.8px;
+    line-height: 1.3;
+  }
+  .sectionHeading > p {
+    font-size: 14px;
+    margin-top: 16px;
+  }
+  .page .featureCard {
+    display: block;
+    padding: 23px;
+  }
+  .wireframe,
+  .designPreview,
+  .systemPreview {
+    height: 170px;
+    margin-top: 22px;
+  }
+  .featureCard h3 {
+    font-size: 23px;
+    margin-top: 22px;
+  }
+  .featureCard p {
+    font-size: 14px;
+  }
+  .page .crmCard {
+    grid-template-columns: 1fr;
+    padding: 26px;
+    gap: 30px;
+  }
+  .bonusCopy h3 {
+    font-size: 29px;
+  }
+  .bonusCopy p {
+    font-size: 15px;
+  }
+  .crmVisual {
+    width: 92%;
+    margin: 0 auto 5px;
+  }
+  .page .brandCard {
+    display: block;
+    padding: 26px;
+  }
+  .brandArt {
+    padding-block: 12px 32px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e4d0a82b;
+    gap: 25px;
+  }
+  .brandArt > strong {
+    font-size: 100px;
+  }
+  .brandArt > span {
+    font-size: 19px;
+  }
+  .brandCard h3 {
+    font-size: 25px;
+  }
+  .faqList summary {
+    font-size: 15px;
+    line-height: 1.7;
+    padding-block: 21px;
+  }
+  .faqList details > p {
+    font-size: 14px;
+    padding-inline-end: 0;
+  }
+  .contactSection {
+    padding-block: 55px;
+  }
+  .contactDescription {
+    font-size: 15px;
+  }
+  .contactPhone {
+    font-size: 12px;
+    gap: 8px;
+  }
+  .formPanel {
+    padding: 25px 20px;
+  }
+  .formPanel > h3 {
+    font-size: 24px;
+  }
+  .formPanel > p {
+    font-size: 13px;
+  }
+  .formPanel form {
+    gap: 17px;
+  }
+  .formPanel form > div > button {
+    font-size: 15px;
+  }
+  .mobileCta {
+    display: flex;
+    position: fixed;
+    z-index: 40;
+    bottom: 0;
+    inset-inline: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 12px 20px max(12px, env(safe-area-inset-bottom));
+    padding-inline-start: 78px;
+    background: #10150ff5;
+    border-top: 1px solid #02bd8f35;
+    backdrop-filter: blur(14px);
+  }
+  .mobileCta > span {
+    white-space: nowrap;
+    font-size: 10px;
+    color: #bcc7b0;
+  }
+  .mobileCta strong {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    color: #f0f4e8;
+    margin-top: 3px;
+  }
+  .stickyButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 18px;
+    white-space: nowrap;
+    border-radius: 6px;
+    background: #02bd8f;
+    color: #062419;
+    font-size: 15px;
+    font-weight: 700;
+    min-height: 47px;
+  }
+  :global(body):has(.page) {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom));
+  }
+  :global(body):has(.page) :global(#a11y-root > button) {
+    bottom: calc(15px + env(safe-area-inset-bottom));
+    inset-inline-start: 16px;
+    width: 44px;
+    height: 44px;
+  }
+  :global(body):has(.page) :global(#a11y-root > div) {
+    bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 360px) {
+  .container {
+    width: calc(100% - 32px);
+  }
+  .heroOffer {
+    gap: 12px;
+  }
+  .priceLine strong {
+    font-size: 40px;
+  }
+  .heroBonus {
+    padding-inline-start: 10px;
+  }
+  .heroBonus > span {
+    font-size: 10px;
+  }
+  .hero .primaryButton {
+    font-size: 13px;
+  }
+  .page h2 {
+    font-size: 29px;
+  }
+  .formPanel {
+    padding-inline: 17px;
+  }
+  .formPanel form > div > button {
+    font-size: 13px;
+  }
+  .mobileCta {
+    padding-inline: 72px 16px;
+    gap: 10px;
+  }
+  .mobileCta strong {
+    font-size: 14px;
+  }
+  .stickyButton {
+    padding-inline: 12px;
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page .primaryButton:hover {
+    transform: none;
+  }
+}
+
+.logoStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.page .heroLogo {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@media (max-width: 800px) {
+  .logoStage {
+    grid-row: 1;
+    width: min(420px, 100%);
+    aspect-ratio: 2;
+    margin-inline: auto;
+    margin-bottom: 24px;
+  }
+}
