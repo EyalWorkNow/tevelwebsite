@@ -35,6 +35,7 @@ interface UserDetail {
   audit: AuditRow[];
 }
 
+const IDENTITY_HE: Record<string, string> = { apple: "Apple", google: "Google", supabase: "סיסמה" };
 const msg = (e: unknown) => (e instanceof ApiError ? e.message : "שגיאה");
 
 export default function AccountDrawer({ meta, userId, onClose, onNotify }: { meta: Meta; userId: string; onClose: () => void; onNotify: (a: AudiencePick) => void }) {
@@ -102,7 +103,9 @@ function UserCard({ detail, meta, setConfirm, done }: { detail: UserDetail; meta
     try { await api(`/users/${u.userId}`, { method: "PATCH", body: { displayName: name } }); done("השם עודכן"); }
     catch (e) { setError(msg(e)); }
   };
-  const identities = Object.entries(u.identities).filter(([, v]) => v).map(([k]) => k);
+  const identities = Object.entries(u.identities).filter(([, v]) => v).map(([k]) => IDENTITY_HE[k] ?? k);
+  // No e-mail + password yet (today: Apple/Google-only accounts): "set password" CREATES the login.
+  const needsCredentials = meta.authMode === "supabase" ? !u.identities.supabase : !u.hasPassword;
   return (
     <section className="adm-card">
       <h3 className="adm-h3">מי הוא</h3>
@@ -131,11 +134,14 @@ function UserCard({ detail, meta, setConfirm, done }: { detail: UserDetail; meta
       </div>
       {error && <p className="adm-error" role="alert">{error}</p>}
       <div className="adm-row" style={{ marginTop: 14 }}>
-        <button className="adm-btn-ghost" disabled={suspended || password.length < 12} onClick={() => setConfirm({
+        <button className="adm-btn-ghost" disabled={suspended || password.length < 12} onClick={() => setConfirm(needsCredentials ? {
+          title: "יצירת סיסמה לכניסה", text: `למשתמש עוד אין כניסה עם מייל וסיסמה. תיווצר לו כניסה עם ${u.email} והסיסמה שבשדה, כך שיוכל להיכנס גם כשהכניסה עם Apple/Google תכובה. כל החיבורים והמכשירים שלו ינותקו — מסרו לו את הסיסמה בערוץ בטוח.`, confirmLabel: "יצירה", danger: true,
+          run: async () => { await api(`/users/${u.userId}/password`, { body: { mode: "set", password } }); setPassword(""); done("נוצרה כניסה עם מייל וסיסמה"); },
+        } : {
           title: "קביעת סיסמה", text: "הסיסמה תוחלף וכל החיבורים והמכשירים של המשתמש ינותקו. מסרו לו את הסיסמה בערוץ בטוח.", confirmLabel: "קביעה", danger: true,
           run: async () => { await api(`/users/${u.userId}/password`, { body: { mode: "set", password } }); setPassword(""); done("הסיסמה הוחלפה"); },
-        })}>קביעת סיסמה</button>
-        <button className="adm-btn-ghost" disabled={suspended} onClick={() => setConfirm({
+        })}>{needsCredentials ? "יצירת סיסמה לכניסה" : "קביעת סיסמה"}</button>
+        <button className="adm-btn-ghost" disabled={suspended || (needsCredentials && meta.authMode === "supabase")} title={needsCredentials && meta.authMode === "supabase" ? "אין למשתמש עדיין כניסה עם סיסמה — צרו לו סיסמה קודם" : undefined} onClick={() => setConfirm({
           title: "שליחת קישור איפוס", text: `יישלח מייל איפוס סיסמה אל ${u.email}${meta.authMode === "supabase" ? " (דרך Supabase)" : ""}.`, confirmLabel: "שליחה",
           run: async () => { await api(`/users/${u.userId}/password`, { body: { mode: "link" } }); done("קישור איפוס נשלח"); },
         })}>שליחת קישור איפוס</button>

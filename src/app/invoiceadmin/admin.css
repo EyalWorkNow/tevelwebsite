@@ -47,6 +47,8 @@
 .adm-pill { display: inline-block; border-radius: 9999px; padding: 1px 10px; font-size: 12px; border: 1px solid var(--color-line-2); color: var(--color-stone); white-space: nowrap; }
 .adm-pill-ok { border-color: color-mix(in srgb, var(--color-brand) 60%, transparent); color: var(--color-mint); }
 .adm-pill-warn { border-color: color-mix(in srgb, var(--color-amber) 60%, transparent); color: var(--color-amber); }
+.adm-signin { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.adm-banner-warn { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--color-amber) 60%, transparent); background: color-mix(in srgb, var(--color-amber) 10%, transparent); color: var(--color-amber); line-height: 1.6; }
 .adm-pill-bad { border-color: color-mix(in srgb, var(--color-rose) 60%, transparent); color: var(--color-rose); }
 .adm-pager { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 8px; flex-wrap: wrap; }
 .adm-drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; display: flex; justify-content: flex-start; }

@@ -16,6 +16,9 @@ export interface Meta {
   businessTypes: string[];
   authMode: "local" | "supabase";
   supabaseAdminConfigured: boolean;
+  /** EXTERNAL_SIGNIN_ENABLED on the API (absent on an older API = on). */
+  externalSignInEnabled?: boolean;
+  selfSignup?: boolean;
 }
 interface SessionBody { email: string; csrfToken: string }
 
