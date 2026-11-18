@@ -17,6 +17,13 @@ const SIGN_CSP = [
   "font-src 'self' data:", "connect-src 'self'", "worker-src 'self' blob:", "object-src 'none'", "base-uri 'none'", "form-action 'self'", "frame-ancestors 'none'",
 ].join("; ");
 
+// /invoiceadmin talks to the invoice API only (browser → API with credentials; no secret on Vercel).
+const INVOICE_API_ORIGIN = (process.env.NEXT_PUBLIC_INVOICE_API_ORIGIN || "https://invoice.crm.tevel.space").replace(/\/$/, "");
+const ADMIN_CSP = [
+  "default-src 'self'", `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"}`, "style-src 'self' 'unsafe-inline'", "img-src 'self' data:",
+  "font-src 'self' data:", `connect-src 'self' ${INVOICE_API_ORIGIN}`, "object-src 'none'", "base-uri 'none'", "form-action 'self'", "frame-ancestors 'none'",
+].join("; ");
+
 const nextConfig: NextConfig = {
   // Friendly spellings for the shareable executive summary page
   async redirects() {
@@ -26,6 +33,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/sign/:path*", headers: [...PRIVATE_HEADERS, { key: "Content-Security-Policy", value: SIGN_CSP }] },
       { source: "/api/sign", headers: PRIVATE_HEADERS },
+      { source: "/invoiceadmin", headers: [...PRIVATE_HEADERS, { key: "Content-Security-Policy", value: ADMIN_CSP }] },
+      { source: "/invoiceadmin/:path*", headers: [...PRIVATE_HEADERS, { key: "Content-Security-Policy", value: ADMIN_CSP }] },
       { source: "/api/relay/:path*", headers: PRIVATE_HEADERS },
     ];
   },
