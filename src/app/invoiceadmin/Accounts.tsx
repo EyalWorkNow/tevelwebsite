@@ -13,6 +13,33 @@ export interface AccountBusiness {
 export interface AccountRow {
   userId: string; email: string; displayName: string | null; status: string; isDemo: boolean;
   createdAt: string; lastActiveAt: string | null; businesses: AccountBusiness[];
+  /** How the user can sign in (API 0126; absent on an older API). */
+  signIn?: { apple: boolean; google: boolean; password: boolean };
+}
+interface AccountsPage { total: number; rows: AccountRow[]; externalOnlyCount?: number }
+
+/** Sign-in methods as small pills; Apple/Google without a password is flagged. */
+export function SignInPills({ signIn }: { signIn: { apple: boolean; google: boolean; password: boolean } }) {
+  const externalOnly = !signIn.password && (signIn.apple || signIn.google);
+  const cls = externalOnly ? "adm-pill adm-pill-warn" : "adm-pill";
+  return (
+    <span className="adm-signin" title={externalOnly ? "נכנס רק עם Apple/Google — צרו לו סיסמה" : undefined}>
+      {signIn.apple && <span className={cls}>Apple</span>}
+      {signIn.google && <span className={cls}>Google</span>}
+      {signIn.password ? <span className="adm-pill adm-pill-ok">סיסמה</span> : externalOnly ? null : <span className="adm-pill adm-pill-bad">אין דרך כניסה</span>}
+    </span>
+  );
+}
+
+function ExternalOnlyBanner({ count, externalOn }: { count: number; externalOn: boolean }) {
+  if (count <= 0) return null;
+  const who = count === 1 ? "משתמש אחד נכנס" : `${count} משתמשים נכנסים`;
+  return (
+    <p className="adm-banner-warn" role="status" data-testid="external-only-banner">
+      {who} רק עם Apple/Google — צרו להם סיסמה לפני כיבוי הכניסה החיצונית
+      {!externalOn && <><br /><strong>הכניסה עם Apple/Google כבר כבויה — הם לא יכולים להיכנס עד שתיצרו להם סיסמה.</strong></>}
+    </p>
+  );
 }
 
 const PAGE = 25;
@@ -36,7 +63,7 @@ export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Me
   const [businessStatus, setBusinessStatus] = useState("");
   const [businessType, setBusinessType] = useState("");
   const [offset, setOffset] = useState(0);
-  const [data, setData] = useState<{ total: number; rows: AccountRow[] } | null>(null);
+  const [data, setData] = useState<AccountsPage | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => { const t = setTimeout(() => { setDebounced(q.trim()); setOffset(0); }, 300); return () => clearTimeout(t); }, [q]);
@@ -49,7 +76,7 @@ export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Me
     if (businessStatus) params.set("businessStatus", businessStatus);
     if (businessType) params.set("businessType", businessType);
     let live = true;
-    api<{ total: number; rows: AccountRow[] }>(`/accounts?${params}`)
+    api<AccountsPage>(`/accounts?${params}`)
       .then((d) => { if (live) { setData(d); setError(""); } })
       .catch((e) => { if (live) setError(e instanceof ApiError ? e.message : "שגיאה"); });
     return () => { live = false; };
@@ -89,6 +116,7 @@ export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Me
         </label>
       </div>
       {error && <p className="adm-error" role="alert">{error}</p>}
+      {data !== null && <ExternalOnlyBanner count={data.externalOnlyCount ?? 0} externalOn={meta.externalSignInEnabled !== false} />}
       {data === null ? <p className="adm-muted">טוען…</p> : data.rows.length === 0 ? <p className="adm-muted">לא נמצאו חשבונות.</p> : (
         <>
           <div className="adm-table-wrap adm-hide-sm">
@@ -99,7 +127,7 @@ export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Me
                   const b = row.businesses;
                   return (
                     <tr key={row.userId} onClick={() => onOpen(row.userId)} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") onOpen(row.userId); }}>
-                      <td><div>{row.displayName ?? "—"}</div><div className="adm-muted adm-mono" style={{ fontSize: 12 }}>{row.email}</div></td>
+                      <td><div>{row.displayName ?? "—"}</div><div className="adm-muted adm-mono" style={{ fontSize: 12 }}>{row.email}</div>{row.signIn && <SignInPills signIn={row.signIn} />}</td>
                       <td>{b.length === 0 ? <span className="adm-muted">אין עסק</span> : b.map((x) => <div key={x.businessId}>{x.tradingName ?? x.legalName}</div>)}</td>
                       <td>{b.map((x) => <div key={x.businessId} className="adm-mono">{x.taxId ?? "—"}</div>)}</td>
                       <td>{b.map((x) => <div key={x.businessId}>{BUSINESS_TYPE_HE[x.businessType] ?? x.businessType}</div>)}</td>
@@ -122,6 +150,7 @@ export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Me
                 <button className="adm-acc-card" onClick={() => onOpen(row.userId)}>
                   <div className="adm-row" style={{ justifyContent: "space-between" }}><strong>{row.displayName ?? row.email}</strong><StatusPill status={row.status} kind="user" /></div>
                   <div className="adm-muted adm-mono" style={{ fontSize: 12 }}>{row.email}</div>
+                  {row.signIn && <SignInPills signIn={row.signIn} />}
                   {row.businesses.map((x) => <div key={x.businessId} className="adm-row" style={{ marginTop: 6 }}>{x.tradingName ?? x.legalName} <PlanPill plan={x.plan} /></div>)}
                 </button>
                 <button className="adm-btn-ghost adm-acc-notify" disabled={row.status !== "ACTIVE"} onClick={() => onNotify(notifyPick(row))}>שלח התראה</button>
