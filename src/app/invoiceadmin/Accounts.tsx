@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "./api";
 import type { Meta } from "./AdminApp";
+import type { AudiencePick } from "./Notifications";
 import { BUSINESS_STATUS_HE, BUSINESS_TYPE_HE, PLAN_HE, USER_STATUS_HE, fmtDate, fmtDateTime } from "./labels";
 
 export interface AccountBusiness {
@@ -25,7 +26,9 @@ export function PlanPill({ plan }: { plan: string | null }) {
   return <span className={plan ? "adm-pill adm-pill-ok" : "adm-pill"}>{PLAN_HE[plan ?? "NONE"] ?? plan}</span>;
 }
 
-export default function Accounts({ meta, onOpen, refresh }: { meta: Meta; onOpen: (userId: string) => void; refresh: number }) {
+const notifyPick = (row: AccountRow): AudiencePick => ({ type: "USER", value: row.userId, label: `${row.displayName ?? row.email} (${row.email})` });
+
+export default function Accounts({ meta, onOpen, refresh, onNotify }: { meta: Meta; onOpen: (userId: string) => void; refresh: number; onNotify: (a: AudiencePick) => void }) {
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
   const [plan, setPlan] = useState("");
@@ -90,7 +93,7 @@ export default function Accounts({ meta, onOpen, refresh }: { meta: Meta; onOpen
         <>
           <div className="adm-table-wrap adm-hide-sm">
             <table className="adm-table">
-              <thead><tr><th>משתמש</th><th>עסק</th><th>ח.פ / ע.מ</th><th>סוג</th><th>מסלול</th><th>סטטוס</th><th>מסמכים</th><th>נוצר</th><th>פעילות אחרונה</th></tr></thead>
+              <thead><tr><th>משתמש</th><th>עסק</th><th>ח.פ / ע.מ</th><th>סוג</th><th>מסלול</th><th>סטטוס</th><th>מסמכים</th><th>נוצר</th><th>פעילות אחרונה</th><th /></tr></thead>
               <tbody>
                 {data.rows.map((row) => {
                   const b = row.businesses;
@@ -105,6 +108,8 @@ export default function Accounts({ meta, onOpen, refresh }: { meta: Meta; onOpen
                       <td className="adm-mono">{b.reduce((n, x) => n + x.documentCount, 0)}</td>
                       <td className="adm-mono">{fmtDate(row.createdAt)}</td>
                       <td className="adm-mono">{fmtDateTime(row.lastActiveAt)}</td>
+                      <td><button className="adm-btn-ghost adm-acc-notify" disabled={row.status !== "ACTIVE"} title={row.status !== "ACTIVE" ? "המשתמש מושהה" : "שליחת התראה למשתמש הזה"}
+                        onClick={(e) => { e.stopPropagation(); onNotify(notifyPick(row)); }} onKeyDown={(e) => e.stopPropagation()} data-testid="row-notify">שלח התראה</button></td>
                     </tr>
                   );
                 })}
@@ -113,11 +118,14 @@ export default function Accounts({ meta, onOpen, refresh }: { meta: Meta; onOpen
           </div>
           <div className="adm-cards">
             {data.rows.map((row) => (
-              <button key={row.userId} className="adm-acc-card" onClick={() => onOpen(row.userId)}>
-                <div className="adm-row" style={{ justifyContent: "space-between" }}><strong>{row.displayName ?? row.email}</strong><StatusPill status={row.status} kind="user" /></div>
-                <div className="adm-muted adm-mono" style={{ fontSize: 12 }}>{row.email}</div>
-                {row.businesses.map((x) => <div key={x.businessId} className="adm-row" style={{ marginTop: 6 }}>{x.tradingName ?? x.legalName} <PlanPill plan={x.plan} /></div>)}
-              </button>
+              <div key={row.userId} className="adm-acc-wrap">
+                <button className="adm-acc-card" onClick={() => onOpen(row.userId)}>
+                  <div className="adm-row" style={{ justifyContent: "space-between" }}><strong>{row.displayName ?? row.email}</strong><StatusPill status={row.status} kind="user" /></div>
+                  <div className="adm-muted adm-mono" style={{ fontSize: 12 }}>{row.email}</div>
+                  {row.businesses.map((x) => <div key={x.businessId} className="adm-row" style={{ marginTop: 6 }}>{x.tradingName ?? x.legalName} <PlanPill plan={x.plan} /></div>)}
+                </button>
+                <button className="adm-btn-ghost adm-acc-notify" disabled={row.status !== "ACTIVE"} onClick={() => onNotify(notifyPick(row))}>שלח התראה</button>
+              </div>
             ))}
           </div>
           <div className="adm-pager">

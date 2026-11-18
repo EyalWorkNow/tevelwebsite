@@ -28,7 +28,13 @@ export default function AdminApp() {
   const [openUser, setOpenUser] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   const [preset, setPreset] = useState<AudiencePick | null>(null);
+  const [composeKey, setComposeKey] = useState(0);
   const [notifTab, setNotifTab] = useState<"send" | "auto" | "system">("send");
+  // "שלח התראה" from the header (no audience yet), an accounts row or the account drawer (that user).
+  const compose = useCallback((a: AudiencePick | null) => {
+    setPreset(a); setComposeKey((n) => n + 1); setOpenUser(null); setTab("notifications"); setNotifTab("send");
+    window.scrollTo({ top: 0 });
+  }, []);
 
   const enter = useCallback(async (session: SessionBody) => {
     setCsrf(session.csrfToken);
@@ -62,8 +68,13 @@ export default function AdminApp() {
         <div className="adm-brand"><TevelLogo className="h-7 w-auto" /><span>ניהול חשבוניות</span></div>
         <div className="adm-who"><span className="adm-mono">{meta.adminEmail}</span><button className="adm-btn-ghost" onClick={logout}>יציאה</button></div>
       </header>
-      <p className="adm-eyebrow">תבל חשבוניות</p>
-      <h1 className="adm-h1">משתמשים ועסקים</h1>
+      <div className="adm-head-row">
+        <div>
+          <p className="adm-eyebrow">תבל חשבוניות</p>
+          <h1 className="adm-h1">משתמשים ועסקים</h1>
+        </div>
+        <button className="adm-btn adm-btn-lg" onClick={() => compose(null)} data-testid="cta-notify">🔔 שלח התראה</button>
+      </div>
       <p className="adm-sub">כל פעולה כאן נרשמת ביומן הפעולות. נתוני הנהלת חשבונות לעולם לא נמחקים: השהיה חוסמת כניסה ושימוש, וניתן לבטל אותה.</p>
       {meta.authMode === "supabase" && !meta.supabaseAdminConfigured && (
         <div className="adm-card" role="status" style={{ borderColor: "var(--color-amber)" }}>
@@ -75,7 +86,7 @@ export default function AdminApp() {
           <button key={key} role="tab" className="adm-tab" aria-selected={tab === key} onClick={() => setTab(key)}>{label}</button>
         ))}
       </div>
-      {tab === "accounts" && <Accounts meta={meta} onOpen={setOpenUser} refresh={refresh} />}
+      {tab === "accounts" && <Accounts meta={meta} onOpen={setOpenUser} refresh={refresh} onNotify={compose} />}
       {tab === "create" && <CreateUser meta={meta} onCreated={(id) => { setRefresh((n) => n + 1); setTab("accounts"); setOpenUser(id); }} />}
       {tab === "notifications" && (
         <>
@@ -84,14 +95,14 @@ export default function AdminApp() {
               <button key={key} role="tab" className="adm-tab" aria-selected={notifTab === key} onClick={() => setNotifTab(key)}>{label}</button>
             ))}
           </div>
-          {notifTab === "send" && <Notifications key={preset?.value ?? "new"} preset={preset} />}
+          {notifTab === "send" && <Notifications key={composeKey} preset={preset} />}
           {notifTab === "auto" && <Automations />}
           {notifTab === "system" && <SystemPushes />}
         </>
       )}
       {tab === "audit" && <AuditLog />}
       {openUser !== null && <AccountDrawer meta={meta} userId={openUser} onClose={() => { setOpenUser(null); setRefresh((n) => n + 1); }}
-        onNotify={(a) => { setPreset(a); setOpenUser(null); setTab("notifications"); setNotifTab("send"); }} />}
+        onNotify={compose} />}
     </div>
   );
 }
