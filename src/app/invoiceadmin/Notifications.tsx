@@ -7,7 +7,7 @@
 // Server: /platform-admin/notifications/* (invoice repo, docs/operations/PLATFORM-ADMIN.md).
 // Images come from the invoice API host (CSP img-src), so plain <img>, not next/image.
 /* eslint-disable @next/next/no-img-element */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, ApiError } from "./api";
 import type { AccountRow } from "./Accounts";
 import { BUSINESS_TYPE_HE, PLAN_HE, fmtDateTime } from "./labels";
@@ -30,10 +30,16 @@ export interface NotifMeta {
   adminIsAppUser: boolean;
   /** Present from server fix/admin-push-ux on: the admin's own app user, if the admin e-mail is one. */
   adminAppUser?: { userId: string; email: string; displayName: string | null } | null;
+  /** Present from server feat/notch-push on (Live Activity "נוטצ׳"). Absent on older servers → feature disabled. */
+  notch?: { minMinutes: number; maxMinutes: number; defaultMinutes: number; minIos: string; icons: { id: NotchIcon; label: string }[] };
 }
+export type NotchIcon = "megaphone" | "gift" | "sparkles" | "bell" | "star" | "tag" | "info" | "heart";
+type DisplayStyle = "standard" | "notch";
 interface UploadedImage { id: string; url: string; width: number; height: number; bytes: number; expiresAt: string }
 export interface AudiencePick { type: "ALL" | "PLAN" | "BUSINESS_TYPE" | "BUSINESS" | "USER"; value: string | null; label: string }
-interface Preview { users: number; businesses: number; optedOut: number; noDevice: number; devices: number; deferredQuiet: number; quietUntil: string | null; broadcast: boolean }
+interface Preview { users: number; businesses: number; optedOut: number; noDevice: number; devices: number; deferredQuiet: number; quietUntil: string | null; broadcast: boolean;
+  /** Newer servers only: devices with a Live Activity push-to-start token (iOS 17.2+) / the rest (normal push). */
+  notchDevices?: number; fallbackDevices?: number }
 interface Announcement {
   id: string; title: string; subtitle: string | null; body: string; route: string; audienceType: string; audienceValue: string | null;
   inFeed: boolean; isTest: boolean; important: boolean; status: string; scheduledFor: string; createdBy: string; createdAt: string;
@@ -41,6 +47,8 @@ interface Announcement {
   noDevice: number | null; deferredQuiet: number | null; imageUrl: string | null; templateId: string | null; templateVersion: number | null;
   sound?: boolean; badge?: number | null; interruptionLevel?: string; threadId?: string | null; collapseKey?: string | null; ttlSeconds?: number; priority?: number;
   delivery: { pending: number; delivered: number; failed: number; openedPush?: number }; openedInApp: number; lastError: string | null;
+  displayStyle?: DisplayStyle; notchMinutes?: number | null; notchIcon?: string | null; notchDevices?: number | null; notchFallback?: number | null;
+  notch?: { pending: number; started: number; fallback: number; ended: number; failed: number };
 }
 interface Template {
   id: string; name: string; version: number; title: string; subtitle: string | null; body: string; route: string; imageId: string | null;
@@ -99,10 +107,12 @@ interface Draft {
   title: string; subtitle: string; body: string; route: string; image: UploadedImage | null; sound: boolean;
   badgeMode: "leave" | "clear" | "set"; badge: number; interruptionLevel: "passive" | "active"; threadId: string; collapseKey: string;
   ttlSeconds: number; priority: 5 | 10; inFeed: boolean; important: boolean; when: "now" | "later"; scheduledFor: string; templateId: string | null;
+  displayStyle: DisplayStyle; notchMinutes: number; notchIcon: NotchIcon;
 }
 const EMPTY: Draft = {
   title: "", subtitle: "", body: "", route: "/home", image: null, sound: true, badgeMode: "leave", badge: 1, interruptionLevel: "active",
   threadId: "", collapseKey: "", ttlSeconds: 259200, priority: 10, inFeed: true, important: false, when: "now", scheduledFor: "", templateId: null,
+  displayStyle: "standard", notchMinutes: 10, notchIcon: "megaphone",
 };
 type SetDraft = <K extends keyof Draft>(k: K, v: Draft[K]) => void;
 
@@ -120,16 +130,32 @@ function payloadOf(d: Draft) {
   };
 }
 
-/** Live "who does this reach" for an audience (debounced). null while unknown / not applicable. */
-function useReach(audience: { type: string; value: string | null } | null, important: boolean): { preview: Preview | null; error: string } {
+/** The display-style fields for send / test — only when the server knows them (meta.notch), never to an old server. */
+function notchPayloadOf(d: Draft, meta: NotifMeta) {
+  if (!meta.notch) return {};
+  return d.displayStyle === "notch"
+    ? { displayStyle: "notch" as const, notchMinutes: clampMinutes(d.notchMinutes, meta), notchIcon: d.notchIcon }
+    : { displayStyle: "standard" as const };
+}
+const clampMinutes = (m: number, meta: NotifMeta) =>
+  Math.round(Math.max(meta.notch?.minMinutes ?? 1, Math.min(meta.notch?.maxMinutes ?? 480, Number.isFinite(m) ? m : meta.notch?.defaultMinutes ?? 10)));
+/** "10 דק׳" / "שעה" / "4 שעות" */
+export function minutesText(m: number): string {
+  if (m % 60 === 0) return m === 60 ? "שעה" : m === 120 ? "שעתיים" : `${m / 60} שעות`;
+  return m > 60 ? `${Math.floor(m / 60)} ש׳ ${m % 60} דק׳` : `${m} דק׳`;
+}
+
+/** Live "who does this reach" for an audience (debounced). null while unknown / not applicable.
+ *  `displayStyle` is sent only when given (i.e. the server supports it). */
+function useReach(audience: { type: string; value: string | null } | null, important: boolean, displayStyle?: DisplayStyle): { preview: Preview | null; error: string } {
   const [state, setState] = useState<{ key: string; preview: Preview | null; error: string }>({ key: "", preview: null, error: "" });
   const ready = audience !== null && (audience.type === "ALL" || audience.value !== null);
-  const key = ready ? `${audience.type}:${audience.value}:${important}` : "";
+  const key = ready ? `${audience.type}:${audience.value}:${important}:${displayStyle ?? ""}` : "";
   useEffect(() => {
     if (!ready || !audience) return;
     let live = true;
     const t = setTimeout(() => {
-      api<Preview>("/notifications/preview", { body: { audience: { type: audience.type, value: audience.value }, important } })
+      api<Preview>("/notifications/preview", { body: { audience: { type: audience.type, value: audience.value }, important, ...(displayStyle ? { displayStyle } : {}) } })
         .then((p) => { if (live) setState({ key, preview: p, error: "" }); })
         .catch((e) => { if (live) setState({ key, preview: null, error: errText(e) }); });
     }, 300);
@@ -140,7 +166,7 @@ function useReach(audience: { type: string; value: string | null } | null, impor
 }
 
 /** "יגיע ל-N מכשירים" — the one number that says whether a phone will light up; red when 0. */
-export function ReachBox({ preview, single, inFeed, compact }: { preview: Preview | null; single: boolean; inFeed: boolean; compact?: boolean }) {
+export function ReachBox({ preview, single, inFeed, compact, notch }: { preview: Preview | null; single: boolean; inFeed: boolean; compact?: boolean; notch?: boolean }) {
   if (preview === null) return <div className="adm-reach adm-reach-wait" data-testid="reach">בודק כמה מכשירים יקבלו…</div>;
   const zero = preview.devices === 0;
   const optedOutOnly = zero && preview.users > 0 && preview.optedOut >= preview.users;
@@ -148,6 +174,7 @@ export function ReachBox({ preview, single, inFeed, compact }: { preview: Previe
     <div className={`adm-reach${zero ? " adm-reach-bad" : " adm-reach-ok"}`} role={zero ? "alert" : "status"} data-testid="reach" data-devices={preview.devices}>
       <strong className="adm-reach-n">{zero ? "לא יגיע לאף טלפון (0 מכשירים)" : `יגיע ל-${preview.devices} ${preview.devices === 1 ? "מכשיר" : "מכשירים"}`}</strong>
       {!compact && <span className="adm-reach-sub">{preview.users} {preview.users === 1 ? "משתמש" : "משתמשים"} · {preview.noDevice} בלי מכשיר רשום · {preview.optedOut} כיבו הודעות מתבל</span>}
+      {notch && !zero && <NotchSplit preview={preview} />}
       {zero && preview.users > 0 && (
         <p className="adm-reach-warn">
           {optedOutOnly ? "המשתמש כיבה באפליקציה את \"הודעות מצוות תבל\" — ההתראה לא תגיע לטלפון (רק \"חשוב\" עוקף זאת)." : single ? NO_DEVICE_ONE : NO_DEVICE_MANY}
@@ -156,6 +183,18 @@ export function ReachBox({ preview, single, inFeed, compact }: { preview: Previe
       )}
       {preview.users === 0 && <p className="adm-reach-warn">אין אף משתמש בקהל הזה.</p>}
     </div>
+  );
+}
+
+/** "נוטצ׳: N מכשירים · רגילה (fallback): M מכשירים" — only when the server reported the split. */
+function NotchSplit({ preview }: { preview: Preview }) {
+  if (typeof preview.notchDevices !== "number") return <span className="adm-reach-sub" data-testid="reach-notch" data-known="0">חלוקה לנוטצ׳ / רגילה: לא ידועה (השרת לא דיווח)</span>;
+  const fallback = typeof preview.fallbackDevices === "number" ? preview.fallbackDevices : Math.max(0, preview.devices - preview.notchDevices);
+  const n = (k: number) => `${k} ${k === 1 ? "מכשיר" : "מכשירים"}`;
+  return (
+    <span className="adm-reach-sub adm-reach-notch" data-testid="reach-notch" data-notch={preview.notchDevices} data-fallback={fallback}>
+      נוטצ׳: <strong>{n(preview.notchDevices)}</strong> · רגילה (fallback): <strong>{n(fallback)}</strong>
+    </span>
   );
 }
 
@@ -183,7 +222,7 @@ export default function Notifications({ preset }: { preset: AudiencePick | null 
     api<{ rows: Template[] }>("/notifications/templates").then((r) => setTemplates(r.rows)).catch(() => undefined);
   }, []);
   useEffect(() => {
-    api<NotifMeta>("/notifications/meta").then((m) => { setMeta(m); setDraft((d) => ({ ...d, ttlSeconds: m.ttl.default })); }).catch((e) => setLoadError(errText(e)));
+    api<NotifMeta>("/notifications/meta").then((m) => { setMeta(m); setDraft((d) => ({ ...d, ttlSeconds: m.ttl.default, notchMinutes: m.notch?.defaultMinutes ?? d.notchMinutes })); }).catch((e) => setLoadError(errText(e)));
     loadHistory(); loadTemplates();
   }, [loadHistory, loadTemplates]);
   useEffect(() => { if (preset) top.current?.scrollIntoView({ block: "start" }); }, [preset]);
@@ -192,26 +231,28 @@ export default function Notifications({ preset }: { preset: AudiencePick | null 
   const hasVariable = /\{[^{}]*\}/.test(`${draft.title} ${draft.subtitle} ${draft.body}`);
   const audienceReady = audience.type === "ALL" || audience.value !== null;
   const contentReady = draft.title.trim().length >= 2 && draft.body.trim().length >= 2 && !hasVariable && (draft.when === "now" || draft.scheduledFor !== "");
-  const reach = useReach(audienceReady ? audience : null, draft.important);
+  const styleForServer: DisplayStyle | undefined = meta?.notch ? draft.displayStyle : undefined;
+  const isNotch = styleForServer === "notch";
+  const reach = useReach(audienceReady ? audience : null, draft.important, styleForServer);
 
   const openPreview = async () => {
     setSendError(""); setFlash(""); setLastSent(null); setBusy(true);
     try {
-      const p = await api<Preview>("/notifications/preview", { body: { audience: { type: audience.type, value: audience.value }, important: draft.important } });
+      const p = await api<Preview>("/notifications/preview", { body: { audience: { type: audience.type, value: audience.value }, important: draft.important, ...(styleForServer ? { displayStyle: styleForServer } : {}) } });
       setConfirm({ preview: p });
     } catch (e) { setSendError(errText(e)); } finally { setBusy(false); }
   };
   const send = async (words: { confirmWord: string; importantWord: string }) => {
     const r = await api<{ announcement: Announcement }>("/notifications", {
       body: {
-        ...payloadOf(draft), audience: { type: audience.type, value: audience.value }, important: draft.important, templateId: draft.templateId,
+        ...payloadOf(draft), ...(meta ? notchPayloadOf(draft, meta) : {}), audience: { type: audience.type, value: audience.value }, important: draft.important, templateId: draft.templateId,
         scheduledFor: draft.when === "later" ? draft.scheduledFor : null, confirm: true, ...words,
       },
     });
     const a = r.announcement;
     setLastSent(a);
     setFlash(a.status === "SCHEDULED" ? `ההתראה תוזמנה ל-${fmtDateTime(a.scheduledFor)}.` : "");
-    setDraft((d) => ({ ...EMPTY, ttlSeconds: d.ttlSeconds }));
+    setDraft((d) => ({ ...EMPTY, ttlSeconds: d.ttlSeconds, notchMinutes: meta?.notch?.defaultMinutes ?? EMPTY.notchMinutes }));
     loadHistory();
   };
   const loadTemplate = (id: string) => {
@@ -256,11 +297,12 @@ export default function Notifications({ preset }: { preset: AudiencePick | null 
 
           <h3 className="adm-step"><span className="adm-step-n">1</span>למי</h3>
           <AudiencePicker meta={meta} value={audience} onChange={(a) => { setAudience(a); setLastSent(null); }} />
-          {audienceReady && <ReachBox preview={reach.preview} single={single} inFeed={draft.inFeed} />}
+          {audienceReady && <ReachBox preview={reach.preview} single={single} inFeed={draft.inFeed} notch={isNotch} />}
           {reach.error && <p className="adm-error">{reach.error}</p>}
 
           <h3 className="adm-step"><span className="adm-step-n">2</span>מה</h3>
           <Content draft={draft} set={set} meta={meta} />
+          <DisplayStylePicker draft={draft} set={set} meta={meta} />
           {hasVariable && <p className="adm-error">בשליחה ידנית אין משתנים כמו {"{firstName}"}. הם מתמלאים רק בהתראות אוטומטיות (לשונית &quot;אוטומציות&quot;). צריך לכתוב את הטקסט המלא.</p>}
 
           <h3 className="adm-step"><span className="adm-step-n">3</span>הגדרות מתקדמות</h3>
@@ -399,6 +441,8 @@ function ImagePicker({ draft, set, meta }: { draft: Draft; set: SetDraft; meta: 
           onChange={(e) => void upload(e.target.files?.[0])} aria-label="העלאת תמונה" data-testid="image-input" />
       </div>
       {error && <p className="adm-error" role="alert" style={{ marginBottom: 0 }}>{error}</p>}
+      <small className="adm-muted" data-testid="image-explain">בבאנר הסגור iOS מציג תמונה קטנה; בלחיצה ארוכה/משיכה מטה היא מוצגת בגדול</small>
+      {meta.notch && draft.displayStyle === "notch" && <small className="adm-muted" style={{ color: "var(--color-amber)" }} data-testid="image-notch-note">בסגנון נוטצ׳ התמונה לא מוצגת בנוטצ׳ עצמו — היא תופיע רק בהתראה הרגילה שנשלחת למכשירים שלא תומכים (fallback).</small>}
       <small className="adm-muted">כל תמונה (גם צילום מהטלפון): אם היא גדולה מ-5MB או מ-{meta.image.maxSide}px היא מוקטנת אוטומטית. נשמרת {meta.image.retentionDays} יום. {meta.capabilities.image?.note}</small>
     </div>
   );
@@ -423,6 +467,82 @@ function Content({ draft, set, meta }: { draft: Draft; set: SetDraft; meta: Noti
         </select>
         <small className="adm-muted">{meta.capabilities.route?.note}</small>
       </label>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- display style: standard / animated notch */
+
+const NOTCH_PRESETS: [number, string][] = [[1, "1 דק׳"], [10, "10 דק׳"], [30, "30 דק׳"], [60, "1 שעה"], [240, "4 שעות"], [480, "8 שעות"]];
+
+/** Simple line glyphs for the notch icons (drawn here; no icon dependency). */
+export function NotchGlyph({ id, size = 18 }: { id: string; size?: number }) {
+  const p = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const shapes: Record<string, ReactNode> = {
+    megaphone: <><path {...p} d="M3 10v4h3l6 4V6L6 10H3z" /><path {...p} d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></>,
+    gift: <><rect {...p} x="3.5" y="9" width="17" height="11" rx="1.5" /><path {...p} d="M2.5 9h19M12 9v11M12 9c-1.5-3-5-3.5-5-1.2C7 9 12 9 12 9zm0 0c1.5-3 5-3.5 5-1.2C17 9 12 9 12 9z" /></>,
+    sparkles: <><path {...p} d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8z" /><path {...p} d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z" /></>,
+    bell: <><path {...p} d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" /><path {...p} d="M10 20.5a2.2 2.2 0 0 0 4 0" /></>,
+    star: <path {...p} d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z" />,
+    tag: <><path {...p} d="M3.5 12.5V4h8.5l8.5 8.5-8.5 8.5z" /><circle {...p} cx="8" cy="8.5" r="1.3" /></>,
+    info: <><circle {...p} cx="12" cy="12" r="8.5" /><path {...p} d="M12 11v5.5M12 7.6v.2" /></>,
+    heart: <path {...p} d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z" />,
+  };
+  return <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">{shapes[id] ?? shapes.megaphone}</svg>;
+}
+
+function DisplayStylePicker({ draft, set, meta }: { draft: Draft; set: SetDraft; meta: NotifMeta }) {
+  const n = meta.notch;
+  const notch = !!n && draft.displayStyle === "notch";
+  const presets = n ? NOTCH_PRESETS.filter(([m]) => m >= n.minMinutes && m <= n.maxMinutes) : [];
+  const isPreset = presets.some(([m]) => m === draft.notchMinutes);
+  return (
+    <div className="adm-style" data-testid="display-style">
+      <div className="adm-row" style={{ justifyContent: "space-between" }}>
+        <span className="adm-style-label">סגנון תצוגה</span>
+        {!n && <small className="adm-pill adm-pill-warn" data-testid="notch-unsupported">דורש עדכון שרת</small>}
+      </div>
+      <div className="adm-tabs adm-seg" role="radiogroup" aria-label="סגנון תצוגה">
+        <button type="button" role="radio" aria-checked={!notch} className="adm-tab" onClick={() => set("displayStyle", "standard")} data-testid="style-standard">רגילה</button>
+        <button type="button" role="radio" aria-checked={notch} className="adm-tab" disabled={!n} title={n ? undefined : "דורש עדכון שרת"}
+          onClick={() => set("displayStyle", "notch")} data-testid="style-notch">נוטצ׳ מונפש</button>
+      </div>
+      {!n && <small className="adm-muted">נוטצ׳ מונפש (אי דינמי) יהיה זמין אחרי עדכון שרת החשבוניות. בינתיים כל ההתראות נשלחות בסגנון רגיל.</small>}
+      {notch && n && (
+        <div className="adm-style-body">
+          <div className="adm-field">
+            <span>כמה זמן להציג בנוטצ׳</span>
+            <div className="adm-row" role="radiogroup" aria-label="כמה זמן להציג בנוטצ׳">
+              {presets.map(([m, l]) => (
+                <button key={m} type="button" role="radio" aria-checked={draft.notchMinutes === m} className="adm-tab adm-chip" onClick={() => set("notchMinutes", m)}>{l}</button>
+              ))}
+              <label className="adm-row adm-muted" style={{ gap: 6, fontSize: 13 }}>
+                אחר:
+                <input className="adm-input adm-mono" type="number" min={n.minMinutes} max={n.maxMinutes} step={1} style={{ width: 84, minHeight: 34 }}
+                  value={draft.notchMinutes || ""} aria-label="משך מותאם בדקות" data-testid="notch-minutes" data-custom={!isPreset}
+                  onChange={(e) => set("notchMinutes", Math.round(Number(e.target.value)) || 0)}
+                  onBlur={() => set("notchMinutes", clampMinutes(draft.notchMinutes || n.defaultMinutes, meta))} />
+                דק׳
+              </label>
+            </div>
+            <small className="adm-muted">בין {n.minMinutes} ל-{n.maxMinutes} דקות ({minutesText(n.maxMinutes)}). ייעלם אחרי {minutesText(clampMinutes(draft.notchMinutes, meta))}.</small>
+          </div>
+          <div className="adm-field" style={{ marginTop: 10 }}>
+            <span>סמל בנוטצ׳</span>
+            <div className="adm-row adm-icon-pick" role="radiogroup" aria-label="סמל בנוטצ׳">
+              {n.icons.map((i) => (
+                <button key={i.id} type="button" role="radio" aria-checked={draft.notchIcon === i.id} className="adm-icon-btn" title={i.label} aria-label={i.label}
+                  onClick={() => set("notchIcon", i.id)} data-testid={`notch-icon-${i.id}`}>
+                  <NotchGlyph id={i.id} size={20} /><small>{i.label}</small>
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="adm-muted adm-style-note">
+            באייפון {n.minIos} ומעלה ההודעה תופיע באי הדינמי / בנוטצ׳ עם אנימציה ועל מסך הנעילה, ותיעלם אחרי הזמן שבחרת. מכשירים ישנים יותר או בלי הרשאה יקבלו התראה רגילה אוטומטית. תמונה לא מוצגת בנוטצ׳ (מגבלת Apple) — היא תופיע בהתראה הרגילה למכשירים שלא תומכים.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -507,43 +627,110 @@ function Presentation({ draft, set, meta }: { draft: Draft; set: SetDraft; meta:
 }
 
 function PhonePreview({ draft, meta }: { draft: Draft; meta: NotifMeta }) {
+  const [notchView, setNotchView] = useState<"island" | "lock">("island");
   const now = new Date().toLocaleTimeString("he-IL", { timeZone: "Asia/Jerusalem", hour: "2-digit", minute: "2-digit" });
   const route = meta.routes.find((r) => r.route === draft.route)?.label ?? draft.route;
   const title = draft.title.trim() || "כותרת ההתראה";
   const body = draft.body.trim() || "כאן יופיע התוכן…";
-  return (
-    <div className="adm-phone" aria-label="תצוגה מקדימה של ההתראה">
-      <div className="adm-phone-screen">
-        <div className="adm-phone-time adm-mono">{now}</div>
-        <div className={`adm-phone-banner${draft.interruptionLevel === "passive" ? " adm-phone-passive" : ""}`}>
-          <div className="adm-phone-head">
-            <span className="adm-phone-icon" aria-hidden="true">ת</span>
-            <span>תבל חשבוניות</span>
-            <span className="adm-phone-now">עכשיו</span>
-          </div>
-          <div className="adm-phone-body">
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <strong>{title}</strong>
-              {draft.subtitle.trim() && <strong className="adm-phone-sub">{draft.subtitle.trim()}</strong>}
-              <p>{body}</p>
-            </div>
-            {draft.image && <img className="adm-phone-thumb" src={draft.image.url} alt="" />}
-          </div>
-          {draft.image && <img className="adm-phone-image" src={draft.image.url} alt="תמונת ההתראה" />}
-        </div>
-        <div className="adm-phone-meta">
-          {draft.sound ? "🔔 צליל" : "🔕 שקט"} · {draft.interruptionLevel === "passive" ? "שקטה" : "רגילה"}
-          {draft.badgeMode !== "leave" && ` · סמל: ${draft.badgeMode === "clear" ? "מתאפס" : draft.badge}`}
-          {draft.important && " · חשוב"}
-        </div>
+  const notch = !!meta.notch && draft.displayStyle === "notch";
+  const minutes = minutesText(clampMinutes(draft.notchMinutes, meta));
+  const banner = (
+    <div className={`adm-phone-banner${draft.interruptionLevel === "passive" ? " adm-phone-passive" : ""}`} data-testid="preview-banner">
+      <div className="adm-phone-head">
+        <span className="adm-phone-icon" aria-hidden="true">ת</span>
+        <span>תבל חשבוניות</span>
+        <span className="adm-phone-now">עכשיו</span>
       </div>
-      {draft.inFeed && (
-        <div className="adm-phone-feed">
-          <p className="adm-eyebrow" style={{ margin: "0 0 6px" }}>ב&quot;עדכונים&quot; באפליקציה</p>
-          <div className="adm-phone-feed-row">
-            <span className="adm-phone-bell" aria-hidden="true">🔔</span>
-            <div style={{ minWidth: 0 }}><div className="adm-phone-feed-title">{title} · {body}</div><small className="adm-muted">{now} · נגיעה פותחת: {route}</small></div>
+      <div className="adm-phone-body">
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <strong>{title}</strong>
+          {draft.subtitle.trim() && <strong className="adm-phone-sub">{draft.subtitle.trim()}</strong>}
+          <p>{body}</p>
+        </div>
+        {draft.image && <img className="adm-phone-thumb" src={draft.image.url} alt="" />}
+      </div>
+    </div>
+  );
+  return (
+    <div className="adm-phone-wrap">
+      {notch && (
+        <div className="adm-tabs adm-seg adm-seg-sm" role="tablist" aria-label="תצוגת נוטצ׳">
+          <button type="button" role="tab" aria-selected={notchView === "island"} className="adm-tab" onClick={() => setNotchView("island")}>אי דינמי</button>
+          <button type="button" role="tab" aria-selected={notchView === "lock"} className="adm-tab" onClick={() => setNotchView("lock")}>מסך נעילה</button>
+        </div>
+      )}
+      <div className="adm-phone" aria-label="תצוגה מקדימה של ההתראה">
+        <div className="adm-phone-screen">
+          {notch && notchView === "island" ? (
+            <div className="adm-island-stage" data-testid="preview-island">
+              <div className="adm-island" dir="rtl">
+                <div className="adm-island-compact" aria-hidden="true">
+                  <span className="adm-island-ico"><NotchGlyph id={draft.notchIcon} size={14} /></span>
+                  <span className="adm-island-dot" />
+                </div>
+                <div className="adm-island-expanded">
+                  <span className="adm-island-ico adm-island-ico-lg"><NotchGlyph id={draft.notchIcon} size={22} /></span>
+                  <div className="adm-island-text">
+                    <small>תבל</small>
+                    <strong>{title}</strong>
+                    <p>{body}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="adm-phone-time adm-mono" style={{ marginTop: 56 }}>{now}</div>
+              <p className="adm-island-cap">מוצג באי הדינמי עד {minutes}</p>
+            </div>
+          ) : notch ? (
+            <>
+              <div className="adm-phone-time adm-mono">{now}</div>
+              <div className="adm-lock-card" data-testid="preview-lock" dir="rtl">
+                <span className="adm-island-ico adm-island-ico-lg"><NotchGlyph id={draft.notchIcon} size={22} /></span>
+                <div className="adm-island-text">
+                  <small>תבל · {minutes}</small>
+                  <strong>{title}</strong>
+                  <p>{body}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="adm-phone-time adm-mono">{now}</div>
+              {banner}
+              {draft.image && (
+                <div className="adm-phone-expanded" data-testid="preview-expanded">
+                  <p className="adm-phone-exp-cap">פתוח (לחיצה ארוכה)</p>
+                  <div className="adm-phone-banner">
+                    <img className="adm-phone-image" src={draft.image.url} alt="תמונת ההתראה" style={{ marginTop: 0, marginBottom: 8 }} />
+                    <strong className="adm-phone-exp-title">{title}</strong>
+                    {draft.subtitle.trim() && <strong className="adm-phone-exp-title adm-phone-sub">{draft.subtitle.trim()}</strong>}
+                    <p className="adm-phone-exp-body">{body}</p>
+                    <span className="adm-phone-open">פתח</span>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          <div className="adm-phone-meta">
+            {draft.sound ? "🔔 צליל" : "🔕 שקט"} · {draft.interruptionLevel === "passive" ? "שקטה" : "רגילה"}
+            {draft.badgeMode !== "leave" && ` · סמל: ${draft.badgeMode === "clear" ? "מתאפס" : draft.badge}`}
+            {draft.important && " · חשוב"}
+            {notch && ` · נוטצ׳ ${minutes}`}
           </div>
+        </div>
+        {draft.inFeed && (
+          <div className="adm-phone-feed">
+            <p className="adm-eyebrow" style={{ margin: "0 0 6px" }}>ב&quot;עדכונים&quot; באפליקציה</p>
+            <div className="adm-phone-feed-row">
+              <span className="adm-phone-bell" aria-hidden="true">🔔</span>
+              <div style={{ minWidth: 0 }}><div className="adm-phone-feed-title">{title} · {body}</div><small className="adm-muted">{now} · נגיעה פותחת: {route}</small></div>
+            </div>
+          </div>
+        )}
+      </div>
+      {notch && (
+        <div className="adm-fallback-prev">
+          <p className="adm-eyebrow" style={{ margin: "0 0 6px" }}>מכשירים שלא תומכים יקבלו (רגילה)</p>
+          {banner}
         </div>
       )}
       {draft.image && <p className="adm-muted" style={{ fontSize: 12 }}>התמונה תוצג רק בגרסת האפליקציה הבאה. בגרסה הנוכחית (TestFlight 15) תופיע ההתראה בלי תמונה.</p>}
@@ -634,13 +821,14 @@ function TestSend({ meta, draft, contentReady, audience, onSent }: { meta: Notif
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<Announcement | null>(null);
-  const reach = useReach(recipient ? { type: "USER", value: recipient.userId } : null, true);
+  const style: DisplayStyle | undefined = meta.notch ? draft.displayStyle : undefined;
+  const reach = useReach(recipient ? { type: "USER", value: recipient.userId } : null, true, style);
   const pick = (r: TestRecipient) => { setRecipient(r); saveTestRecipient(r); setChanging(false); setResult(null); setError(""); };
   const sendTest = async () => {
     if (!recipient) return;
     setError(""); setResult(null); setBusy(true);
     try {
-      const r = await api<{ announcement: Announcement }>("/notifications/test", { body: { ...payloadOf(draft), testUserId: recipient.userId } });
+      const r = await api<{ announcement: Announcement }>("/notifications/test", { body: { ...payloadOf(draft), ...notchPayloadOf(draft, meta), testUserId: recipient.userId } });
       setResult(r.announcement); onSent();
     } catch (e) { setError(errText(e)); } finally { setBusy(false); }
   };
@@ -663,7 +851,7 @@ function TestSend({ meta, draft, contentReady, audience, onSent }: { meta: Notif
           </div>
         </>
       )}
-      {recipient && !changing && <ReachBox preview={reach.preview} single inFeed={draft.inFeed} compact />}
+      {recipient && !changing && <ReachBox preview={reach.preview} single inFeed={draft.inFeed} compact notch={style === "notch"} />}
       <div className="adm-row" style={{ marginTop: 10 }}>
         <button type="button" className="adm-btn-ghost" disabled={busy || !contentReady || !recipient || changing} onClick={sendTest} data-testid="test-send">
           {busy ? "שולח…" : recipient ? `שלח בדיקה ל-${recipient.label.split(" (")[0]}` : "שלח בדיקה"}
@@ -696,13 +884,18 @@ function SendConfirm({ preview, audience, draft, meta, onClose, onSend }: {
       <div className="adm-modal" style={{ maxWidth: 520 }}>
         <h2 className="adm-h2" id="adm-send-title">{draft.when === "later" ? "לתזמן את ההתראה?" : "לשלוח את ההתראה?"}</h2>
         <p className="adm-sub" style={{ color: "var(--color-stone)" }}><strong>{draft.title}</strong> — {audienceText(audience.type, audience.value, audience.label)}{draft.when === "later" && ` · ${draft.scheduledFor.replace("T", " ")} (שעון ישראל)`}</p>
-        <ReachBox preview={preview} single={audience.type === "USER"} inFeed={draft.inFeed} />
+        <ReachBox preview={preview} single={audience.type === "USER"} inFeed={draft.inFeed} notch={!!meta.notch && draft.displayStyle === "notch"} />
         <dl className="adm-kv" style={{ marginTop: 10 }}>
           <dt>משתמשים</dt><dd className="adm-mono">{preview.users}</dd>
           <dt>עסקים</dt><dd className="adm-mono">{preview.businesses}</dd>
           <dt>מכשירים שיקבלו התראה</dt><dd className="adm-mono">{preview.devices}</dd>
           <dt>כיבו הודעות מתבל</dt><dd className="adm-mono">{preview.optedOut}</dd>
           <dt>בלי מכשיר עם התראות פעילות</dt><dd className="adm-mono">{preview.noDevice}</dd>
+          {meta.notch && <><dt>סגנון תצוגה</dt><dd data-testid="confirm-style">{draft.displayStyle === "notch" ? "נוטצ׳ מונפש (אי דינמי)" : "רגילה"}</dd></>}
+          {meta.notch && draft.displayStyle === "notch" && <>
+            <dt>משך בנוטצ׳</dt><dd data-testid="confirm-notch-minutes">{minutesText(clampMinutes(draft.notchMinutes, meta))}</dd>
+            {typeof preview.notchDevices === "number" && <><dt>יקבלו נוטצ׳ / רגילה</dt><dd className="adm-mono">{preview.notchDevices} / {preview.fallbackDevices ?? Math.max(0, preview.devices - preview.notchDevices)}</dd></>}
+          </>}
           {preview.deferredQuiet > 0 && draft.when === "now" && <><dt>יחכו לסוף שעות השקט</dt><dd className="adm-mono">{preview.deferredQuiet} (עד {fmtDateTime(preview.quietUntil)})</dd></>}
         </dl>
         <p className="adm-muted" style={{ fontSize: 13 }}>{draft.inFeed ? `כל ${preview.users} המשתמשים יראו אותה ב"עדכונים", גם בלי התראה בטלפון.` : "לא תתווסף ל\"עדכונים\"."}</p>
@@ -729,6 +922,10 @@ function settingsOf(a: Announcement, meta: NotifMeta): string[] {
   if (a.priority) out.push(`עדיפות ${a.priority}`);
   if (a.threadId) out.push(`קיבוץ ${a.threadId}`);
   if (a.collapseKey) out.push(`מחליפה ${a.collapseKey}`);
+  if (a.displayStyle === "notch") {
+    const icon = meta.notch?.icons.find((i) => i.id === a.notchIcon)?.label ?? a.notchIcon;
+    out.push(`נוטצ׳${a.notchMinutes ? ` ${minutesText(a.notchMinutes)}` : ""}${icon ? ` · סמל ${icon}` : ""}`);
+  }
   return out;
 }
 
@@ -766,9 +963,11 @@ function History({ data, reload, meta }: { data: { total: number; rows: Announce
                       <div className="adm-row" style={{ marginTop: 4, gap: 4 }}>
                         {a.isTest && <span className="adm-pill">בדיקה</span>}{a.important && <span className="adm-pill adm-pill-warn">חשוב</span>}
                         {a.imageUrl && <span className="adm-pill">עם תמונה</span>}
+                        {a.displayStyle === "notch" && <span className="adm-pill adm-pill-ok" data-testid="hist-notch">נוטצ׳{a.notchMinutes ? ` · ${minutesText(a.notchMinutes)}` : ""}</span>}
                         {!a.inFeed && <span className="adm-pill">בלי עדכונים</span>}{a.templateId && <span className="adm-pill">מתבנית v{a.templateVersion}</span>}
                       </div>
                       <div className="adm-hist-settings">{settingsOf(a, meta).join(" · ")}</div>
+                      {a.displayStyle === "notch" && <NotchHistory a={a} />}
                     </td>
                     <td>{audienceText(a.audienceType, a.audienceValue)}{a.audienceValue && <div className="adm-mono adm-muted" style={{ fontSize: 11 }}>{a.audienceValue.slice(0, 8)}</div>}</td>
                     <td><span className={cls}>{label}</span>{a.lastError && <div className="adm-error" style={{ fontSize: 12 }}>{a.lastError}</div>}</td>
@@ -788,6 +987,19 @@ function History({ data, reload, meta }: { data: { total: number; rows: Announce
       )}
       <p className="adm-muted" style={{ fontSize: 12, marginTop: 8 }}>&quot;מכשירים&quot; = כמה טלפונים רשומים להתראות היו אמורים לקבל אותה. &quot;נמסרו&quot; = Apple קיבלה את ההתראה למסירה. &quot;נפתחו&quot; סופר מי שפתח אותה ב&quot;עדכונים&quot;, ומגרסה 16 של האפליקציה גם נגיעה בהתראה עצמה.</p>
     </section>
+  );
+}
+
+/** Split + live Live-Activity counts for one notch send. */
+function NotchHistory({ a }: { a: Announcement }) {
+  const split = a.notchDevices !== null && a.notchDevices !== undefined;
+  const live = a.notch;
+  if (!split && !live) return null;
+  return (
+    <div className="adm-hist-settings" data-testid="hist-notch-counts">
+      {split && <span>נוטצ׳ {a.notchDevices} · רגילה (fallback) {a.notchFallback ?? 0}</span>}
+      {live && <span>{split ? " — " : ""}הופעלו {live.started} · עברו לרגילה {live.fallback} · הסתיימו {live.ended}{live.pending ? ` · ממתינים ${live.pending}` : ""}{live.failed ? <> · <span className="adm-error">נכשלו {live.failed}</span></> : null}</span>}
+    </div>
   );
 }
 
