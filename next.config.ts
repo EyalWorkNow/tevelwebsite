@@ -20,7 +20,7 @@ const SIGN_CSP = [
 // /invoiceadmin talks to the invoice API only (browser → API with credentials; no secret on Vercel).
 const INVOICE_API_ORIGIN = (process.env.NEXT_PUBLIC_INVOICE_API_ORIGIN || "https://invoice.crm.tevel.space").replace(/\/$/, "");
 const ADMIN_CSP = [
-  "default-src 'self'", `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"}`, "style-src 'self' 'unsafe-inline'", "img-src 'self' data:",
+  "default-src 'self'", `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"}`, "style-src 'self' 'unsafe-inline'", `img-src 'self' data: ${INVOICE_API_ORIGIN}`,
   "font-src 'self' data:", `connect-src 'self' ${INVOICE_API_ORIGIN}`, "object-src 'none'", "base-uri 'none'", "form-action 'self'", "frame-ancestors 'none'",
 ].join("; ");
 

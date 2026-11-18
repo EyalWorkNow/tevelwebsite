@@ -28,6 +28,15 @@ export const ACTION_HE: Record<string, string> = {
   "business.reactivated": "עסק הופעל",
   "subscription.plan_set": "מסלול עודכן",
   "subscription.cancelled": "מנוי בוטל",
+  "announcement.sent": "התראה נשלחה",
+  "announcement.scheduled": "התראה תוזמנה",
+  "announcement.dispatched": "התראה יצאה למכשירים",
+  "announcement.test_sent": "התראת בדיקה",
+  "announcement.cancelled": "התראה מתוזמנת בוטלה",
+  "announcement.image_uploaded": "תמונה להתראה הועלתה",
+  "announcement.template_created": "תבנית התראה נוצרה",
+  "announcement.template_updated": "תבנית התראה עודכנה",
+  "announcement.template_archived": "תבנית התראה הועברה לארכיון",
 };
 
 export const fmtDate = (iso: unknown): string => {
