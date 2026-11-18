@@ -8,6 +8,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "./api";
 import { BUSINESS_TYPE_HE, PLAN_HE, fmtDateTime } from "./labels";
+import { loadTestRecipient, NO_DEVICE_ONE } from "./Notifications";
 
 interface Param { key: string; label: string; type: "int" | "time" | "weekday" | "datetime" | "bool"; min?: number; max?: number; default?: number | string | boolean; required?: boolean }
 interface Variable { key: string; label: string; sample: string }
@@ -40,9 +41,10 @@ const STATUS: Record<Rule["status"], [string, string]> = {
 const GROUP_HE: Record<Trigger["group"], string> = { EVENT: "אירוע", BEHAVIOR: "התנהגות / חוסר פעילות", THRESHOLD: "סף", SCHEDULE: "תזמון" };
 const WEEKDAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 const ERR: Record<string, string> = {
-  AUTOMATION_TEST_REQUIRED: "קודם שולחים בדיקה אליי (לגרסה הנוכחית של הכלל), ורק אז מפעילים.",
+  AUTOMATION_TEST_REQUIRED: "קודם שולחים בדיקה (לגרסה הנוכחית של הכלל), ורק אז מפעילים.",
   AUTOMATION_STATE: "אי אפשר במצב הנוכחי של הכלל.",
-  ADMIN_NOT_APP_USER: "המייל שלך לא רשום כמשתמש באפליקציה, ולכן אין לאן לשלוח בדיקה.",
+  ADMIN_NOT_APP_USER: "צריך לבחור נמען לבדיקה: בלשונית \"שליחה ידנית\" ← \"שליחת בדיקה ל...\".",
+  USER_NOT_ACTIVE: "נמען הבדיקה מושהה. צריך לבחור משתמש פעיל בלשונית \"שליחה ידנית\".",
   CONFIRMATION_REQUIRED: "חסר אישור.",
 };
 const errText = (e: unknown) => (e instanceof ApiError ? (ERR[e.code] ?? e.message) : "שגיאה");
@@ -164,6 +166,9 @@ function CapsEditor({ settings, onSaved }: { settings: AutoMeta["settings"]; onS
 function RuleActions({ rule, meta, onEdit, reload }: { rule: Rule; meta: AutoMeta; onEdit: () => void; reload: () => void }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
+  // The test goes to the recipient picked in "שליחה ידנית" → "שליחת בדיקה ל..." (remembered in this browser).
+  const [testTo] = useState(() => loadTestRecipient());
+  const canTest = testTo !== null || meta.adminIsAppUser;
   const act = async (action: "test" | "activate" | "pause" | "archive") => {
     setBusy(true); setNote("");
     try {
@@ -176,8 +181,11 @@ function RuleActions({ rule, meta, onEdit, reload }: { rule: Rule; meta: AutoMet
         if (!window.confirm("להעביר לארכיון? הכלל יפסיק לפעול.")) { setBusy(false); return; }
         await api(`/notifications/automations/${rule.id}/archive`, { body: {} });
       } else {
-        await api(`/notifications/automations/${rule.id}/${action}`, { body: {} });
-        if (action === "test") setNote("נשלחה בדיקה");
+        const r = await api<{ announcement?: { devices: number | null } }>(`/notifications/automations/${rule.id}/${action}`, { body: action === "test" && testTo ? { testUserId: testTo.userId } : {} });
+        if (action === "test") {
+          const n = r.announcement?.devices ?? 0;
+          setNote(n === 0 ? `נשלחה בדיקה — 0 מכשירים: ${NO_DEVICE_ONE}` : `נשלחה בדיקה ל-${n} מכשירים`);
+        }
       }
       reload();
     } catch (e) { setNote(errText(e)); } finally { setBusy(false); }
@@ -186,7 +194,7 @@ function RuleActions({ rule, meta, onEdit, reload }: { rule: Rule; meta: AutoMet
     <div className="adm-row" style={{ flexWrap: "nowrap" }}>
       {rule.status === "ACTIVE" ? <button className="adm-btn-ghost" disabled={busy} onClick={() => void act("pause")}>השהיה</button>
         : <button className="adm-btn" disabled={busy} onClick={() => void act("activate")}>הפעלה</button>}
-      <button className="adm-btn-ghost" disabled={busy || !meta.adminIsAppUser} onClick={() => void act("test")} title={meta.adminIsAppUser ? "" : ERR.ADMIN_NOT_APP_USER}>בדיקה אליי</button>
+      <button className="adm-btn-ghost" disabled={busy || !canTest} onClick={() => void act("test")} title={canTest ? "" : ERR.ADMIN_NOT_APP_USER}>{testTo ? `בדיקה ל-${testTo.label.split(" (")[0]}` : "בדיקה אליי"}</button>
       <button className="adm-link" onClick={onEdit}>עריכה</button>
       {rule.status !== "ACTIVE" && <button className="adm-link" onClick={() => void act("archive")}>ארכיון</button>}
       {note && <small className="adm-muted">{note}</small>}
@@ -463,7 +471,7 @@ function RuleBuilder({ meta, rule, onClose }: { meta: AutoMeta; rule: Rule | nul
           <button className="adm-btn" disabled={busy || f.name.trim().length < 2 || f.content.title.trim().length < 2 || f.content.body.trim().length < 2} onClick={() => void save()}>{busy ? "שומר…" : rule ? "שמירת שינויים" : "שמירה כטיוטה"}</button>
           <button className="adm-btn-ghost" onClick={() => onClose(false)}>ביטול</button>
         </div>
-        <p className="adm-muted" style={{ fontSize: 13 }}>אחרי השמירה: &quot;בדיקה אליי&quot; (עם נתוני דוגמה), ואז &quot;הפעלה&quot; — עם ספירה של מי היה מקבל עכשיו.</p>
+        <p className="adm-muted" style={{ fontSize: 13 }}>אחרי השמירה: &quot;בדיקה&quot; (עם נתוני דוגמה, לנמען שנבחר ב&quot;שליחה ידנית&quot;), ואז &quot;הפעלה&quot; — עם ספירה של מי היה מקבל עכשיו.</p>
       </section>
       <aside className="adm-notif-side">
         <div className="adm-phone" aria-label="תצוגה מקדימה עם נתוני דוגמה">

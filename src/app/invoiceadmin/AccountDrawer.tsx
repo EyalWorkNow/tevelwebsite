@@ -65,7 +65,11 @@ export default function AccountDrawer({ meta, userId, onClose, onNotify }: { met
             <h2 className="adm-h1" style={{ fontSize: 26 }}>{u?.displayName ?? u?.email ?? "…"}</h2>
             {u && <div className="adm-row"><span className="adm-mono adm-muted">{u.email}</span><StatusPill status={u.status} kind="user" />{u.isDemo && <span className="adm-pill adm-pill-warn">דמו</span>}</div>}
           </div>
-          <button className="adm-btn-ghost" onClick={onClose} aria-label="סגירה">סגירה</button>
+          <div className="adm-row">
+            {u && <button className="adm-btn" disabled={u.status !== "ACTIVE"} data-testid="drawer-notify"
+              onClick={() => onNotify({ type: "USER", value: u.userId, label: `${u.displayName ?? u.email} (${u.email})` })}>🔔 שלח התראה</button>}
+            <button className="adm-btn-ghost" onClick={onClose} aria-label="סגירה">סגירה</button>
+          </div>
         </div>
         {error && <p className="adm-error" role="alert">{error}</p>}
         {flash && <p className="adm-ok" role="status">{flash}</p>}
