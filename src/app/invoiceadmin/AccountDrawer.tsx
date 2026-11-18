@@ -5,6 +5,7 @@ import type { Meta } from "./AdminApp";
 import { PlanPill, StatusPill } from "./Accounts";
 import { AuditTable, type AuditRow } from "./AuditLog";
 import Confirm, { type ConfirmRequest } from "./Confirm";
+import { UserNotificationsPanel, type AudiencePick } from "./Notifications";
 import { strongPassword } from "./CreateUser";
 import { BUSINESS_TYPE_HE, PLAN_HE, PROVIDER_HE, ROLE_HE, SUB_STATUS_HE, fmtDate, fmtDateTime } from "./labels";
 
@@ -36,7 +37,7 @@ interface UserDetail {
 
 const msg = (e: unknown) => (e instanceof ApiError ? e.message : "שגיאה");
 
-export default function AccountDrawer({ meta, userId, onClose }: { meta: Meta; userId: string; onClose: () => void }) {
+export default function AccountDrawer({ meta, userId, onClose, onNotify }: { meta: Meta; userId: string; onClose: () => void; onNotify: (a: AudiencePick) => void }) {
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [error, setError] = useState("");
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
@@ -73,6 +74,7 @@ export default function AccountDrawer({ meta, userId, onClose }: { meta: Meta; u
             <UserCard detail={detail} meta={meta} setConfirm={setConfirm} done={done} />
             {detail.businesses.map((b) => <BusinessCard key={b.businessId} b={b} meta={meta} setConfirm={setConfirm} done={done} />)}
             <AddBusiness userId={u.userId} meta={meta} done={done} disabled={u.status !== "ACTIVE"} />
+            <UserNotificationsPanel userId={u.userId} onSend={() => onNotify({ type: "USER", value: u.userId, label: `${u.displayName ?? u.email} (${u.email})` })} />
             <section className="adm-card">
               <h3 className="adm-h3">פעולות אחרונות על המשתמש והעסקים שלו</h3>
               <AuditTable rows={detail.audit} />
