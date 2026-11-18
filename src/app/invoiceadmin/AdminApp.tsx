@@ -7,6 +7,8 @@ import CreateUser from "./CreateUser";
 import AuditLog from "./AuditLog";
 import AccountDrawer from "./AccountDrawer";
 import Notifications, { type AudiencePick } from "./Notifications";
+import Automations from "./Automations";
+import SystemPushes from "./SystemPushes";
 
 export interface Meta {
   adminEmail: string;
@@ -26,6 +28,7 @@ export default function AdminApp() {
   const [openUser, setOpenUser] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   const [preset, setPreset] = useState<AudiencePick | null>(null);
+  const [notifTab, setNotifTab] = useState<"send" | "auto" | "system">("send");
 
   const enter = useCallback(async (session: SessionBody) => {
     setCsrf(session.csrfToken);
@@ -74,10 +77,21 @@ export default function AdminApp() {
       </div>
       {tab === "accounts" && <Accounts meta={meta} onOpen={setOpenUser} refresh={refresh} />}
       {tab === "create" && <CreateUser meta={meta} onCreated={(id) => { setRefresh((n) => n + 1); setTab("accounts"); setOpenUser(id); }} />}
-      {tab === "notifications" && <Notifications key={preset?.value ?? "new"} preset={preset} />}
+      {tab === "notifications" && (
+        <>
+          <div className="adm-tabs adm-subtabs" role="tablist" aria-label="התראות">
+            {([["send", "שליחה ידנית"], ["auto", "אוטומציות"], ["system", "התראות מערכת"]] as const).map(([key, label]) => (
+              <button key={key} role="tab" className="adm-tab" aria-selected={notifTab === key} onClick={() => setNotifTab(key)}>{label}</button>
+            ))}
+          </div>
+          {notifTab === "send" && <Notifications key={preset?.value ?? "new"} preset={preset} />}
+          {notifTab === "auto" && <Automations />}
+          {notifTab === "system" && <SystemPushes />}
+        </>
+      )}
       {tab === "audit" && <AuditLog />}
       {openUser !== null && <AccountDrawer meta={meta} userId={openUser} onClose={() => { setOpenUser(null); setRefresh((n) => n + 1); }}
-        onNotify={(a) => { setPreset(a); setOpenUser(null); setTab("notifications"); }} />}
+        onNotify={(a) => { setPreset(a); setOpenUser(null); setTab("notifications"); setNotifTab("send"); }} />}
     </div>
   );
 }

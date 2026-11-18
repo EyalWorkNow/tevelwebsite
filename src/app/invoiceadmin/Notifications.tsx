@@ -36,7 +36,7 @@ interface Announcement {
   inFeed: boolean; isTest: boolean; important: boolean; status: string; scheduledFor: string; createdBy: string; createdAt: string;
   sentAt: string | null; cancelledAt: string | null; targetedUsers: number | null; devices: number | null; optedOut: number | null;
   noDevice: number | null; deferredQuiet: number | null; imageUrl: string | null; templateId: string | null; templateVersion: number | null;
-  delivery: { pending: number; delivered: number; failed: number }; openedInApp: number; lastError: string | null;
+  delivery: { pending: number; delivered: number; failed: number; openedPush?: number }; openedInApp: number; lastError: string | null;
 }
 interface Template {
   id: string; name: string; version: number; title: string; subtitle: string | null; body: string; route: string; imageId: string | null;
@@ -185,7 +185,7 @@ export default function Notifications({ preset }: { preset: AudiencePick | null 
             </div>
           </div>
           <Content draft={draft} set={set} meta={meta} setError={setError} />
-          {hasVariable && <p className="adm-error">בשליחה ידנית אין משתנים כמו {"{firstName}"}. הם יתמלאו רק בהתראות אוטומטיות (בקרוב). צריך לכתוב את הטקסט המלא.</p>}
+          {hasVariable && <p className="adm-error">בשליחה ידנית אין משתנים כמו {"{firstName}"}. הם מתמלאים רק בהתראות אוטומטיות (לשונית &quot;אוטומציות&quot;). צריך לכתוב את הטקסט המלא.</p>}
           <hr className="adm-sep" />
           <Presentation draft={draft} set={set} meta={meta} />
           <hr className="adm-sep" />
@@ -507,7 +507,7 @@ function History({ data, reload }: { data: { total: number; rows: Announcement[]
                     <td className="adm-mono">{a.delivery.delivered}</td>
                     <td className="adm-mono">{a.delivery.failed}</td>
                     <td className="adm-mono">{a.delivery.pending}</td>
-                    <td className="adm-mono">{a.openedInApp}</td>
+                    <td className="adm-mono">{a.openedInApp}{a.delivery.openedPush ? <div className="adm-muted" style={{ fontSize: 12 }}>{a.delivery.openedPush} מההתראה</div> : null}</td>
                     <td>{a.status === "SCHEDULED" && <button className="adm-btn-danger" onClick={() => void cancel(a.id)}>ביטול</button>}</td>
                   </tr>
                 );
@@ -516,7 +516,7 @@ function History({ data, reload }: { data: { total: number; rows: Announcement[]
           </table>
         </div>
       )}
-      <p className="adm-muted" style={{ fontSize: 12, marginTop: 8 }}>&quot;נמסרו&quot; = Apple קיבלה את ההתראה למסירה. האפליקציה לא מדווחת על פתיחת התראה, ולכן &quot;נפתחו&quot; סופר מי שפתח אותה ב&quot;עדכונים&quot;.</p>
+      <p className="adm-muted" style={{ fontSize: 12, marginTop: 8 }}>&quot;נמסרו&quot; = Apple קיבלה את ההתראה למסירה. &quot;נפתחו&quot; סופר מי שפתח אותה ב&quot;עדכונים&quot;, ומגרסה 16 של האפליקציה גם נגיעה בהתראה עצמה.</p>
     </section>
   );
 }
@@ -529,6 +529,7 @@ interface Panel {
   recentPushes: { id: string; kind: string; title: string; status: string; createdAt: string; sentAt: string | null; lastError: string | null }[];
   announcements: { id: string; title: string; sentAt: string | null }[];
   businesses: { businessId: string; legalName: string }[];
+  marketingConsent?: { granted: boolean; changedAt: string | null };
 }
 const CATEGORY_HE: Record<string, string> = { DOCUMENTS: "מסמכים", PAYMENTS: "תשלומים", CUSTOMERS: "לקוחות", TEAM: "צוות", SUBSCRIPTION: "מנוי", REPORTS: "דוחות", SECURITY: "אבטחה", ANNOUNCEMENTS: "הודעות מתבל" };
 const PUSH_STATUS_HE: Record<string, string> = { PENDING: "ממתינה", LEASED: "בשליחה", SENT: "נמסרה", FAILED: "נכשלה", DROPPED: "המכשיר נותק" };
@@ -563,6 +564,7 @@ export function UserNotificationsPanel({ userId, onSend }: { userId: string; onS
           )}
           <dl className="adm-kv" style={{ marginTop: 12 }}>
             <dt>סוגים שכובו</dt><dd>{panel.preferences.disabledCategories.map((c) => CATEGORY_HE[c] ?? c).join(", ") || "אין (הכול פועל)"}</dd>
+            <dt>הסכמה לדיוור שיווקי</dt><dd>{panel.marketingConsent?.granted ? `נתן/ה הסכמה (${fmtDateTime(panel.marketingConsent.changedAt)})` : "לא (ברירת מחדל)"}</dd>
             <dt>שעות שקט</dt><dd>{panel.preferences.quietHours ? "מכובדות (22:00–08:00, שבת וחג)" : "כבויות — התראות בכל שעה"}</dd>
           </dl>
           <h3 className="adm-h3" style={{ marginTop: 14 }}>התראות אחרונות</h3>

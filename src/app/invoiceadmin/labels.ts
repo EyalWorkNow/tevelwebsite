@@ -37,6 +37,15 @@ export const ACTION_HE: Record<string, string> = {
   "announcement.template_created": "תבנית התראה נוצרה",
   "announcement.template_updated": "תבנית התראה עודכנה",
   "announcement.template_archived": "תבנית התראה הועברה לארכיון",
+  "automation.created": "כלל אוטומטי נוצר",
+  "automation.updated": "כלל אוטומטי עודכן",
+  "automation.test_sent": "בדיקת כלל אוטומטי",
+  "automation.activated": "כלל אוטומטי הופעל",
+  "automation.paused": "כלל אוטומטי הושהה",
+  "automation.archived": "כלל אוטומטי הועבר לארכיון",
+  "automation.settings_updated": "תקרות האוטומציות עודכנו",
+  "automation.system_push_updated": "התראת מערכת נערכה",
+  "automation.system_push_restored": "התראת מערכת שוחזרה לברירת המחדל",
 };
 
 export const fmtDate = (iso: unknown): string => {
