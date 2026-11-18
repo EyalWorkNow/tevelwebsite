@@ -33,6 +33,11 @@ interface UserDetail {
   };
   businesses: Business[];
   audit: AuditRow[];
+  /** Second factors (server ≥ admin-mfa-reset); absent on an older API. */
+  mfa?: {
+    email: boolean; totp: boolean; recoveryCodesRemaining: number; exempt: boolean;
+    passkeys: { deviceName: string | null; createdAt: string; lastUsedAt: string | null }[];
+  };
 }
 
 const IDENTITY_HE: Record<string, string> = { apple: "Apple", google: "Google", supabase: "סיסמה" };
@@ -98,6 +103,15 @@ function UserCard({ detail, meta, setConfirm, done }: { detail: UserDetail; meta
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const suspended = u.status !== "ACTIVE";
+  const f = detail.mfa;
+  const passkeyCount = f ? f.passkeys.length : u.mfa.passkeys;
+  const hasFactors = f ? f.email || f.totp || f.passkeys.length > 0 || f.recoveryCodesRemaining > 0 : u.mfa.email || u.mfa.totp || u.mfa.passkeys > 0;
+  const mfaSummary = [
+    (f ? f.email : u.mfa.email) && "קוד במייל",
+    (f ? f.totp : u.mfa.totp) && "אפליקציית אימות",
+    passkeyCount > 0 && (passkeyCount === 1 ? "מפתח גישה אחד" : `${passkeyCount} מפתחות גישה`),
+    f && f.recoveryCodesRemaining > 0 && `${f.recoveryCodesRemaining} קודי שחזור`,
+  ].filter(Boolean).join(", ") || "אין";
   const saveName = async () => {
     setError("");
     try { await api(`/users/${u.userId}`, { method: "PATCH", body: { displayName: name } }); done("השם עודכן"); }
@@ -113,7 +127,7 @@ function UserCard({ detail, meta, setConfirm, done }: { detail: UserDetail; meta
         <dt>נוצר</dt><dd className="adm-mono">{fmtDateTime(u.createdAt)}</dd>
         <dt>פעילות אחרונה</dt><dd className="adm-mono">{fmtDateTime(u.lastActiveAt)}</dd>
         <dt>כניסה דרך</dt><dd>{[...identities, ...(u.hasPassword ? ["סיסמה מקומית"] : [])].join(", ") || "—"}</dd>
-        <dt>אימות דו-שלבי</dt><dd>{[u.mfa.email && "מייל", u.mfa.totp && "אפליקציה", u.mfa.passkeys > 0 && `${u.mfa.passkeys} מפתחות`].filter(Boolean).join(", ") || "אין"}</dd>
+        <dt>אימות דו-שלבי</dt><dd>{mfaSummary}{detail.mfa?.exempt && <> · <span className="adm-pill">חשבון הדגמה (פטור)</span></>}</dd>
         <dt>חיבורים פעילים</dt><dd>{u.sessions.length} בדפדפן, {u.devices.length} מכשירים</dd>
         <dt>עסקים</dt><dd>{detail.businesses.map((b) => `${b.profile.tradingName ?? b.profile.legalName} (${ROLE_HE[b.role] ?? b.role})`).join(", ") || "—"}</dd>
       </dl>
@@ -149,6 +163,12 @@ function UserCard({ detail, meta, setConfirm, done }: { detail: UserDetail; meta
           title: "ניתוק כל החיבורים", text: "כל החיבורים בדפדפן ובאפליקציה ינותקו. המשתמש יוכל להתחבר שוב.", confirmLabel: "ניתוק", danger: true,
           run: async () => { await api(`/users/${u.userId}/revoke-sessions`, { body: {} }); done("החיבורים נותקו"); },
         })}>ניתוק חיבורים</button>
+        <button className="adm-btn-danger" disabled={!hasFactors} title={hasFactors ? undefined : "למשתמש אין אימות דו-שלבי"} onClick={() => setConfirm({
+          title: "איפוס אימות דו-שלבי",
+          text: `כל אמצעי האימות הדו-שלבי של ${u.email} יימחקו: ${mfaSummary}. כל החיבורים בדפדפן ובאפליקציה ינותקו, והמשתמש יצטרך להתחבר מחדש ולהגדיר אימות דו-שלבי מחדש${f?.exempt ? " (חשבון ההדגמה פטור — הוא ייכנס בלי אימות דו-שלבי)" : ""}. השתמשו בזה רק אחרי שווידאתם שזה באמת בעל החשבון — איפוס מסיר את ההגנה מפני גניבת סיסמה.`,
+          confirmLabel: "איפוס", withReason: true, danger: true, typeToConfirm: u.email,
+          run: async (reason) => { await api(`/users/${u.userId}/mfa/reset`, { body: { confirmEmail: u.email, reason } }); done("האימות הדו-שלבי אופס והחיבורים נותקו"); },
+        })}>איפוס אימות דו-שלבי</button>
         {suspended ? (
           <button className="adm-btn" onClick={() => setConfirm({
             title: "הפעלת המשתמש", text: "המשתמש יוכל להתחבר שוב.", confirmLabel: "הפעלה", withReason: true,
